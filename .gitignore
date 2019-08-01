@@ -1,0 +1,11 @@
+# Visual Studio Code
+.vscode/*
+*.code-workspace
+
+# Visual Studio
+*.suo
+*.user
+
+# Build
+[Bb]in/
+[Oo]bj/
