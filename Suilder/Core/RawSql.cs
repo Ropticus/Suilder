@@ -58,7 +58,7 @@ namespace Suilder.Core
                     if (startValue || i + 1 == sql.Length)
                         throw new FormatException("Input string was not in a correct format.");
 
-                    //Escape value
+                    // Escape value
                     if (sql[i + 1] == '{')
                     {
                         builder.Append(sql[++i]);
@@ -92,7 +92,7 @@ namespace Suilder.Core
                     }
                     else
                     {
-                        //Escape value
+                        // Escape value
                         if (i + 1 == sql.Length || sql[i + 1] != '}')
                             throw new FormatException("Input string was not in a correct format.");
 

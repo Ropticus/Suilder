@@ -130,7 +130,7 @@ namespace Suilder.Core
         public Alias()
         {
             AliasName = typeof(T).Name;
-            AliasName = Char.ToLowerInvariant(AliasName[0]) + AliasName.Substring(1);
+            AliasName = char.ToLowerInvariant(AliasName[0]) + AliasName.Substring(1);
         }
 
         /// <summary>

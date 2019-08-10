@@ -8,7 +8,7 @@ namespace Suilder.Test.Builder.Alias
     public class ColumnWithoutAliasTest : BaseTest
     {
         [Fact]
-        public void One_Param()
+        public void One_Param_String()
         {
             IColumn column = sql.Col("person.Id");
 
@@ -18,7 +18,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void All_One_Param()
+        public void One_Param_All_String()
         {
             IColumn column = sql.Col("person.*");
 
@@ -28,7 +28,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void One_Param_With_Schema()
+        public void One_Param_With_Schema_String()
         {
             IColumn column = sql.Col("dbo.person.Id");
 
@@ -38,7 +38,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Two_Params()
+        public void Two_Params_String()
         {
             IColumn column = sql.Col("person", "Id");
 
@@ -48,7 +48,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void All_Two_Params()
+        public void Two_Params_All_String()
         {
             IColumn column = sql.Col("person", "*");
 
@@ -58,7 +58,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Two_Params_With_Schema()
+        public void Two_Params_With_Schema_String()
         {
             IColumn column = sql.Col("dbo.person", "Id");
 
@@ -68,7 +68,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void One_Param_Typed()
+        public void One_Param_Typed_String()
         {
             IColumn column = sql.Col<Person>("person.Id");
 
@@ -78,7 +78,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void All_One_Param_Typed()
+        public void One_Param_All_Typed_String()
         {
             IColumn column = sql.Col<Person>("person.*");
 
@@ -87,6 +87,70 @@ namespace Suilder.Test.Builder.Alias
             Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
                 + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\"", result.Sql);
         }
+
+        [Fact]
+        public void One_Param_Typed_Expression()
+        {
+            IColumn column = sql.Col<Person>(x => x.Id);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+        }
+
+        [Fact]
+        public void One_Param_All_Typed_Expression()
+        {
+            IColumn column = sql.Col<Person>(x => x);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\"", result.Sql);
+        }
+
+        [Fact]
+        public void Two_Params_Typed_String()
+        {
+            IColumn column = sql.Col<Person>("person", "Id");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+        }
+
+        [Fact]
+        public void Two_Params_All_Typed_String()
+        {
+            IColumn column = sql.Col<Person>("person", "*");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\"", result.Sql);
+        }
+
+        [Fact]
+        public void Two_Params_Typed_Expression()
+        {
+            IColumn column = sql.Col<Person>("person", x => x.Id);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+        }
+
+        [Fact]
+        public void Two_Params_All_Typed_Expression()
+        {
+            IColumn column = sql.Col<Person>("person", x => x);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\"", result.Sql);
+        }
+
 
         [Fact]
         public void Without_Table_Name()
@@ -99,7 +163,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void All_Without_Table_Name()
+        public void Without_Table_Name_All()
         {
             IColumn column = sql.Col("*");
 

@@ -258,6 +258,17 @@ namespace Suilder.Test.Builder.Functions
         }
 
         [Fact]
+        public void Now()
+        {
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Now());
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("NOW()", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void NullIf()
         {
             Person person = null;

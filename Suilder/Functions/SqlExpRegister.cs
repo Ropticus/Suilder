@@ -14,10 +14,10 @@ namespace Suilder.Functions
         /// <param name="registerSystemFunctions">If true, register also system functions.</param>
         public static void Initialize(bool registerSystemFunctions = true)
         {
-            //Operators
+            // Operators
             RegisterOperators();
 
-            //Function method
+            // Function method
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Function), expression =>
             {
                 if (expression.Arguments.Count == 0)
@@ -44,10 +44,10 @@ namespace Suilder.Functions
                 return func;
             });
 
-            //Functions
+            // Functions
             RegisterFunctions();
 
-            //System functions
+            // System functions
             if (registerSystemFunctions)
                 RegisterSystemFunctions();
         }
@@ -97,7 +97,7 @@ namespace Suilder.Functions
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Some),
                 x => ExpressionHelper.SingleOperator(x, SqlBuilder.Instance.Some));
 
-            //Extensions
+            // Extensions
             ExpressionProcessor.AddFunction(typeof(SqlExtensions), nameof(SqlExtensions.Like),
                 x => ExpressionHelper.Operator(x, SqlBuilder.Instance.Like));
             ExpressionProcessor.AddFunction(typeof(SqlExtensions), nameof(SqlExtensions.NotLike),
@@ -143,6 +143,7 @@ namespace Suilder.Functions
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.LTrim));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Max));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Min));
+            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Now));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.NullIf));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Replace));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Round));

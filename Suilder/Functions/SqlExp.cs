@@ -206,6 +206,15 @@ namespace Suilder.Functions
         }
 
         /// <summary>
+        /// Return current date and time.
+        /// </summary>
+        /// <returns>The current date and time.</returns>
+        public static DateTime Now()
+        {
+            throw new InvalidOperationException("Only for expressions");
+        }
+
+        /// <summary>
         /// Returns null if the two values equal, otherwise it returns the first value.
         /// </summary>
         /// <param name="value1">First value.</param>

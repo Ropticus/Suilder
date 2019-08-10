@@ -1403,13 +1403,30 @@ namespace Suilder.Core
 
             if (InsertValues != null && InsertValues.Count > 0)
             {
-                queryBuilder.Write("VALUES ");
-                string separator = ", ";
-                foreach (IValList row in InsertValues)
+                if (InsertValues.Count > 1 && engine.Options.InsertWithUnion)
                 {
-                    queryBuilder.Write("(").WriteValue(row).Write(")").Write(separator);
+                    string separator = " UNION ALL ";
+                    foreach (IValList row in InsertValues)
+                    {
+                        queryBuilder.Write("SELECT ").WriteFragment(row);
+
+                        if (engine.Options.FromDummyName != null)
+                            queryBuilder.Write(" ").WriteFragment(SqlBuilder.Instance.FromDummy);
+
+                        queryBuilder.Write(separator);
+                    }
+                    queryBuilder.RemoveLast(separator.Length).Write(" ");
                 }
-                queryBuilder.RemoveLast(separator.Length).Write(" ");
+                else
+                {
+                    queryBuilder.Write("VALUES ");
+                    string separator = ", ";
+                    foreach (IValList row in InsertValues)
+                    {
+                        queryBuilder.Write("(").WriteFragment(row).Write(")").Write(separator);
+                    }
+                    queryBuilder.RemoveLast(separator.Length).Write(" ");
+                }
             }
         }
 

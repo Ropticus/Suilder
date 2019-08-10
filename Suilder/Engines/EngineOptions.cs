@@ -36,6 +36,13 @@ namespace Suilder.Engines
         public bool TableAs { get; set; } = true;
 
         /// <summary>
+        /// The name of a dummy table for engines that always need a "from" clause.
+        /// <para>Set to null for engines that do not need a dummy table.</para>
+        /// </summary>
+        /// <value>The name of a dummy table for engines that always need a "from" clause.</value>
+        public string FromDummyName { get; set; }
+
+        /// <summary>
         /// If the "with" clause needs the "recursive" keyword.
         /// </summary>
         /// <value>If the "with" clause needs the "recursive" keyword.</value>
@@ -82,6 +89,12 @@ namespace Suilder.Engines
         /// </summary>
         /// <value>If true, add the offset values as parameters.</value>
         public bool OffsetAsParameters { get; set; } = true;
+
+        /// <summary>
+        /// If the "insert" statement must use a "select union all" to insert multiple rows.
+        /// </summary>
+        /// <value>If the "insert" statement must use a "select union all" to insert multiple rows.</value>
+        public bool InsertWithUnion { get; set; }
 
         /// <summary>
         /// If the "update" statement must have a "from" clause.

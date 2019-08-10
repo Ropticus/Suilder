@@ -157,5 +157,27 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("FROM \"person\"", result.Sql);
         }
+
+        [Fact]
+        public void From_Dummy_Empty()
+        {
+            IQuery query = sql.Query.From(sql.FromDummy);
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("", result.Sql);
+        }
+
+        [Fact]
+        public void From_Dummy_Value()
+        {
+            engine.Options.FromDummyName = "DUAL";
+
+            IQuery query = sql.Query.From(sql.FromDummy);
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("FROM DUAL", result.Sql);
+        }
     }
 }

@@ -195,6 +195,19 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a column.
         /// </summary>
+        /// <param name="expression">The column.</param>
+        /// <typeparam name="T">The type of the table.</typeparam>
+        /// <returns>The column.</returns>
+        public virtual IColumn Col<T>(Expression<Func<T, object>> expression)
+        {
+            string tableName = typeof(T).Name;
+            tableName = char.ToLowerInvariant(tableName[0]) + tableName.Substring(1);
+            return ExpressionProcessor.ParseColumn<T>(tableName, expression);
+        }
+
+        /// <summary>
+        /// Creates a column.
+        /// </summary>
         /// <param name="tableName">The table name or his alias.</param>
         /// <param name="expression">The column.</param>
         /// <typeparam name="T">The type of the table.</typeparam>
@@ -935,7 +948,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Creates a "insert" statement.
+        /// Creates an "insert" statement.
         /// </summary>
         /// <returns>The "insert" statement.</returns>
         public virtual IInsert Insert()
@@ -944,7 +957,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Creates a "update" statement.
+        /// Creates an "update" statement.
         /// </summary>
         /// <value>The "update" statement.</value>
         public virtual IUpdate Update()
@@ -1036,6 +1049,14 @@ namespace Suilder.Builder
         {
             return new From(value, Alias<T>(alias));
         }
+
+        /// <summary>
+        /// Creates a "from" clause with a dummy table.
+        /// <para>If the engine does not need a dummy table, writes nothing.</para>
+        /// </summary>
+        /// <returns>The "from" clause.</returns>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public virtual IRawSql FromDummy => Suilder.Core.FromDummy.Instance;
 
         /// <summary>
         /// Creates an "inner join" clause.
@@ -1250,7 +1271,7 @@ namespace Suilder.Builder
 
         /// <summary>
         /// Creates a raw SQL query.
-        ///<para>The values can be any object even other <see cref="IQueryFragment"/>.</para>
+        /// <para>The values can be any object even other <see cref="IQueryFragment"/>.</para>
         /// <para>For escaped table and column names use a <see cref="IAlias"/> or a <see cref="IColumn"/> value.</para>
         /// </summary>
         /// <param name="sql">A composite string, each item takes the following form: {index}.</param>

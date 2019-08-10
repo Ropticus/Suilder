@@ -190,6 +190,15 @@ namespace Suilder.Functions
         }
 
         /// <summary>
+        /// Return current date and time.
+        /// </summary>
+        /// <returns>The function.</returns>
+        public static IFunction Now()
+        {
+            return SqlBuilder.Instance.Function(FunctionName.Now);
+        }
+
+        /// <summary>
         /// Returns null if the two values equal, otherwise it returns the first value.
         /// </summary>
         /// <param name="value1">First value.</param>

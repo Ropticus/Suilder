@@ -42,6 +42,8 @@ namespace Suilder.Engines
             options.OffsetStyle = OffsetStyle.Offset;
 
             options.TableAs = false;
+            options.FromDummyName = "DUAL";
+            options.InsertWithUnion = true;
 
             return options;
         }

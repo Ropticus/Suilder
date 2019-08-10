@@ -243,7 +243,7 @@ namespace Suilder.Test.Builder.Query
             IQuery query = sql.Query;
             QueryResult result = null;
 
-            //Select
+            // Select
             query.Select(person.All)
                 .From(person)
                 .Where(person["Id"].Eq(1));
@@ -253,7 +253,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("SELECT \"person\".* FROM \"person\" WHERE \"person\".\"Id\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1 }, result.Parameters);
 
-            //Update
+            // Update
             query.Update()
                 .Set(person["Name"], "Name1");
 
@@ -262,7 +262,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0 WHERE \"person\".\"Id\" = @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "Name1", ["@p1"] = 1 }, result.Parameters);
 
-            //Delete
+            // Delete
             query = query.Delete();
 
             result = engine.Compile(query);
@@ -270,7 +270,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("DELETE FROM \"person\" WHERE \"person\".\"Id\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1 }, result.Parameters);
 
-            //Select
+            // Select
             query.Select(person["Name"]);
 
             result = engine.Compile(query);
@@ -278,7 +278,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("SELECT \"person\".\"Name\" FROM \"person\" WHERE \"person\".\"Id\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1 }, result.Parameters);
 
-            //Insert select
+            // Insert select
             query = query.Insert(x => x.Into(person).Add(person["Name"]));
 
             result = engine.Compile(query);
@@ -287,7 +287,7 @@ namespace Suilder.Test.Builder.Query
                 + "SELECT \"person\".\"Name\" FROM \"person\" WHERE \"person\".\"Id\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1 }, result.Parameters);
 
-            //Insert
+            // Insert
             query = query.Insert(person)
                 .Values(1, "Name1");
 
@@ -296,7 +296,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("INSERT INTO \"person\" VALUES (@p0, @p1)", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = "Name1" }, result.Parameters);
 
-            //Update
+            // Update
             query.Update()
                 .Set(person["Name"], "Name1")
                 .From(person)

@@ -9,7 +9,7 @@ namespace Suilder.Test.Reflection
     {
         protected override void Configure()
         {
-            //This config must be overridden
+            // This config must be overridden
             tableBuilder
                 .PrimaryKey(x => "Active")
                 .TableName(x => "prefix_" + x.Name);

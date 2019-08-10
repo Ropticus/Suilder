@@ -42,7 +42,7 @@ namespace Suilder.Builder
             }
             if (expression.Arguments.Count > 0)
             {
-                //Last parameter is params argument
+                // Last parameter is params argument
                 NewArrayExpression expParams = expression.Arguments[expression.Arguments.Count - 1] as NewArrayExpression;
                 if (expParams != null)
                 {

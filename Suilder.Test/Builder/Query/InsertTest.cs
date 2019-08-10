@@ -80,7 +80,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Insert_Values()
+        public void Values()
         {
             Person person = null;
             IQuery query = sql.Query.Insert(x => x.Into(() => person)
@@ -94,7 +94,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Insert_Values_Multiple()
+        public void Values_Multiple()
         {
             Person person = null;
             IQuery query = sql.Query.Insert(x => x.Into(() => person)
@@ -119,7 +119,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Insert_Values_List()
+        public void Values_List()
         {
             Person person = null;
             IQuery query = sql.Query.Insert(x => x.Into(() => person)
@@ -130,6 +130,77 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\") VALUES (@p0, @p1)", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "Name1", ["@p1"] = "SurName1" }, result.Parameters);
+        }
+
+        [Fact]
+        public void Values_Union()
+        {
+            engine.Options.InsertWithUnion = true;
+
+            Person person = null;
+            IQuery query = sql.Query.Insert(x => x.Into(() => person)
+                .Add(() => person.Name, () => person.SurName))
+                .Values("Name1", "SurName1");
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\") VALUES (@p0, @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "Name1", ["@p1"] = "SurName1" }, result.Parameters);
+        }
+
+        [Fact]
+        public void Values_Multiple_Union()
+        {
+            engine.Options.InsertWithUnion = true;
+
+            Person person = null;
+            IQuery query = sql.Query.Insert(x => x.Into(() => person)
+                .Add(() => person.Name, () => person.SurName))
+                .Values("Name1", "SurName1")
+                .Values("Name2", "SurName2")
+                .Values("Name3", "SurName3");
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\") SELECT @p0, @p1 UNION ALL "
+                + "SELECT @p2, @p3 UNION ALL SELECT @p4, @p5", result.Sql);
+            Assert.Equal(new Dictionary<string, object>()
+            {
+                ["@p0"] = "Name1",
+                ["@p1"] = "SurName1",
+                ["@p2"] = "Name2",
+                ["@p3"] = "SurName2",
+                ["@p4"] = "Name3",
+                ["@p5"] = "SurName3",
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Values_Multiple_Union_Dummy()
+        {
+            engine.Options.InsertWithUnion = true;
+            engine.Options.FromDummyName = "DUAL";
+
+            Person person = null;
+            IQuery query = sql.Query.Insert(x => x.Into(() => person)
+                .Add(() => person.Name, () => person.SurName))
+                .Values("Name1", "SurName1")
+                .Values("Name2", "SurName2")
+                .Values("Name3", "SurName3");
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\") SELECT @p0, @p1 FROM DUAL UNION ALL "
+                + "SELECT @p2, @p3 FROM DUAL UNION ALL SELECT @p4, @p5 FROM DUAL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>()
+            {
+                ["@p0"] = "Name1",
+                ["@p1"] = "SurName1",
+                ["@p2"] = "Name2",
+                ["@p3"] = "SurName2",
+                ["@p4"] = "Name3",
+                ["@p5"] = "SurName3",
+            }, result.Parameters);
         }
 
         [Fact]

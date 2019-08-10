@@ -156,7 +156,7 @@ namespace Suilder.Reflection
             {
                 foreach (ConfigData config in level)
                 {
-                    //Get parent config
+                    // Get parent config
                     TableInfo parentInfo = null;
                     Type parentType = config.Type.BaseType;
                     if (parentType != null && parentType != typeof(object))
@@ -167,7 +167,7 @@ namespace Suilder.Reflection
                     TableInfo tableInfo = new TableInfo();
                     tableInfo.Type = config.Type;
 
-                    //Get IsTable
+                    // Get IsTable
                     TableAttribute tableAttr = config.Type.GetCustomAttribute<TableAttribute>();
                     if (!config.IsTable.HasValue)
                     {
@@ -177,11 +177,11 @@ namespace Suilder.Reflection
                             config.IsTable = !config.Type.IsAbstract;
                     }
 
-                    //Get InheritTable
+                    // Get InheritTable
                     if (!config.InheritTable.HasValue && tableAttr != null)
                         config.InheritTable = tableAttr.InheritTable;
 
-                    //Get InheritColumns
+                    // Get InheritColumns
                     if (config.InheritTable == true)
                     {
                         config.InheritColumns = true;
@@ -200,7 +200,7 @@ namespace Suilder.Reflection
                             $"The type \"{config.Type}\" does not have a base type to inherit");
                     }
 
-                    //Get table name
+                    // Get table name
                     if (config.InheritTable == true)
                     {
                         tableInfo.TableName = parentInfo.TableName;
@@ -213,7 +213,7 @@ namespace Suilder.Reflection
                             tableInfo.TableName = config.TableName;
                     }
 
-                    //Get primary keys
+                    // Get primary keys
                     List<string> primaryKeys = new List<string>();
                     if (config.PrimaryKeys.Count == 0)
                     {
@@ -248,7 +248,7 @@ namespace Suilder.Reflection
                         }
                     }
 
-                    //Get ignore
+                    // Get ignore
                     config.Ignore.AddRange(config.Properties.Where(x => x.GetCustomAttribute<IgnoreAttribute>() != null)
                         .Select(x => x.Name));
                     config.Ignore = config.Ignore.Distinct().ToList();
@@ -261,7 +261,7 @@ namespace Suilder.Reflection
             {
                 foreach (ConfigData config in level)
                 {
-                    //Get parent config
+                    // Get parent config
                     TableInfo parentInfo = null;
                     Type parentType = config.Type.BaseType;
                     if (parentType != null && parentType != typeof(object))
@@ -272,7 +272,7 @@ namespace Suilder.Reflection
                     TableInfo tableInfo = tables[config.Type.FullName];
                     tableInfo.Type = config.Type;
 
-                    //Get columns
+                    // Get columns
                     foreach (PropertyInfo property in config.Properties)
                     {
                         if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType)
@@ -387,7 +387,7 @@ namespace Suilder.Reflection
                     tableInfo.Columns = tableInfo.PrimaryKeys.Union(columns).Distinct()
                         .Where(x => !config.Ignore.Contains(x)).ToArray();
 
-                    //Get column names
+                    // Get column names
                     IDictionary<string, string> columnsNames = new Dictionary<string, string>();
                     if (parentInfo != null)
                     {
@@ -407,7 +407,7 @@ namespace Suilder.Reflection
             foreach (TableInfo tableInfo in tables.Where(x => Config[x.Key].IsTable == true).Select(x => x.Value))
             {
                 Tables.Add(tableInfo);
-                //Register in ExpressionProcessor
+                // Register in ExpressionProcessor
                 ExpressionProcessor.AddTable(tableInfo.Type);
             }
 
