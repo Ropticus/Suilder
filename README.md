@@ -1,4 +1,7 @@
 # Suilder - SQL query builder
+[![Documentation Status](https://readthedocs.org/projects/suilder/badge/?version=latest)](https://suilder.readthedocs.io/en/latest/?badge=latest)
+[![GitHub release](https://img.shields.io/github/release/Ropticus/Suilder)](https://github.com/Ropticus/Suilder/releases/latest)
+
 Suilder is a SQL query builder for .NET.
 
 Suilder is focused on the use of [**alias objects**](#alias-objects) to reference tables and column names, there are different types of alias, that can use strings or lambda expressions, and support translation of names. The queries are built by combining smaller query fragments, allowing us to build dynamic queries easily.
@@ -10,7 +13,7 @@ This library is only a query builder, so you have to combine with any other libr
 Package | Nuget | Download (full) |
 --------|-------|----------|
 Suilder | [![Nuget](https://img.shields.io/nuget/v/Suilder?logo=nuget)](https://www.nuget.org/packages/Suilder/) | [![GitHub release](https://img.shields.io/github/release/Ropticus/Suilder?logo=github)](https://github.com/Ropticus/Suilder/releases/latest) |
-Suilder.Engines | [![Nuget](https://img.shields.io/nuget/v/Suilder.Engines?logo=nuget)](https://www.nuget.org/packages/Suilder.Engines/) | |
+Suilder.Engines | [![Nuget](https://img.shields.io/nuget/v/Suilder.Engines?logo=nuget)](https://www.nuget.org/packages/Suilder.Engines/) | Use full release. |
 
 ## Starting
 At the start of your application:
@@ -49,8 +52,12 @@ IColumn col1 = person["Name"];
 IColumn col2 = dept[x => x.Name];
 
 // Get all columns
-IColumn colAll1 = person.All; // person["*"]; It works too
-IColumn colAll2 = dept.All; // dept[x => x]; It works too
+IColumn colAll1 = person.All;
+IColumn colAll2 = dept.All;
+
+// It works too
+IColumn colAll3 = person["*"];
+IColumn colAll4 = dept[x => x];
 
 // Operator
 IOperator op = dept[x => x.Id].Eq(person["DepartmentId"]);
@@ -68,7 +75,7 @@ IJoin join = sql.Join(dept).On(op);
 ### Lambda expressions
 Lambda expressions are compiled to an `IQueryFragment`. When you use your **entity classes** in an expression, they are compiled to an `IAlias<T>` or an `IColumn`.
 
-Any member of a class that is not registered as a table, is invoked and the result is added as a parameter value. Functions are also executed, if you want to compile a function to SQL, you can [register your functions](https://ropticus.github.io/Suilder-docs/functions#register-functions).
+Any member of a class that is not registered as a table, is invoked and the result is added as a parameter value. Functions are also executed, if you want to compile a function to SQL, you can [register your functions](https://suilder.readthedocs.io/en/latest/general/builder/#expressionprocessor).
 
 The following methods of the builder allow you to compile a lambda expression:
 * **Alias**: compile to an alias instance (`IAlias<T>`).
@@ -136,7 +143,7 @@ IJoin join = sql.Join("department", "dept");
 ```
 
 ### Compile the query
-To compile the query you need an [engine](https://ropticus.github.io/Suilder-docs/engines) and call his **Compile** method:
+To compile the query you need an [engine](https://suilder.readthedocs.io/en/latest/configuration/engines/) and call his **Compile** method:
 ```csharp
 // Create your query
 IAlias person = sql.Alias("person");
@@ -148,11 +155,13 @@ IQueryFragment query = sql.Query
 // Compile the query using the engine
 QueryResult result = engine.Compile(query);
 
-// This is the SQL result
-result.Sql; // SELECT "person".* FROM "person" WHERE "person"."Id" = @p0
+// This is the SQL result:
+// SELECT "person".* FROM "person" WHERE "person"."Id" = @p0
+result.Sql;
 
-// This is a dictionary with the parameters
-result.Parameters; // { ["@p0"] = 1 }
+// This is a dictionary with the parameters:
+// { ["@p0"] = 1 }
+result.Parameters;
 ```
 
 ## Supported engines
@@ -166,7 +175,7 @@ PostgreSQL | PostgreSQL | By default it uses quoted lowercase names. |
 SQLite | SQLite | |
 SQL Server | SQLServer | |
 
-If your SQL engine is not in the list, it does not mean that you cannot use Suilder with them, but you have to [configure your engine](https://ropticus.github.io/Suilder-docs/engines#engine-configuration).
+If your SQL engine is not in the list, it does not mean that you cannot use Suilder with them, but you have to [configure your engine](https://suilder.readthedocs.io/en/latest/configuration/engines/#engine-configuration).
 
 ## Examples
 ```csharp
@@ -225,4 +234,4 @@ IQuery query = sql.Query
 ```
 
 ## Documentation
-For more information read the [documentation](https://ropticus.github.io/Suilder-docs).
+For more information read the [documentation](https://suilder.readthedocs.io).
