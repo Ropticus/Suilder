@@ -12,7 +12,7 @@
     <Authors>Víctor Diez</Authors>
     <Description>Suilder is a SQL query builder for .NET.
 
-Suilder is focused on the use of alias objects to reference tables and column names, there are different types of alias, that can use strings or lambda expressions, and support translation of names. The queries are built by combining smaller query fragments, allowing us to build dynamic queries easily.
+It is focused on the use of alias objects to reference tables and column names, there are different types of alias, that can use strings or lambda expressions, and support translation of names. The queries are built by combining smaller query fragments, allowing us to build dynamic queries easily.
 
 This library is only a query builder, so you have to combine with any other library to execute the queries and mapping the result.</Description>
     <Copyright>Copyright (c) 2019 Víctor Diez</Copyright>

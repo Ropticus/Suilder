@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Alias
 {
-    public class ColumnAliasClassTest : BaseTest
+    public class ClassAliasColumnTest : BaseTest
     {
         [Fact]
         public void Expression()

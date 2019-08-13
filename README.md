@@ -4,7 +4,7 @@
 
 Suilder is a SQL query builder for .NET.
 
-Suilder is focused on the use of [**alias objects**](#alias-objects) to reference tables and column names, there are different types of alias, that can use strings or lambda expressions, and support translation of names. The queries are built by combining smaller query fragments, allowing us to build dynamic queries easily.
+It is focused on the use of [**alias objects**](#alias-objects) to reference tables and column names, there are different types of alias, that can use strings or lambda expressions, and support translation of names. The queries are built by combining smaller query fragments, allowing us to build dynamic queries easily.
 
 This library is only a query builder, so you have to combine with any other library to execute the queries and mapping the result.
 
@@ -78,6 +78,7 @@ Lambda expressions are compiled to an `IQueryFragment`. When you use your **enti
 Any member of a class that is not registered as a table, is invoked and the result is added as a parameter value. Functions are also executed, if you want to compile a function to SQL, you can [register your functions](https://suilder.readthedocs.io/en/latest/general/builder/#expressionprocessor).
 
 The following methods of the builder allow you to compile a lambda expression:
+
 * **Alias**: compile to an alias instance (`IAlias<T>`).
 * **Col**: compile to a column instance (`IColumn`).
 * **Val**: compile to a value, anything that returns a value like a column (`IColumn`), a function, or an arithmetic operator.
