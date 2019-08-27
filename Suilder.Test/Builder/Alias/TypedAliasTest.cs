@@ -5,10 +5,10 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Alias
 {
-    public class TypedAliasTest : BaseTest
+    public class TypedAliasTest : BuilderBaseTest
     {
         [Fact]
-        public void Default_Alias()
+        public void Default_Alias_Name()
         {
             IAlias<Person> alias = sql.Alias<Person>();
 
@@ -18,7 +18,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Default_Alias_Translation()
+        public void Default_Alias_Name_Translation()
         {
             IAlias<Department> alias = sql.Alias<Department>();
 
@@ -28,7 +28,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void With_Alias()
+        public void With_Alias_Name()
         {
             IAlias<Person> alias = sql.Alias<Person>("per");
 
@@ -38,13 +38,29 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void With_Alias_Translation()
+        public void With_Alias_Name_With_Translation()
         {
             IAlias<Department> alias = sql.Alias<Department>("dept");
 
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Dept\"", result.Sql);
+        }
+
+        [Fact]
+        public void AliasOrTableName_Default_Alias_Name()
+        {
+            IAlias<Person> alias = sql.Alias<Person>();
+
+            Assert.Equal("person", alias.AliasOrTableName);
+        }
+
+        [Fact]
+        public void AliasOrTableName_Property_With_Alias_Name()
+        {
+            IAlias<Person> alias = sql.Alias<Person>("per");
+
+            Assert.Equal("per", alias.AliasOrTableName);
         }
 
         [Fact]

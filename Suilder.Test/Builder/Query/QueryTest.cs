@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Query
 {
-    public class QueryTest : BaseTest
+    public class QueryTest : BuilderBaseTest
     {
         [Fact]
         public void Select_From()
@@ -35,7 +35,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("SELECT \"person\".* FROM \"person\" WHERE \"person\".\"Active\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = true }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true
+            }, result.Parameters);
         }
 
         [Fact]
@@ -55,7 +58,10 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("SELECT \"person\".*, \"dept\".* FROM \"person\" INNER JOIN \"dept\" "
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" WHERE \"person\".\"Active\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = true }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true
+            }, result.Parameters);
         }
 
         [Fact]
@@ -77,7 +83,10 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("SELECT \"person\".*, \"dept\".* FROM \"person\" INNER JOIN \"dept\" "
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" WHERE \"person\".\"Active\" = @p0 "
                 + "ORDER BY \"person\".\"Name\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = true }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true
+            }, result.Parameters);
         }
 
         [Fact]
@@ -100,8 +109,12 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("SELECT \"person\".*, \"dept\".* FROM \"person\" INNER JOIN \"dept\" "
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" WHERE \"person\".\"Active\" = @p0 "
                 + "ORDER BY \"person\".\"Name\" OFFSET @p1 ROWS FETCH NEXT @p2 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = true, ["@p1"] = 10, ["@p2"] = 20 },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true,
+                ["@p1"] = 10,
+                ["@p2"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -126,8 +139,12 @@ namespace Suilder.Test.Builder.Query
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" WHERE \"person\".\"Active\" = @p0 "
                 + "GROUP BY \"dept\".\"Id\", \"dept\".\"Name\" ORDER BY \"dept\".\"Name\" OFFSET @p1 ROWS FETCH NEXT @p2 "
                 + "ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = true, ["@p1"] = 10, ["@p2"] = 20 },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true,
+                ["@p1"] = 10,
+                ["@p2"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -153,8 +170,13 @@ namespace Suilder.Test.Builder.Query
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" WHERE \"person\".\"Active\" = @p0 "
                 + "GROUP BY \"dept\".\"Id\", \"dept\".\"Name\" HAVING COUNT(*) > @p1 ORDER BY \"dept\".\"Name\" "
                 + "OFFSET @p2 ROWS FETCH NEXT @p3 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = true, ["@p1"] = 10, ["@p2"] = 10, ["@p3"] = 20 },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true,
+                ["@p1"] = 10,
+                ["@p2"] = 10,
+                ["@p3"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -180,7 +202,10 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("WITH \"cte\" AS (SELECT \"person\".* FROM \"person\" WHERE \"person\".\"Active\" = @p0) "
                 + "SELECT \"personCte\".*, \"dept\".* FROM \"cte\" AS \"personCte\" INNER JOIN \"dept\" "
                 + "ON \"dept\".\"Id\" = \"personCte\".\"DepartmentId\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = true }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true
+            }, result.Parameters);
         }
 
         [Fact]
@@ -203,7 +228,10 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("SELECT COUNT(*) FROM \"person\" INNER JOIN \"dept\" "
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" WHERE \"person\".\"Active\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = true }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true
+            }, result.Parameters);
         }
 
         [Fact]
@@ -251,7 +279,10 @@ namespace Suilder.Test.Builder.Query
             result = engine.Compile(query);
 
             Assert.Equal("SELECT \"person\".* FROM \"person\" WHERE \"person\".\"Id\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
 
             // Update
             query.Update()
@@ -260,7 +291,11 @@ namespace Suilder.Test.Builder.Query
             result = engine.Compile(query);
 
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0 WHERE \"person\".\"Id\" = @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "Name1", ["@p1"] = 1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "Name1",
+                ["@p1"] = 1
+            }, result.Parameters);
 
             // Delete
             query = query.Delete();
@@ -268,7 +303,10 @@ namespace Suilder.Test.Builder.Query
             result = engine.Compile(query);
 
             Assert.Equal("DELETE FROM \"person\" WHERE \"person\".\"Id\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
 
             // Select
             query.Select(person["Name"]);
@@ -276,7 +314,10 @@ namespace Suilder.Test.Builder.Query
             result = engine.Compile(query);
 
             Assert.Equal("SELECT \"person\".\"Name\" FROM \"person\" WHERE \"person\".\"Id\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
 
             // Insert select
             query = query.Insert(x => x.Into(person).Add(person["Name"]));
@@ -285,7 +326,10 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("INSERT INTO \"person\" (\"Name\") "
                 + "SELECT \"person\".\"Name\" FROM \"person\" WHERE \"person\".\"Id\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
 
             // Insert
             query = query.Insert(person)
@@ -294,7 +338,11 @@ namespace Suilder.Test.Builder.Query
             result = engine.Compile(query);
 
             Assert.Equal("INSERT INTO \"person\" VALUES (@p0, @p1)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = "Name1" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = "Name1"
+            }, result.Parameters);
 
             // Update
             query.Update()
@@ -305,7 +353,11 @@ namespace Suilder.Test.Builder.Query
             result = engine.Compile(query);
 
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0 WHERE \"person\".\"Id\" = @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "Name1", ["@p1"] = 1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "Name1",
+                ["@p1"] = 1
+            }, result.Parameters);
         }
 
         [Fact]
@@ -329,6 +381,31 @@ namespace Suilder.Test.Builder.Query
                 + "ON dept.Id = person.DepartmentId WHERE person.Active = true "
                 + "GROUP BY dept.Id, dept.Name HAVING COUNT(*) > 10 ORDER BY dept.Name "
                 + "OFFSET 10 FETCH 20", query.ToString());
+        }
+
+        [Fact]
+        public void To_String_Insert()
+        {
+            IAlias person = sql.Alias("person");
+
+            IQuery query = sql.Query.Insert(x => x.Into(person)
+                .Add(person["Name"], person["SurName"]))
+                .Values("Name1", "SurName1");
+
+            Assert.Equal("INSERT INTO person (person.Name, person.SurName) VALUES (\"Name1\", \"SurName1\")",
+                query.ToString());
+        }
+
+        [Fact]
+        public void To_String_Update()
+        {
+            IAlias person = sql.Alias("person");
+
+            IQuery query = sql.Query.Update()
+                .Set("person.Name", "SomeName")
+                .From(person);
+
+            Assert.Equal("UPDATE SET person.Name = \"SomeName\" FROM person", query.ToString());
         }
     }
 }

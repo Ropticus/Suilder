@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
 namespace Suilder.Test.Builder
 {
-    public class InsertTest : BaseTest
+    public class InsertTest : BuilderBaseTest
     {
         [Fact]
         public void Insert_String()
@@ -73,7 +74,7 @@ namespace Suilder.Test.Builder
         public void Add_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IInsert insert = sql.Insert().Into(person).Add(new List<IColumn>() { person["Name"], person["SurName"] });
+            IInsert insert = sql.Insert().Into(person).Add(new List<IColumn> { person["Name"], person["SurName"] });
 
             QueryResult result = engine.Compile(insert);
 
@@ -111,13 +112,22 @@ namespace Suilder.Test.Builder
         public void Add_Expression_Enumerable()
         {
             Person person = null;
-            IInsert insert = sql.Insert().Into(() => person).Add(new List<Expression<Func<object>>>() { () => person.Name,
+            IInsert insert = sql.Insert().Into(() => person).Add(new List<Expression<Func<object>>> { () => person.Name,
                 () => person.SurName });
 
             QueryResult result = engine.Compile(insert);
 
             Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Into_Null()
+        {
+            IInsert insert = sql.Insert();
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(insert));
+            Assert.Equal("Into value is null.", ex.Message);
         }
 
         [Fact]

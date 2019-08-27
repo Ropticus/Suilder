@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
@@ -8,10 +9,10 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Operators
 {
-    public class InTest : BaseTest
+    public class InTest : BuilderBaseTest
     {
         [Fact]
-        public void Builder()
+        public void Builder_Object()
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.In(person["Id"], new int[] { 1, 2, 3 });
@@ -19,11 +20,16 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" IN (@p0, @p1, @p2)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2, ["@p2"] = 3 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2,
+                ["@p2"] = 3
+            }, result.Parameters);
         }
 
         [Fact]
-        public void Builder_With_Null()
+        public void Builder_Object_Right_Null()
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.In(person["Name"], null);
@@ -31,7 +37,7 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -43,11 +49,16 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" IN (@p0, @p1, @p2)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2, ["@p2"] = 3 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2,
+                ["@p2"] = 3
+            }, result.Parameters);
         }
 
         [Fact]
-        public void Builder_Expression_With_Null()
+        public void Builder_Expression_Right_Null()
         {
             Person person = null;
             IOperator op = sql.In(() => person.Name, null);
@@ -55,7 +66,7 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -72,7 +83,7 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Builder_Two_Expressions_With_Null()
+        public void Builder_Two_Expressions_Right_Null()
         {
             Person person = null;
             IOperator op = sql.In(() => person.Name, () => null);
@@ -80,12 +91,12 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
 
         [Fact]
-        public void Extension()
+        public void Extension_Object()
         {
             IAlias person = sql.Alias("person");
             IOperator op = person["Id"].In(new int[] { 1, 2, 3 });
@@ -93,11 +104,16 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" IN (@p0, @p1, @p2)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2, ["@p2"] = 3 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2,
+                ["@p2"] = 3
+            }, result.Parameters);
         }
 
         [Fact]
-        public void Extension_With_Null()
+        public void Extension_Object_Null()
         {
             IAlias person = sql.Alias("person");
             IOperator op = person["Name"].In(null);
@@ -105,7 +121,7 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -122,7 +138,7 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Extension_Expression_With_Null()
+        public void Extension_Expression_Null()
         {
             IAlias person = sql.Alias("person");
             IOperator op = person["Name"].In(() => null);
@@ -130,7 +146,7 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -142,7 +158,12 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" IN (@p0, @p1, @p2)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2, ["@p2"] = 3 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2,
+                ["@p2"] = 3
+            }, result.Parameters);
         }
 
         [Fact]
@@ -154,7 +175,12 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" IN (@p0, @p1, @p2)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2, ["@p2"] = 3 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2,
+                ["@p2"] = 3
+            }, result.Parameters);
         }
 
         [Fact]
@@ -166,7 +192,25 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Invalid_Call()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<InvalidOperationException>(() => person.Id.In(new int[] { 1, 2, 3 }));
+            Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Fact]
+        public void Expression_Method_Invalid_Call()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.In(person.Id, new int[] { 1, 2, 3 }));
+            Assert.Equal("Only for expressions.", ex.Message);
         }
 
         [Fact]

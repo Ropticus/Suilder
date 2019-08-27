@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Query
 {
-    public class OffsetTest : BaseTest
+    public class OffsetTest : BuilderBaseTest
     {
         [Fact]
         public void Offset()
@@ -15,7 +15,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("OFFSET @p0 ROWS", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -26,7 +29,11 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -37,7 +44,11 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 0, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 0,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -48,7 +59,11 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -59,7 +74,11 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -70,7 +89,11 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -81,7 +104,11 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
     }
 }

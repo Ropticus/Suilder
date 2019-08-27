@@ -38,7 +38,7 @@ namespace Suilder.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="RawQuery"/> class.
         /// <para>The values can be any object even other <see cref="IQueryFragment"/>.</para>
-        /// <para>For escaped table and column names use a <see cref="IAlias"/> or a <see cref="IColumn"/> value.</para>
+        /// <para>For escaped table and column names use an <see cref="IAlias"/> or an <see cref="IColumn"/> value.</para>
         /// </summary>
         /// <param name="sql">A composite string, each item takes the following form: {index}.</param>
         /// <param name="values">An object array that contains zero or more objects to add to the raw SQL.</param>

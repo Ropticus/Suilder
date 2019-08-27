@@ -4,7 +4,7 @@ namespace Suilder.Reflection
     /// Sets the primary key.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Field | System.AttributeTargets.Property)]
-    public class PrimaryKeyAttribute : System.Attribute
+    public sealed class PrimaryKeyAttribute : System.Attribute
     {
         /// <summary>
         /// The order of the primary key for composite keys.

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Raw
 {
-    public class RawQueryTest : BaseTest
+    public class RawQueryTest : BuilderBaseTest
     {
         [Fact]
         public void Raw()
@@ -19,6 +19,21 @@ namespace Suilder.Test.Builder.Raw
         }
 
         [Fact]
+        public void Raw_Format()
+        {
+            IAlias person = sql.Alias("person");
+            IRawQuery rawQuery = sql.RawQuery("SELECT {0}, {1} FROM {2}", person["Name"], "Some text", person);
+
+            QueryResult result = engine.Compile(rawQuery);
+
+            Assert.Equal("SELECT \"person\".\"Name\", @p0 FROM \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "Some text"
+            }, result.Parameters);
+        }
+
+        [Fact]
         public void Offset()
         {
             IRawQuery rawQuery = sql.RawQuery("SELECT * FROM person").Offset(10);
@@ -26,7 +41,10 @@ namespace Suilder.Test.Builder.Raw
             QueryResult result = engine.Compile(rawQuery);
 
             Assert.Equal("SELECT * FROM person OFFSET @p0 ROWS", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -37,7 +55,11 @@ namespace Suilder.Test.Builder.Raw
             QueryResult result = engine.Compile(rawQuery);
 
             Assert.Equal("SELECT * FROM person OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -48,7 +70,11 @@ namespace Suilder.Test.Builder.Raw
             QueryResult result = engine.Compile(rawQuery);
 
             Assert.Equal("SELECT * FROM person OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 0, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 0,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -59,7 +85,11 @@ namespace Suilder.Test.Builder.Raw
             QueryResult result = engine.Compile(rawQuery);
 
             Assert.Equal("SELECT * FROM person OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -70,7 +100,11 @@ namespace Suilder.Test.Builder.Raw
             QueryResult result = engine.Compile(rawQuery);
 
             Assert.Equal("SELECT * FROM person OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -81,7 +115,11 @@ namespace Suilder.Test.Builder.Raw
             QueryResult result = engine.Compile(rawQuery);
 
             Assert.Equal("SELECT * FROM person OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -93,7 +131,11 @@ namespace Suilder.Test.Builder.Raw
             QueryResult result = engine.Compile(rawQuery);
 
             Assert.Equal("SELECT * FROM person OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10, ["@p1"] = 20 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]

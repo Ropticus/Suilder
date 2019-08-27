@@ -17,7 +17,7 @@ namespace Suilder.Core
         /// <summary>
         /// If the column is a select all.
         /// </summary>
-        /// <value>True if the column is a select all.</value>
+        /// <value><see langword="true"/> if the column is a select all, otherwise, <see langword="false"/>.</value>
         bool SelectAll { get; }
 
         /// <summary>

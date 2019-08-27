@@ -1,25 +1,19 @@
-using System.Linq;
-using Suilder.Reflection;
+using Suilder.Reflection.Builder;
 
 namespace Suilder.Test.Reflection
 {
-    public abstract class BaseTest
+    public class BaseTest
     {
-        protected TableBuilder tableBuilder;
+        protected ITableBuilder tableBuilder;
 
         public BaseTest()
         {
             tableBuilder = new TableBuilder();
-            Configure();
+            InitConfig();
         }
 
-        protected virtual void Configure()
+        protected virtual void InitConfig()
         {
-        }
-
-        protected TableInfo GetConfig<T>()
-        {
-            return tableBuilder.GetConfig().Where(x => x.Type == typeof(T)).First();
         }
     }
 }

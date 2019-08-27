@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder
 {
-    public class DeleteTest : BaseTest
+    public class DeleteTest : BuilderBaseTest
     {
         [Fact]
         public void Delete()
@@ -29,7 +29,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(delete);
 
             Assert.Equal("DELETE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -40,7 +43,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(delete);
 
             Assert.Equal("DELETE TOP(@p0) PERCENT", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -51,7 +57,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(delete);
 
             Assert.Equal("DELETE TOP(@p0) WITH TIES", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -62,7 +71,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(delete);
 
             Assert.Equal("DELETE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -73,7 +85,28 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(delete);
 
             Assert.Equal("DELETE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Invalid_Top_Percent()
+        {
+            IDelete delete = sql.Delete().Top(sql.Raw("TOP({0})", 10));
+
+            Exception ex = Assert.Throws<InvalidOperationException>(() => ((IDeleteTop)delete).Percent());
+            Assert.Equal("Top value must be a \"Suilder.Core.ITop\" instance.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Top_WithTies()
+        {
+            IDelete delete = sql.Delete().Top(sql.Raw("TOP({0})", 10));
+
+            Exception ex = Assert.Throws<InvalidOperationException>(() => ((IDeleteTop)delete).WithTies());
+            Assert.Equal("Top value must be a \"Suilder.Core.ITop\" instance.", ex.Message);
         }
 
         [Fact]
@@ -109,7 +142,7 @@ namespace Suilder.Test.Builder
         {
             IAlias person = sql.Alias("person");
             IAlias dept = sql.Alias("dept");
-            IDelete delete = sql.Delete().Add(new List<IAlias>() { person, dept });
+            IDelete delete = sql.Delete().Add(new List<IAlias> { person, dept });
 
             QueryResult result = engine.Compile(delete);
 
@@ -150,7 +183,7 @@ namespace Suilder.Test.Builder
         {
             Person person = null;
             Department dept = null;
-            IDelete delete = sql.Delete().Add(new List<Expression<Func<object>>>() { () => person, () => dept });
+            IDelete delete = sql.Delete().Add(new List<Expression<Func<object>>> { () => person, () => dept });
 
             QueryResult result = engine.Compile(delete);
 
@@ -164,6 +197,18 @@ namespace Suilder.Test.Builder
             IDelete delete = sql.Delete().Top(10);
 
             Assert.Equal("DELETE TOP(10)", delete.ToString());
+        }
+
+        [Fact]
+        public void To_String_With_Values()
+        {
+            IAlias person = sql.Alias("person");
+            IAlias dept = sql.Alias("dept");
+            IDelete delete = sql.Delete()
+                .Add(person)
+                .Add(dept);
+
+            Assert.Equal("DELETE person, dept", delete.ToString());
         }
     }
 }

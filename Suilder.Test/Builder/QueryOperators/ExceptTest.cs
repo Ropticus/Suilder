@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
@@ -6,7 +7,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.QueryOperators
 {
-    public class ExceptTest : BaseTest
+    public class ExceptTest : BuilderBaseTest
     {
         [Fact]
         public void Builder()
@@ -22,6 +23,30 @@ namespace Suilder.Test.Builder.QueryOperators
             Assert.Equal("SELECT \"person\".\"Name\" FROM \"Person\" AS \"person\" "
                 + "EXCEPT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Builder_Left_Null()
+        {
+            Person person = null;
+
+            Exception ex = Assert.Throws<ArgumentNullException>(() =>
+            {
+                sql.Except(null, sql.Query.Select(() => person.Name).From(() => person));
+            });
+            Assert.Equal($"Left value is null.{Environment.NewLine}Parameter name: left", ex.Message);
+        }
+
+        [Fact]
+        public void Builder_Right_Null()
+        {
+            Person person = null;
+
+            Exception ex = Assert.Throws<ArgumentNullException>(() =>
+            {
+                sql.Except(sql.Query.Select(() => person.Name).From(() => person), null);
+            });
+            Assert.Equal($"Right value is null.{Environment.NewLine}Parameter name: right", ex.Message);
         }
 
         [Fact]

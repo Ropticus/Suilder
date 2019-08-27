@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
@@ -5,7 +6,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder
 {
-    public class UpdateTest : BaseTest
+    public class UpdateTest : BuilderBaseTest
     {
         [Fact]
         public void Update()
@@ -26,7 +27,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(update);
 
             Assert.Equal("UPDATE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -37,7 +41,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(update);
 
             Assert.Equal("UPDATE TOP(@p0) PERCENT", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -48,7 +55,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(update);
 
             Assert.Equal("UPDATE TOP(@p0) WITH TIES", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -59,7 +69,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(update);
 
             Assert.Equal("UPDATE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -70,7 +83,28 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(update);
 
             Assert.Equal("UPDATE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Invalid_Top_Percent()
+        {
+            IUpdate update = sql.Update().Top(sql.Raw("TOP({0})", 10));
+
+            Exception ex = Assert.Throws<InvalidOperationException>(() => ((IUpdateTop)update).Percent());
+            Assert.Equal("Top value must be a \"Suilder.Core.ITop\" instance.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Top_WithTies()
+        {
+            IUpdate update = sql.Update().Top(sql.Raw("TOP({0})", 10));
+
+            Exception ex = Assert.Throws<InvalidOperationException>(() => ((IUpdateTop)update).WithTies());
+            Assert.Equal("Top value must be a \"Suilder.Core.ITop\" instance.", ex.Message);
         }
 
         [Fact]

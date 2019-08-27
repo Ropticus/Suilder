@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Raw
 {
-    public class RawTest : BaseTest
+    public class RawTest : BuilderBaseTest
     {
         [Fact]
         public void Raw_Text()
@@ -28,7 +28,10 @@ namespace Suilder.Test.Builder.Raw
             QueryResult result = engine.Compile(raw);
 
             Assert.Equal("SELECT \"person\".\"Name\", @p0 FROM \"person\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "Some text" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "Some text"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -104,11 +107,33 @@ namespace Suilder.Test.Builder.Raw
         }
 
         [Fact]
+        public void Raw_Format_Escape_Start_End()
+        {
+            IAlias person = sql.Alias("person");
+            IRawSql raw = sql.Raw("{{Some text}}", person["Name"], person);
+
+            QueryResult result = engine.Compile(raw);
+
+            Assert.Equal("{Some text}", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Invalid_Index_Out_Range()
         {
             IAlias person = sql.Alias("person");
 
             Exception ex = Assert.Throws<FormatException>(() => sql.Raw("SELECT {2} FROM", person["Name"]));
+            Assert.Equal("Index (zero based) must be greater than or equal to zero and less than the size of the "
+                + "argument list", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Index_Negative()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("SELECT {-1} FROM", person["Name"]));
             Assert.Equal("Index (zero based) must be greater than or equal to zero and less than the size of the "
                 + "argument list", ex.Message);
         }
@@ -141,6 +166,42 @@ namespace Suilder.Test.Builder.Raw
         }
 
         [Fact]
+        public void Invalid_Index_Open_Start()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("{SELECT * FROM", person["Name"]));
+            Assert.Equal("Input string was not in a correct format.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Index_Open_End()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("SELECT * FROM{", person["Name"]));
+            Assert.Equal("Input string was not in a correct format.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Index_Open_Length_One()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("{", person["Name"]));
+            Assert.Equal("Input string was not in a correct format.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Index_Open_Before_Close()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("SELECT { { FROM ", person["Name"]));
+            Assert.Equal("Input string was not in a correct format.", ex.Message);
+        }
+
+        [Fact]
         public void Invalid_Index_Open_Escaped()
         {
             IAlias person = sql.Alias("person");
@@ -150,11 +211,20 @@ namespace Suilder.Test.Builder.Raw
         }
 
         [Fact]
-        public void Invalid_Index_Open_Start()
+        public void Invalid_Index_Open_Escaped_Start()
         {
             IAlias person = sql.Alias("person");
 
-            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("{SELECT * FROM", person["Name"]));
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("{{{SELECT * FROM", person["Name"]));
+            Assert.Equal("Input string was not in a correct format.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Index_Open_Escaped_End()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("SELECT * FROM{{{", person["Name"]));
             Assert.Equal("Input string was not in a correct format.", ex.Message);
         }
 
@@ -168,11 +238,11 @@ namespace Suilder.Test.Builder.Raw
         }
 
         [Fact]
-        public void Invalid_Index_Close_Escaped()
+        public void Invalid_Index_Close_Start()
         {
             IAlias person = sql.Alias("person");
 
-            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("SELECT }}} FROM", person["Name"]));
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("}SELECT * FROM", person["Name"]));
             Assert.Equal("Input string was not in a correct format.", ex.Message);
         }
 
@@ -182,6 +252,42 @@ namespace Suilder.Test.Builder.Raw
             IAlias person = sql.Alias("person");
 
             Exception ex = Assert.Throws<FormatException>(() => sql.Raw("SELECT * FROM}", person["Name"]));
+            Assert.Equal("Input string was not in a correct format.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Index_Close_Length_One()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("}", person["Name"]));
+            Assert.Equal("Input string was not in a correct format.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Index_Close_Escaped()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("SELECT }}} FROM", person["Name"]));
+            Assert.Equal("Input string was not in a correct format.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Index_Close_Escaped_Start()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("}}}SELECT * FROM", person["Name"]));
+            Assert.Equal("Input string was not in a correct format.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Index_Close_Escaped_End()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("SELECT * FROM}}}", person["Name"]));
             Assert.Equal("Input string was not in a correct format.", ex.Message);
         }
 

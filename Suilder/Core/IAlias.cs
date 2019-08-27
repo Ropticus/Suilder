@@ -6,7 +6,7 @@ namespace Suilder.Core
     /// <summary>
     /// A table or a view and his alias.
     /// <para>Can be also used as an alias of a subquery.</para>
-    /// <para>Allows you to create a <see cref="IColumn"/> instance with the same alias.</para>
+    /// <para>Allows you to create an <see cref="IColumn"/> instance with the same alias.</para>
     /// <para>When compiled only writes the table name.</para>
     /// </summary>
     public interface IAlias : IQueryFragment
@@ -46,7 +46,7 @@ namespace Suilder.Core
 
     /// <summary>
     /// The alias of a table, view or subquery, and at the same time the table or view.
-    /// <para>Allows you to create a <see cref="IColumn"/> instance with the same alias.</para>
+    /// <para>Allows you to create an <see cref="IColumn"/> instance with the same alias.</para>
     /// </summary>
     /// <typeparam name="T">The table type.</typeparam>
     public interface IAlias<T> : IAlias

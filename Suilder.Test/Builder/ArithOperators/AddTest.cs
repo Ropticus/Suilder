@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
 namespace Suilder.Test.Builder.ArithOperators
 {
-    public class AddTest : BaseTest
+    public class AddTest : BuilderBaseTest
     {
         [Fact]
         public void Add()
@@ -22,7 +23,11 @@ namespace Suilder.Test.Builder.ArithOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Salary\" + @p0 + @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 100m, ["@p1"] = 200m }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100m,
+                ["@p1"] = 200m
+            }, result.Parameters);
         }
 
         [Fact]
@@ -34,19 +39,27 @@ namespace Suilder.Test.Builder.ArithOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Salary\" + @p0 + @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 100m, ["@p1"] = 200m }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100m,
+                ["@p1"] = 200m
+            }, result.Parameters);
         }
 
         [Fact]
         public void Add_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.Add.Add(new List<object>() { person["Salary"], 100m, 200m });
+            IOperator op = sql.Add.Add(new List<object> { person["Salary"], 100m, 200m });
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Salary\" + @p0 + @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 100m, ["@p1"] = 200m }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100m,
+                ["@p1"] = 200m
+            }, result.Parameters);
         }
 
         [Fact]
@@ -61,7 +74,11 @@ namespace Suilder.Test.Builder.ArithOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Salary\" + @p0 + @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 100m, ["@p1"] = 200m }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100m,
+                ["@p1"] = 200m
+            }, result.Parameters);
         }
 
         [Fact]
@@ -73,20 +90,27 @@ namespace Suilder.Test.Builder.ArithOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Salary\" + @p0 + @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 100m, ["@p1"] = 200m }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100m,
+                ["@p1"] = 200m
+            }, result.Parameters);
         }
 
         [Fact]
         public void Add_Expression_Enumerable()
         {
             Person person = null;
-            IOperator op = sql.Add.Add(new List<Expression<Func<object>>>() { () => person.Salary, () => 100m,
-                () => 200m });
+            IOperator op = sql.Add.Add(new List<Expression<Func<object>>> { () => person.Salary, () => 100m, () => 200m });
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Salary\" + @p0 + @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 100m, ["@p1"] = 200m }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100m,
+                ["@p1"] = 200m
+            }, result.Parameters);
         }
 
         [Fact]
@@ -98,7 +122,20 @@ namespace Suilder.Test.Builder.ArithOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Salary\" + @p0 + @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 100m, ["@p1"] = 200m }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100m,
+                ["@p1"] = 200m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Empty_List()
+        {
+            IOperator op = sql.Add;
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(op));
+            Assert.Equal("List is empty.", ex.Message);
         }
 
         [Fact]

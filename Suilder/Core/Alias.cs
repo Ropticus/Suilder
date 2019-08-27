@@ -208,7 +208,7 @@ namespace Suilder.Core
         /// <param name="engine">The engine.</param>
         public virtual void Compile(QueryBuilder queryBuilder, IEngine engine)
         {
-            queryBuilder.WriteName(engine.GetTableName(typeof(T)));
+            queryBuilder.WriteName(engine.GetInfo(typeof(T)).TableName);
         }
 
         /// <summary>

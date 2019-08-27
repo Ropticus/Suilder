@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <PackageId>Suilder.Engines</PackageId>
-    <VersionPrefix>1.2.1</VersionPrefix>
+    <VersionPrefix>2.0.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <Title>Suilder engines</Title>
     <Authors>Víctor Diez</Authors>

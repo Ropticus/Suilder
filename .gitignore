@@ -9,3 +9,6 @@
 # Build
 [Bb]in/
 [Oo]bj/
+
+# Code coverage
+coverage/

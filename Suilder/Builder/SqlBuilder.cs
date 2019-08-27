@@ -31,7 +31,7 @@ namespace Suilder.Builder
         /// Register a builder, you can only have one builder per application.
         /// </summary>
         /// <param name="sqlBuilder">The builder.</param>
-        /// <param name="force">If true, it overrides the registered builder.</param>
+        /// <param name="force">If <see langword="true"/>, it overrides the registered builder.</param>
         /// <returns>The builder.</returns>
         public static ISqlBuilder Register(ISqlBuilder sqlBuilder, bool force)
         {
@@ -252,7 +252,7 @@ namespace Suilder.Builder
 
         /// <summary>
         /// Creates a value with an expression.
-        /// <para>The value can be a literal value or a <see cref="IQueryFragment"/> that represent a value
+        /// <para>The value can be a literal value or an <see cref="IQueryFragment"/> that represents a value,
         /// like a column, a function or an arithmetic operator.</para>
         /// </summary>
         /// <param name="expression">The value.</param>
@@ -264,7 +264,7 @@ namespace Suilder.Builder
 
         /// <summary>
         /// Creates a value with an expression.
-        /// <para>The value can be a literal value or a <see cref="IQueryFragment"/> that represent a value
+        /// <para>The value can be a literal value or an <see cref="IQueryFragment"/> that represents a value,
         /// like a column, a function or an arithmetic operator.</para>
         /// </summary>
         /// <param name="expression">The value.</param>
@@ -678,7 +678,7 @@ namespace Suilder.Builder
         public virtual IOperator Not(Expression<Func<bool>> value)
         {
             if (value == null)
-                return IsNull((object)value);
+                return Not((object)value);
 
             return new LeftOperator("NOT", Op(value));
         }
@@ -724,7 +724,7 @@ namespace Suilder.Builder
         public virtual IOperator IsNotNull(Expression<Func<object>> value)
         {
             if (value == null)
-                return IsNull((object)value);
+                return IsNotNull((object)value);
 
             return new RightOperator("IS NOT NULL", Val(value));
         }
@@ -1247,7 +1247,7 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a raw SQL fragment.
         /// <para>The values can be any object even other <see cref="IQueryFragment"/>.</para>
-        /// <para>For escaped table and column names use a <see cref="IAlias"/> or a <see cref="IColumn"/> value.</para>
+        /// <para>For escaped table and column names use an <see cref="IAlias"/> or an <see cref="IColumn"/> value.</para>
         /// </summary>
         /// <param name="sql">A composite string, each item takes the following form: {index}.</param>
         /// <param name="values">An object array that contains zero or more objects to add to the raw SQL.</param>
@@ -1272,7 +1272,7 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a raw SQL query.
         /// <para>The values can be any object even other <see cref="IQueryFragment"/>.</para>
-        /// <para>For escaped table and column names use a <see cref="IAlias"/> or a <see cref="IColumn"/> value.</para>
+        /// <para>For escaped table and column names use an <see cref="IAlias"/> or an <see cref="IColumn"/> value.</para>
         /// </summary>
         /// <param name="sql">A composite string, each item takes the following form: {index}.</param>
         /// <param name="values">An object array that contains zero or more objects to add to the raw SQL.</param>

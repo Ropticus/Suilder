@@ -15,6 +15,8 @@ namespace Suilder.Test.Builder.Tables
 
         public string FullName => $"{Name} {SurName}".TrimEnd();
 
+        public Address Address { get; set; }
+
         public decimal Salary { get; set; }
 
         [Column("DateCreated")]

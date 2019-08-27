@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
@@ -6,10 +7,10 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Operators
 {
-    public class SomeTest : BaseTest
+    public class SomeTest : BuilderBaseTest
     {
         [Fact]
-        public void Builder()
+        public void Builder_Object()
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.Some(sql.RawQuery("Subquery"));
@@ -29,6 +30,13 @@ namespace Suilder.Test.Builder.Operators
 
             Assert.Equal("SOME (Subquery)", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_Invalid_Call()
+        {
+            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Some(sql.RawQuery("Subquery")));
+            Assert.Equal("Only for expressions.", ex.Message);
         }
 
         [Fact]

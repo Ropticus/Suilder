@@ -25,12 +25,12 @@ ISqlBuilder sql = SqlBuilder.Register(new SqlBuilder());
 SqlExp.Initialize();
 
 // Create a table builder and add your entity classes (optional)
-TableBuilder tableBuilder = new TableBuilder()
-    .Add<Person>()
-    .Add<Department>();
+ITableBuilder tableBuilder = new TableBuilder();
+tableBuilder.Add<Person>();
+tableBuilder.Add<Department>();
 
 // Create an engine to compile the queries
-IEngine engine = new SQLServer(tableBuilder);
+IEngine engine = new SQLServerEngine(tableBuilder);
 ```
 
 ## The builder
@@ -170,11 +170,11 @@ You can use Suilder with any SQL engine, but there a list of supported engines t
 
 Engine | Class name | Remarks |
 -------|------------|---------|
-MySQL | MySQL | |
-Oracle Database | OracleDB | By default it uses quoted uppercase names. |
-PostgreSQL | PostgreSQL | By default it uses quoted lowercase names. |
-SQLite | SQLite | |
-SQL Server | SQLServer | |
+MySQL | MySQLEngine | |
+Oracle Database | OracleDBEngine | By default it uses quoted uppercase names. |
+PostgreSQL | PostgreSQLEngine | By default it uses quoted lowercase names. |
+SQLite | SQLiteEngine | |
+SQL Server | SQLServerEngine | |
 
 If your SQL engine is not in the list, it does not mean that you cannot use Suilder with them, but you have to [configure your engine](https://suilder.readthedocs.io/en/latest/configuration/engines/#engine-configuration).
 

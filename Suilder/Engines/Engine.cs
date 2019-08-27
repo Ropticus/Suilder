@@ -6,7 +6,7 @@ using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Exceptions;
 using Suilder.Functions;
-using Suilder.Reflection;
+using Suilder.Reflection.Builder;
 
 namespace Suilder.Engines
 {
@@ -25,7 +25,7 @@ namespace Suilder.Engines
         /// Contains the information of all tables.
         /// </summary>
         /// <value>Contains the information of all tables.</value>
-        protected IDictionary<string, TableInfo> Tables { get; set; }
+        protected IDictionary<string, ITableInfo> Tables { get; set; }
 
         /// <summary>
         /// The registered functions.
@@ -38,7 +38,7 @@ namespace Suilder.Engines
         /// </summary>
         public Engine()
         {
-            Tables = new Dictionary<string, TableInfo>();
+            Tables = new Dictionary<string, ITableInfo>();
             Options = InitOptions();
             InitFunctions();
         }
@@ -46,10 +46,10 @@ namespace Suilder.Engines
         /// <summary>
         /// Initializes a new instance of the <see cref="Engine"/> class.
         /// </summary>
-        /// <param name="tableBuilder">The table builder.</param>
-        public Engine(ITableBuilder tableBuilder) : this()
+        /// <param name="configBuilder">The config builder.</param>
+        public Engine(IConfigBuilder configBuilder) : this()
         {
-            Tables = tableBuilder.GetConfig().ToDictionary(x => x.Type.FullName, x => x);
+            Tables = configBuilder.GetConfig().ToDictionary(x => x.Type.FullName, x => x);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Suilder.Engines
         }
 
         /// <summary>
-        /// Compiles a <see cref="IQueryFragment"/> to a <see cref="QueryResult"/>.
+        /// Compiles an <see cref="IQueryFragment"/> to a <see cref="QueryResult"/>.
         /// </summary>
         /// <param name="query">The <see cref="IQueryFragment"/>.</param>
         /// <returns>The <see cref="QueryResult"/>.</returns>
@@ -146,7 +146,7 @@ namespace Suilder.Engines
         ///  Determines if the function is registered.
         /// </summary>
         /// <param name="name">The name of the function.</param>
-        /// <returns>True if the function is registered.</returns>
+        /// <returns><see langword="true"/> if the function is registered, otherwise, <see langword="false"/>.</returns>
         public virtual bool ContainsFunction(string name)
         {
             return Functions.ContainsKey(name.ToUpperInvariant());
@@ -204,102 +204,69 @@ namespace Suilder.Engines
         }
 
         /// <summary>
-        /// Checks if the <see cref="Type"/> is a table.
+        /// Gets the registered types.
         /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>True if the <see cref="Type"/> is a table.</returns>
+        /// <returns>The registered types.</returns>
+        public virtual Type[] GetRegisteredTypes()
+        {
+            return Tables.Select(x => x.Value.Type).ToArray();
+        }
+
+        /// <summary>
+        /// Gets the information of the table.
+        /// </summary>
+        /// <param name="type">The table type.</param>
+        /// <returns>The table info.</returns>
+        /// <exception cref="InvalidConfigurationException">The type is not registered.</exception>
+        public virtual ITableInfo GetInfo(Type type)
+        {
+            if (Tables.TryGetValue(type.FullName, out ITableInfo tableInfo))
+                return tableInfo;
+
+            throw new InvalidConfigurationException($"The type \"{type}\" is not registered.");
+        }
+
+        /// <summary>
+        /// Gets the information of the table.
+        /// </summary>
+        /// <typeparam name="T">The table type.</typeparam>
+        /// <returns>The table info.</returns>
+        /// <exception cref="InvalidConfigurationException">The type is not registered.</exception>
+        public virtual ITableInfo<T> GetInfo<T>() => (ITableInfo<T>)GetInfo(typeof(T));
+
+        /// <summary>
+        /// Gets the information of the table or <see langword="null"/> if no element is found.
+        /// </summary>
+        /// <param name="type">The table type.</param>
+        /// <returns>The table info.</returns>
+        public virtual ITableInfo GetInfoOrDefault(Type type)
+        {
+            Tables.TryGetValue(type.FullName, out ITableInfo tableInfo);
+            return tableInfo;
+        }
+
+        /// <summary>
+        /// Gets the information of the table or <see langword="null"/> if no element is found.
+        /// </summary>
+        /// <typeparam name="T">The table type.</typeparam>
+        /// <returns>The table info.</returns>
+        public virtual ITableInfo<T> GetInfoOrDefault<T>() => (ITableInfo<T>)GetInfoOrDefault(typeof(T));
+
+        /// <summary>
+        /// Checks if the type is a table.
+        /// </summary>
+        /// <param name="type">The table type.</param>
+        /// <returns><see langword="true"/> if the type is a table, otherwise, <see langword="false"/>.</returns>
         public virtual bool IsTable(Type type)
         {
             return Tables.ContainsKey(type.FullName);
         }
 
         /// <summary>
-        /// Gets the table name of a <see cref="Type"/>.
+        /// Checks if the type is a table.
         /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The table name.</returns>
-        public virtual string GetTableName(Type type)
-        {
-            if (Tables.TryGetValue(type.FullName, out TableInfo tableInfo))
-                return tableInfo.TableName;
-
-            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
-        }
-
-        /// <summary>
-        /// Gets the primary key properties of a <see cref="Type"/>.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The primary key properties.</returns>
-        public virtual string[] GetPrimaryKeys(Type type)
-        {
-            if (Tables.TryGetValue(type.FullName, out TableInfo tableInfo))
-                return tableInfo.PrimaryKeys;
-
-            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
-        }
-
-        /// <summary>
-        /// Gets the column properties of a <see cref="Type"/>.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The column properties.</returns>
-        public virtual string[] GetColumns(Type type)
-        {
-            if (Tables.TryGetValue(type.FullName, out TableInfo tableInfo))
-                return tableInfo.Columns;
-
-            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
-        }
-
-        /// <summary>
-        /// Gets the column names of a <see cref="Type"/>.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The column names-</returns>
-        public virtual string[] GetColumnNames(Type type)
-        {
-            if (Tables.TryGetValue(type.FullName, out TableInfo tableInfo))
-                return tableInfo.ColumnNames;
-
-            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
-        }
-
-        /// <summary>
-        /// Gets the column name of a property.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="propertyName">The property name.</param>
-        /// <returns>The column name.</returns>
-        public virtual string GetColumnName(Type type, string propertyName)
-        {
-            if (Tables.TryGetValue(type.FullName, out TableInfo tableInfo))
-            {
-                if (tableInfo.ColumnNamesDic.TryGetValue(propertyName, out string columnName))
-                    return columnName;
-
-                throw new InvalidConfigurationException(
-                    $"Property \"{propertyName}\" for type \"{type}\" is not registered.");
-            }
-
-            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
-        }
-
-        /// <summary>
-        /// Gets the column names of the properties.
-        /// <para>The key is the column property, the value is the column name.</para>
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The column names of the properties.</returns>
-        public virtual IReadOnlyDictionary<string, string> GetColumnNamesDic(Type type)
-        {
-            if (Tables.TryGetValue(type.FullName, out TableInfo tableInfo))
-            {
-                return tableInfo.ColumnNamesDic as IReadOnlyDictionary<string, string>
-                    ?? tableInfo.ColumnNamesDic.ToDictionary(x => x.Key, x => x.Value);
-            }
-
-            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
-        }
+        /// <typeparam name="T">The table type.</typeparam>
+        /// <returns><see langword="true"/> if the type is a table, otherwise, <see langword="false"/>.</returns>
+        public virtual bool IsTable<T>() => IsTable(typeof(T));
     }
 }

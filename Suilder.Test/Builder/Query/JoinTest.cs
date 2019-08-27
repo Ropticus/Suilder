@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Query
 {
-    public class JoinTest : BaseTest
+    public class JoinTest : BuilderBaseTest
     {
         [Fact]
         public void Inner_Join()
@@ -69,7 +69,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_String_With_Type()
+        public void Join_String_With_JoinType()
         {
             IQuery query = sql.Query.Join("person", JoinType.Left);
 
@@ -79,7 +79,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_String_With_Alias()
+        public void Join_String_With_Alias_Name()
         {
             IQuery query = sql.Query.Join("person", "per");
 
@@ -89,7 +89,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_String_With_Alias_With_Type()
+        public void Join_String_With_Alias_Name_With_JoinType()
         {
             IQuery query = sql.Query.Join("person", "per", JoinType.Left);
 
@@ -99,7 +99,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Type_String()
+        public void JoinType_String()
         {
             IQuery query = sql.Query.Left.Join("person");
 
@@ -109,7 +109,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Type_String_With_Alias()
+        public void JoinType_String_With_Alias_Name()
         {
             IQuery query = sql.Query.Left.Join("person", "per");
 
@@ -119,7 +119,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_StringAlias()
+        public void Join_Alias()
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Join(person);
@@ -130,7 +130,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_StringAlias_With_Type()
+        public void Join_Alias_With_JoinType()
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Join(person, JoinType.Left);
@@ -141,7 +141,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_StringAlias_With_Alias()
+        public void Join_Alias_With_Alias_Name()
         {
             IAlias person = sql.Alias("person", "per");
             IQuery query = sql.Query.Join(person);
@@ -152,7 +152,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_StringAlias_With_Alias_With_Type()
+        public void Join_Alias_With_Alias_Name_With_JoinType()
         {
             IAlias person = sql.Alias("person", "per");
             IQuery query = sql.Query.Join(person, JoinType.Left);
@@ -163,7 +163,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Type_StringAlias()
+        public void JoinType_Alias()
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Left.Join(person);
@@ -174,7 +174,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Type_StringAlias_With_Alias()
+        public void JoinType_Alias_With_Alias_Name()
         {
             IAlias person = sql.Alias("person", "per");
             IQuery query = sql.Query.Left.Join(person);
@@ -185,7 +185,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_TypedAlias()
+        public void Join_Typed_Alias()
         {
             IAlias<Person> person = sql.Alias<Person>();
             IQuery query = sql.Query.Join(person);
@@ -196,7 +196,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_TypedAlias_With_Type()
+        public void Join_Typed_Alias_With_JoinType()
         {
             IAlias<Person> person = sql.Alias<Person>();
             IQuery query = sql.Query.Join(person, JoinType.Left);
@@ -207,7 +207,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_TypedAlias_With_Alias()
+        public void Join_Typed_Alias_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
             IQuery query = sql.Query.Join(person);
@@ -218,7 +218,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_TypedAlias_With_Alias_With_Type()
+        public void Join_Typed_Alias_With_Alias_Name_With_JoinType()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
             IQuery query = sql.Query.Join(person, JoinType.Left);
@@ -229,7 +229,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Type_TypedAlias()
+        public void JoinType_Typed_Alias()
         {
             IAlias<Person> person = sql.Alias<Person>();
             IQuery query = sql.Query.Left.Join(person);
@@ -240,7 +240,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Type_TypedAlias_With_Alias()
+        public void JoinType_Typed_Alias_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
             IQuery query = sql.Query.Left.Join(person);
@@ -262,7 +262,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Expression_With_Type()
+        public void Join_Expression_With_JoinType()
         {
             Person person = null;
             IQuery query = sql.Query.Join(() => person, JoinType.Left);
@@ -273,7 +273,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Type_Expression()
+        public void JoinType_Expression()
         {
             Person person = null;
             IQuery query = sql.Query.Left.Join(() => person);
@@ -294,7 +294,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Subquery_String_With_Type()
+        public void Join_Subquery_String_With_JoinType()
         {
             IQuery query = sql.Query.Join(sql.RawQuery("Subquery"), "sub", JoinType.Left);
 
@@ -304,7 +304,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Type_Subquery_String()
+        public void JoinType_Subquery_String()
         {
             IQuery query = sql.Query.Left.Join(sql.RawQuery("Subquery"), "sub");
 
@@ -314,7 +314,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Subquery_StringAlias()
+        public void Join_Subquery_Alias()
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Join(sql.RawQuery("Subquery"), person);
@@ -325,7 +325,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Subquery_StringAlias_With_Type()
+        public void Join_Subquery_Alias_With_JoinType()
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Join(sql.RawQuery("Subquery"), person, JoinType.Left);
@@ -336,7 +336,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Subquery_StringAlias_With_Alias()
+        public void Join_Subquery_Alias_With_Alias_Name()
         {
             IAlias person = sql.Alias("person", "per");
             IQuery query = sql.Query.Join(sql.RawQuery("Subquery"), person);
@@ -347,7 +347,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Subquery_StringAlias_With_Alias_With_Type()
+        public void Join_Subquery_Alias_With_Alias_Name_With_JoinType()
         {
             IAlias person = sql.Alias("person", "per");
             IQuery query = sql.Query.Join(sql.RawQuery("Subquery"), person, JoinType.Left);
@@ -358,7 +358,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Type_Subquery_StringAlias()
+        public void JoinType_Subquery_Alias()
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Left.Join(sql.RawQuery("Subquery"), person);
@@ -369,7 +369,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Type_Subquery_StringAlias_With_Alias()
+        public void JoinType_Subquery_Alias_With_Alias_Name()
         {
             IAlias person = sql.Alias("person", "per");
             IQuery query = sql.Query.Left.Join(sql.RawQuery("Subquery"), person);
@@ -391,10 +391,21 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Join_Subquery_Expression_With_Type()
+        public void Join_Subquery_Expression_With_JoinType()
         {
-            IAlias person = sql.Alias("per");
+            Person person = null;
             IQuery query = sql.Query.Join(sql.RawQuery("Subquery"), () => person, JoinType.Left);
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("LEFT JOIN (Subquery) AS \"person\"", result.Sql);
+        }
+
+        [Fact]
+        public void JoinType_Subquery_Expression()
+        {
+            Person person = null;
+            IQuery query = sql.Query.Left.Join(sql.RawQuery("Subquery"), () => person);
 
             QueryResult result = engine.Compile(query);
 

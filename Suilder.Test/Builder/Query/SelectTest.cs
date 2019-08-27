@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Query
 {
-    public class SelectTest : BaseTest
+    public class SelectTest : BuilderBaseTest
     {
         [Fact]
         public void Select()
@@ -31,19 +31,25 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
         public void Select_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IQuery query = sql.Query.Select(new List<object>() { person["Name"], ", ", person["SurName"] });
+            IQuery query = sql.Query.Select(new List<object> { person["Name"], ", ", person["SurName"] });
 
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
@@ -67,20 +73,26 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
         public void Select_Expression_Enumerable()
         {
             Person person = null;
-            IQuery query = sql.Query.Select(new List<Expression<Func<object>>>() { () => person.Name,
-                () => ", ", () => person.SurName });
+            IQuery query = sql.Query.Select(new List<Expression<Func<object>>> { () => person.Name, () => ", ",
+                () => person.SurName });
 
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]

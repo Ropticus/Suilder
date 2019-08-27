@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Alias
 {
-    public class StringAliasTest : BaseTest
+    public class StringAliasTest : BuilderBaseTest
     {
         [Fact]
         public void Without_Alias()
@@ -17,7 +17,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void With_Alias()
+        public void With_Alias_Name()
         {
             IAlias alias = sql.Alias("person", "per");
 
@@ -34,6 +34,22 @@ namespace Suilder.Test.Builder.Alias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"dbo\".\"person\"", result.Sql);
+        }
+
+        [Fact]
+        public void AliasOrTableName_Property_Without_Alias()
+        {
+            IAlias alias = sql.Alias("person");
+
+            Assert.Equal("person", alias.AliasOrTableName);
+        }
+
+        [Fact]
+        public void AliasOrTableName_Property_With_Alias_Name()
+        {
+            IAlias alias = sql.Alias("person", "per");
+
+            Assert.Equal("per", alias.AliasOrTableName);
         }
 
         [Fact]

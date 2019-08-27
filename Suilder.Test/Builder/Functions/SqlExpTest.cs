@@ -7,8 +7,69 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Functions
 {
-    public class SqlExpTest : BaseTest
+    public class SqlExpTest : BuilderBaseTest
     {
+        [Fact]
+        public void Function()
+        {
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Function("CONCAT", person.Name, person.SurName));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("CONCAT(\"person\".\"Name\", \"person\".\"SurName\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Function_Name_Only()
+        {
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Function("NOW"));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("NOW()", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Val_Alias()
+        {
+            Person person = null;
+            Person personValue = new Person()
+            {
+                Id = 1
+            };
+            IOperator func = (IOperator)sql.Op(() => person.Id == SqlExp.Val(personValue.Id));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("\"person\".\"Id\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = personValue.Id
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Val_Method()
+        {
+            Person person = null;
+            Person personValue = new Person()
+            {
+                Name = "SomeName"
+            };
+            IOperator func = (IOperator)sql.Op(() => person.Active == SqlExp.Val(personValue.Name.Contains("Name")));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = personValue.Name.Contains("Name")
+            }, result.Parameters);
+        }
+
         [Fact]
         public void Abs()
         {
@@ -82,6 +143,18 @@ namespace Suilder.Test.Builder.Functions
         }
 
         [Fact]
+        public void Coalesce_Object_Overload()
+        {
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Coalesce(person.Name, person.Salary));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("COALESCE(\"person\".\"Name\", \"person\".\"Salary\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Concat()
         {
             Person person = null;
@@ -121,8 +194,6 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Count_Column()
         {
-            engine.AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);
-
             Person person = null;
             IFunction func = (IFunction)sql.Val(() => SqlExp.Count(person.Name));
 
@@ -135,8 +206,6 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Count_Distinct()
         {
-            engine.AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);
-
             Person person = null;
             IFunction func = (IFunction)sql.Val(() => SqlExp.CountDistinct(person.Name));
 
@@ -214,7 +283,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("LTRIM(\"person\".\"Name\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]
@@ -242,7 +314,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("TRIM(LEADING @p0 FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]
@@ -289,7 +364,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("NULLIF(\"person\".\"Name\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "empty" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "empty"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -301,7 +379,11 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("REPLACE(\"person\".\"Name\", @p0, @p1)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "a", ["@p1"] = "b" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "a",
+                ["@p1"] = "b"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -325,7 +407,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("ROUND(\"person\".\"Salary\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 2 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 2
+            }, result.Parameters);
         }
 
         [Fact]
@@ -349,7 +434,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("RTRIM(\"person\".\"Name\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]
@@ -377,7 +465,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("TRIM(TRAILING @p0 FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]
@@ -389,7 +480,11 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("SUBSTRING(\"person\".\"Name\", @p0, @p1)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 2, ["@p1"] = 4 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 2,
+                ["@p1"] = 4
+            }, result.Parameters);
         }
 
         [Fact]
@@ -437,7 +532,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("TRIM(\"person\".\"Name\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]
@@ -465,7 +563,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("TRIM(@p0 FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]
@@ -478,6 +579,16 @@ namespace Suilder.Test.Builder.Functions
 
             Assert.Equal("UPPER(\"person\".\"Name\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Add_Remove_Function()
+        {
+            ExpressionProcessor.AddFunction(typeof(string), nameof(string.Trim));
+            Assert.True(ExpressionProcessor.ContainsFunction(typeof(string), nameof(string.Trim)));
+
+            ExpressionProcessor.RemoveFunction(typeof(string), nameof(string.Trim));
+            Assert.False(ExpressionProcessor.ContainsFunction(typeof(string), nameof(string.Trim)));
         }
     }
 }

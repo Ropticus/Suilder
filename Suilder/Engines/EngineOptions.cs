@@ -6,6 +6,12 @@ namespace Suilder.Engines
     public class EngineOptions
     {
         /// <summary>
+        /// The engine name.
+        /// </summary>
+        /// <value>The engine name.</value>
+        public string Name { get; set; }
+
+        /// <summary>
         /// The start character to delimit identifiers.
         /// </summary>
         /// <value>The start character to delimited a name.</value>
@@ -18,21 +24,21 @@ namespace Suilder.Engines
         public char EscapeEnd { get; set; }
 
         /// <summary>
-        /// If true, converts all tables and column names to uppercase.
+        /// If <see langword="true"/>, converts all tables and column names to uppercase.
         /// </summary>
-        /// <value>If true, converts all tables and column names to uppercase.</value>
+        /// <value>If <see langword="true"/>, converts all tables and column names to uppercase.</value>
         public bool UpperCaseNames { get; set; }
 
         /// <summary>
-        /// If true, converts all tables and column names to lowercase.
+        /// If <see langword="true"/>, converts all tables and column names to lowercase.
         /// </summary>
-        /// <value>If true, converts all tables and column names to lowercase.</value>
+        /// <value>If <see langword="true"/>, converts all tables and column names to lowercase.</value>
         public bool LowerCaseNames { get; set; }
 
         /// <summary>
-        /// If true, adds the "as" keyword before the alias of a table.
+        /// If <see langword="true"/>, adds the "as" keyword before the alias of a table.
         /// </summary>
-        /// <value>If true, adds the "as" keyword before the alias of a table.</value>
+        /// <value>If <see langword="true"/>, adds the "as" keyword before the alias of a table.</value>
         public bool TableAs { get; set; } = true;
 
         /// <summary>
@@ -55,9 +61,9 @@ namespace Suilder.Engines
         public bool TopSupported { get; set; } = true;
 
         /// <summary>
-        /// If true, add the top values as parameters.
+        /// If <see langword="true"/>, add the top values as parameters.
         /// </summary>
-        /// <value>If true, add the top values as parameters.</value>
+        /// <value>If <see langword="true"/>, add the top values as parameters.</value>
         public bool TopAsParameters { get; set; } = true;
 
         /// <summary>
@@ -85,9 +91,9 @@ namespace Suilder.Engines
         public OffsetStyle OffsetStyle { get; set; } = OffsetStyle.Offset;
 
         /// <summary>
-        /// If true, add the offset values as parameters.
+        /// If <see langword="true"/>, add the offset values as parameters.
         /// </summary>
-        /// <value>If true, add the offset values as parameters.</value>
+        /// <value>If <see langword="true"/>, add the offset values as parameters.</value>
         public bool OffsetAsParameters { get; set; } = true;
 
         /// <summary>

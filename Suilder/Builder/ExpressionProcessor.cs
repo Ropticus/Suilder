@@ -16,14 +16,14 @@ namespace Suilder.Builder
         /// <summary>
         /// Contains the types registered as a table.
         /// </summary>
-        private static HashSet<string> Tables = new HashSet<string>();
+        private static ISet<string> Tables = new HashSet<string>();
 
         /// <summary>
         /// The registered functions.
         /// </summary>
         /// <returns>The registered functions.</returns>
-        private static IDictionary<string, Func<MethodCallExpression, IQueryFragment>> Functions
-            = new ConcurrentDictionary<string, Func<MethodCallExpression, IQueryFragment>>();
+        private static IDictionary<string, Func<MethodCallExpression, object>> Functions
+            = new ConcurrentDictionary<string, Func<MethodCallExpression, object>>();
 
         /// <summary>
         /// Compile an expression to an <see cref="IAlias"/>.
@@ -182,7 +182,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to a literal value or a <see cref="IQueryFragment"/> that represent a value
+        /// Compile an expression to a literal value or an <see cref="IQueryFragment"/> that represent a value
         /// like a column, a function or an arithmetic operator.
         /// </summary>
         /// <param name="expression">The expression.</param>
@@ -193,7 +193,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to a literal value or a <see cref="IQueryFragment"/> that represent a value
+        /// Compile an expression to a literal value or an <see cref="IQueryFragment"/> that represent a value
         /// like a column, a function or an arithmetic operator.
         /// </summary>
         /// <param name="expression">The expression.</param>
@@ -235,7 +235,7 @@ namespace Suilder.Builder
 
         /// <summary>
         /// Compile a method expression to a value.
-        /// <para>If the method is registered it returns a <see cref="IQueryFragment"/>.</para>
+        /// <para>If the method is registered it returns an <see cref="IQueryFragment"/>.</para>
         /// <para>Else, it invoke the method and return his value.</para>
         /// </summary>
         /// <param name="expression">The expression.</param>
@@ -497,6 +497,62 @@ namespace Suilder.Builder
         }
 
         /// <summary>
+        /// Gets the specified property.
+        /// <para>The property can be a nested property.</para>
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="propertyName">The property name.</param>
+        /// <returns>The property info.</returns>
+        public static PropertyInfo GetProperty(Type type, string propertyName)
+        {
+            PropertyInfo propertyInfo = null;
+
+            foreach (var property in propertyName.Split('.'))
+            {
+                propertyInfo = type.GetProperty(property);
+                if (propertyInfo == null)
+                    return null;
+
+                type = propertyInfo.PropertyType;
+            }
+
+            return propertyInfo;
+        }
+
+        /// <summary>
+        /// Gets the property path of an expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <typeparam name="T">The type.</typeparam>
+        /// <returns>The property path.</returns>
+        public static string GetPropertyPath<T>(Expression<Func<T, object>> expression)
+        {
+            return GetPropertyPath(expression.Body);
+        }
+
+        /// <summary>
+        /// Gets the property path of an expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <typeparam name="T1">The type.</typeparam>
+        /// <typeparam name="T2">The type of the property.</typeparam>
+        /// <returns>The property path.</returns>
+        public static string GetPropertyPath<T1, T2>(Expression<Func<T1, T2>> expression)
+        {
+            return GetPropertyPath(expression.Body);
+        }
+
+        /// <summary>
+        /// Gets the property path of an expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The property path.</returns>
+        public static string GetPropertyPath(Expression expression)
+        {
+            return string.Join(".", GetProperties(expression).Select(x => x.Name));
+        }
+
+        /// <summary>
         /// Get all the nested members of an expression.
         /// </summary>
         /// <param name="expression">The expression.</param>
@@ -537,30 +593,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Gets a specific nested property of the type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="propertyName">The property name.</param>
-        /// <returns>The property info.</returns>
-        public static PropertyInfo GetProperty(Type type, string propertyName)
-        {
-            PropertyInfo propertyInfo = null;
-
-            foreach (var property in propertyName.Split('.'))
-            {
-                propertyInfo = type.GetProperty(property);
-                if (propertyInfo == null)
-                {
-                    return null;
-                }
-                type = propertyInfo.PropertyType;
-            }
-
-            return propertyInfo;
-        }
-
-        /// <summary>
-        /// Register a function to compile to an <see cref="IQueryFragment"/>.
+        /// Registers a function to compile it into an <see cref="IQueryFragment"/>.
         /// </summary>
         /// <param name="type">The type of the class of the method.</param>
         /// <param name="methodName">The method name.</param>
@@ -571,7 +604,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Register a function to compile to <see cref="IQueryFragment"/>.
+        /// Registers a function to compile it into an <see cref="IQueryFragment"/>.
         /// </summary>
         /// <param name="type">The type of the class of the method.</param>
         /// <param name="methodName">The method name.</param>
@@ -592,18 +625,18 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Register a function to compile to <see cref="IQueryFragment"/>.
+        /// Registers a function to compile it into an <see cref="IQueryFragment"/>.
         /// </summary>
         /// <param name="type">The type of the class of the method.</param>
         /// <param name="methodName">The method name.</param>
         /// <param name="func">A custom delegate to compile the expression.</param>
-        public static void AddFunction(Type type, string methodName, Func<MethodCallExpression, IQueryFragment> func)
+        public static void AddFunction(Type type, string methodName, Func<MethodCallExpression, object> func)
         {
             Functions[GetMethodFullName(type, methodName)] = func;
         }
 
         /// <summary>
-        /// Register a function to compile to <see cref="IQueryFragment"/>.
+        /// Registers a function to compile it into an <see cref="IQueryFragment"/>.
         /// </summary>
         /// <param name="type">The type of the class of the method.</param>
         /// <param name="methodName">The method name.</param>
@@ -615,7 +648,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Register a function to compile to <see cref="IQueryFragment"/>.
+        /// Registers a function to compile it into an <see cref="IQueryFragment"/>.
         /// </summary>
         /// <param name="type">The type of the class of the method.</param>
         /// <param name="methodName">The method name.</param>
@@ -642,7 +675,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="type">The type of the class of the method.</param>
         /// <param name="methodName">The method name.</param>
-        /// <returns>True if the function is registered.</returns>
+        /// <returns><see langword="true"/> if the function is registered, otherwise, <see langword="false"/>.</returns>
         public static bool ContainsFunction(Type type, string methodName)
         {
             return Functions.ContainsKey(GetMethodFullName(type, methodName));
@@ -684,7 +717,7 @@ namespace Suilder.Builder
         /// Determines if the type is registered.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns>True if the type is registered.</returns>
+        /// <returns><see langword="true"/> if the type is registered, otherwise, <see langword="false"/>.</returns>
         public static bool ContainsTable(Type type)
         {
             return Tables.Contains(type.FullName);
@@ -695,7 +728,10 @@ namespace Suilder.Builder
         /// </summary>
         public static void ClearTables()
         {
-            Tables.Clear();
+            lock (Tables)
+            {
+                Tables.Clear();
+            }
         }
     }
 }

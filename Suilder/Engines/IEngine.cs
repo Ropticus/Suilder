@@ -1,8 +1,9 @@
 using System;
-using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
 using Suilder.Functions;
+using Suilder.Reflection.Builder;
 
 namespace Suilder.Engines
 {
@@ -18,7 +19,7 @@ namespace Suilder.Engines
         EngineOptions Options { get; }
 
         /// <summary>
-        /// Compiles a <see cref="IQueryFragment"/> to a <see cref="QueryResult"/>.
+        /// Compiles an <see cref="IQueryFragment"/> to a <see cref="QueryResult"/>.
         /// </summary>
         /// <param name="query">The <see cref="IQueryFragment"/>.</param>
         /// <returns>The <see cref="QueryResult"/>.</returns>
@@ -62,7 +63,7 @@ namespace Suilder.Engines
         ///  Determines if the function is registered.
         /// </summary>
         /// <param name="name">The name of the function.</param>
-        /// <returns>True if the function is registered.</returns>
+        /// <returns><see langword="true"/> if the function is registered, otherwise, <see langword="false"/>.</returns>
         bool ContainsFunction(string name);
 
         /// <summary>
@@ -85,54 +86,53 @@ namespace Suilder.Engines
         string EscapeName(string name);
 
         /// <summary>
-        /// Checks if the <see cref="Type"/> is a table.
+        /// Gets the registered types.
         /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>True if the <see cref="Type"/> is a table.</returns>
+        /// <returns>The registered types.</returns>
+        Type[] GetRegisteredTypes();
+
+        /// <summary>
+        /// Gets the information of the table.
+        /// </summary>
+        /// <param name="type">The table type.</param>
+        /// <returns>The table info.</returns>
+        /// <exception cref="InvalidConfigurationException">The type is not registered.</exception>
+        ITableInfo GetInfo(Type type);
+
+        /// <summary>
+        /// Gets the information of the table.
+        /// </summary>
+        /// <typeparam name="T">The table type.</typeparam>
+        /// <returns>The table info.</returns>
+        /// <exception cref="InvalidConfigurationException">The type is not registered.</exception>
+        ITableInfo<T> GetInfo<T>();
+
+        /// <summary>
+        /// Gets the information of the table or <see langword="null"/> if no element is found.
+        /// </summary>
+        /// <param name="type">The table type.</param>
+        /// <returns>The table info.</returns>
+        ITableInfo GetInfoOrDefault(Type type);
+
+        /// <summary>
+        /// Gets the information of the table or <see langword="null"/> if no element is found.
+        /// </summary>
+        /// <typeparam name="T">The table type.</typeparam>
+        /// <returns>The table info.</returns>
+        ITableInfo<T> GetInfoOrDefault<T>();
+
+        /// <summary>
+        /// Checks if the type is a table.
+        /// </summary>
+        /// <param name="type">The table type.</param>
+        /// <returns><see langword="true"/> if the type is a table, otherwise, <see langword="false"/>.</returns>
         bool IsTable(Type type);
 
         /// <summary>
-        /// Gets the table name of a <see cref="Type"/>.
+        /// Checks if the type is a table.
         /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The table name.</returns>
-        string GetTableName(Type type);
-
-        /// <summary>
-        /// Gets the primary key properties of a <see cref="Type"/>.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The primary key properties.</returns>
-        string[] GetPrimaryKeys(Type type);
-
-        /// <summary>
-        /// Gets the column properties of a <see cref="Type"/>.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The column properties.</returns>
-        string[] GetColumns(Type type);
-
-        /// <summary>
-        /// Gets the column names of a <see cref="Type"/>.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The column names-</returns>
-        string[] GetColumnNames(Type type);
-
-        /// <summary>
-        /// Gets the column name of a property.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="propertyName">The property name.</param>
-        /// <returns>The column name.</returns>
-        string GetColumnName(Type type, string propertyName);
-
-        /// <summary>
-        /// Gets the column names of the properties.
-        /// <para>The key is the column property, the value is the column name.</para>
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>The column names of the properties.</returns>
-        IReadOnlyDictionary<string, string> GetColumnNamesDic(Type type);
+        /// <typeparam name="T">The table type.</typeparam>
+        /// <returns><see langword="true"/> if the type is a table, otherwise, <see langword="false"/>.</returns>
+        bool IsTable<T>();
     }
 }

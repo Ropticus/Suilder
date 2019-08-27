@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
 namespace Suilder.Test.Builder.BitOperators
 {
-    public class BitOrTest : BaseTest
+    public class BitOrTest : BuilderBaseTest
     {
         [Fact]
         public void Add()
@@ -22,7 +23,11 @@ namespace Suilder.Test.Builder.BitOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" | @p0 | @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
         }
 
         [Fact]
@@ -34,19 +39,27 @@ namespace Suilder.Test.Builder.BitOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" | @p0 | @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
         }
 
         [Fact]
         public void Add_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.BitOr.Add(new List<object>() { person["Id"], 1, 2 });
+            IOperator op = sql.BitOr.Add(new List<object> { person["Id"], 1, 2 });
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" | @p0 | @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
         }
 
         [Fact]
@@ -61,7 +74,11 @@ namespace Suilder.Test.Builder.BitOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" | @p0 | @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
         }
 
         [Fact]
@@ -73,20 +90,27 @@ namespace Suilder.Test.Builder.BitOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" | @p0 | @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
         }
 
         [Fact]
         public void Add_Expression_Enumerable()
         {
             Person person = null;
-            IOperator op = sql.BitOr.Add(new List<Expression<Func<object>>>() { () => person.Id, () => 1,
-                () => 2 });
+            IOperator op = sql.BitOr.Add(new List<Expression<Func<object>>> { () => person.Id, () => 1, () => 2 });
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" | @p0 | @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
         }
 
         [Fact]
@@ -98,7 +122,20 @@ namespace Suilder.Test.Builder.BitOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" | @p0 | @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Empty_List()
+        {
+            IOperator op = sql.BitOr;
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(op));
+            Assert.Equal("List is empty.", ex.Message);
         }
 
         [Fact]

@@ -46,7 +46,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Writes a <see cref="IQueryFragment"/> to the builder.
+        /// Writes an <see cref="IQueryFragment"/> to the builder.
         /// </summary>
         /// <param name="value">The <see cref="IQueryFragment"/> to write.</param>
         /// <returns>The string builder.</returns>
@@ -56,7 +56,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Writes a <see cref="IQueryFragment"/> to the builder.
+        /// Writes an <see cref="IQueryFragment"/> to the builder.
         /// </summary>
         /// <param name="value">The <see cref="IQueryFragment"/> to write.</param>
         /// <param name="addParentheses">If add parentheses to the <see cref="IQueryFragment"/>.</param>
@@ -104,10 +104,7 @@ namespace Suilder.Builder
                 string separator = ", ";
                 foreach (object item in list)
                 {
-                    if (item == null)
-                        Builder.Append("NULL");
-                    else
-                        Builder.Append(item);
+                    WriteParameter(item);
 
                     Builder.Append(separator);
                     any = true;
@@ -172,7 +169,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Executes a function if the condition is true.
+        /// Executes a function if the condition is <see langword="true"/>.
         /// </summary>
         /// <param name="condition">The condition value.</param>
         /// <param name="func">The function.</param>
@@ -183,7 +180,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Executes a function if the condition is false.
+        /// Executes a function if the condition is <see langword="false"/>.
         /// </summary>
         /// <param name="condition">The condition value.</param>
         /// <param name="func">The function.</param>

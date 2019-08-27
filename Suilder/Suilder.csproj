@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <PackageId>Suilder</PackageId>
-    <VersionPrefix>1.2.1</VersionPrefix>
+    <VersionPrefix>2.0.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <Title>Suilder</Title>
     <Authors>Víctor Diez</Authors>

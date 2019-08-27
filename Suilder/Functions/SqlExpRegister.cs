@@ -1,5 +1,4 @@
 using System;
-using System.Linq.Expressions;
 using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Extensions;
@@ -11,38 +10,11 @@ namespace Suilder.Functions
         /// <summary>
         /// Initialize the class with the implemented functions.
         /// </summary>
-        /// <param name="registerSystemFunctions">If true, register also system functions.</param>
+        /// <param name="registerSystemFunctions">If <see langword="true"/>, register also system functions.</param>
         public static void Initialize(bool registerSystemFunctions = true)
         {
             // Operators
             RegisterOperators();
-
-            // Function method
-            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Function), expression =>
-            {
-                if (expression.Arguments.Count == 0)
-                    throw new ArgumentException("Invalid expression");
-
-                ConstantExpression expName = expression.Arguments[0] as ConstantExpression;
-                if (expName == null)
-                    throw new ArgumentException("Invalid expression");
-
-                IFunction func = SqlBuilder.Instance.Function(((string)expName.Value).ToUpperInvariant());
-
-                if (expression.Arguments.Count > 1)
-                {
-                    NewArrayExpression expParams = expression.Arguments[1] as NewArrayExpression;
-                    if (expParams != null)
-                    {
-                        foreach (var arg in expParams.Expressions)
-                        {
-                            func.Add(SqlBuilder.Instance.Val(arg));
-                        }
-                    }
-                }
-
-                return func;
-            });
 
             // Functions
             RegisterFunctions();
@@ -53,7 +25,7 @@ namespace Suilder.Functions
         }
 
         /// <summary>
-        /// Register operators.
+        /// Registers operators.
         /// </summary>
         public static void RegisterOperators()
         {
@@ -77,13 +49,7 @@ namespace Suilder.Functions
                 x => ExpressionHelper.Operator(x, SqlBuilder.Instance.In));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.NotIn),
                 x => ExpressionHelper.Operator(x, SqlBuilder.Instance.NotIn));
-            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Not), expression =>
-            {
-                if (expression.Arguments.Count != 1)
-                    throw new ArgumentException("Invalid expression");
-
-                return SqlBuilder.Instance.Not(SqlBuilder.Instance.Op(expression.Arguments[0]));
-            });
+            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Not), ExpressionHelper.Not);
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.IsNull),
                 x => ExpressionHelper.SingleOperator(x, SqlBuilder.Instance.IsNull));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.IsNotNull),
@@ -109,10 +75,14 @@ namespace Suilder.Functions
         }
 
         /// <summary>
-        /// Register functions.
+        /// Registers functions.
         /// </summary>
         public static void RegisterFunctions()
         {
+            // Special methods
+            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Function), ExpressionHelper.FunctionWithName);
+            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Val), ExpressionHelper.Val);
+
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Abs));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Avg));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.AvgDistinct), FunctionName.Avg,
@@ -160,34 +130,13 @@ namespace Suilder.Functions
         }
 
         /// <summary>
-        /// Register system functions.
+        /// Registers system functions.
         /// </summary>
         public static void RegisterSystemFunctions()
         {
-            ExpressionProcessor.AddFunction(typeof(String), nameof(String.Contains), (expression) =>
-            {
-                if (expression.Object == null || expression.Arguments.Count != 1)
-                    throw new ArgumentException("Invalid expression");
-
-                return SqlBuilder.Instance.Like(SqlBuilder.Instance.Val(expression.Object),
-                    SqlBuilder.Instance.ToLikeAny((string)SqlBuilder.Instance.Val(expression.Arguments[0])));
-            });
-            ExpressionProcessor.AddFunction(typeof(String), nameof(String.StartsWith), (expression) =>
-            {
-                if (expression.Object == null || expression.Arguments.Count != 1)
-                    throw new ArgumentException("Invalid expression");
-
-                return SqlBuilder.Instance.Like(SqlBuilder.Instance.Val(expression.Object),
-                    SqlBuilder.Instance.ToLikeStart((string)SqlBuilder.Instance.Val(expression.Arguments[0])));
-            });
-            ExpressionProcessor.AddFunction(typeof(String), nameof(String.EndsWith), (expression) =>
-            {
-                if (expression.Object == null || expression.Arguments.Count != 1)
-                    throw new ArgumentException("Invalid expression");
-
-                return SqlBuilder.Instance.Like(SqlBuilder.Instance.Val(expression.Object),
-                    SqlBuilder.Instance.ToLikeEnd((string)SqlBuilder.Instance.Val(expression.Arguments[0])));
-            });
+            ExpressionProcessor.AddFunction(typeof(String), nameof(String.StartsWith), ExpressionHelper.LikeStart);
+            ExpressionProcessor.AddFunction(typeof(String), nameof(String.EndsWith), ExpressionHelper.LikeEnd);
+            ExpressionProcessor.AddFunction(typeof(String), nameof(String.Contains), ExpressionHelper.LikeAny);
         }
     }
 }

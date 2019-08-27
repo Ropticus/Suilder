@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Query
 {
-    public class OrderByTest : BaseTest
+    public class OrderByTest : BuilderBaseTest
     {
         [Fact]
         public void OrderBy_Func()

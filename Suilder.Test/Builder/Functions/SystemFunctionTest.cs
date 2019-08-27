@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Functions
 {
-    public class SystemFunctionTest : BaseTest
+    public class SystemFunctionTest : BuilderBaseTest
     {
         [Fact]
         public void Contains()
@@ -17,7 +17,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "%SomeName%" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -29,7 +32,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName%" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -41,7 +47,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "%SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "%SomeName"
+            }, result.Parameters);
         }
     }
 }

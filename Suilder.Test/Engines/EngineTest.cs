@@ -1,7 +1,10 @@
-using System.Collections.Generic;
+using System;
 using Suilder.Engines;
+using Suilder.Exceptions;
 using Suilder.Functions;
-using Suilder.Reflection;
+using Suilder.Reflection.Builder;
+using Suilder.Test.Reflection;
+using Suilder.Test.Reflection.Builder.TablePerType.Tables;
 using Xunit;
 
 namespace Suilder.Test.Engines
@@ -9,12 +12,63 @@ namespace Suilder.Test.Engines
     public class EngineTest
     {
         [Fact]
+        public void Engine_Name()
+        {
+            IEngine engine = new Engine();
+
+            Assert.Null(engine.Options.Name);
+        }
+
+        [Fact]
         public void Escape_Characters()
         {
             IEngine engine = new Engine();
 
             Assert.Equal('\"', engine.Options.EscapeStart);
             Assert.Equal('\"', engine.Options.EscapeEnd);
+        }
+
+        [Fact]
+        public void Escape_Name()
+        {
+            IEngine engine = new Engine();
+
+            Assert.Equal("\"Id\"", engine.EscapeName("Id"));
+            Assert.Equal("\"person\".\"Id\"", engine.EscapeName("person.Id"));
+            Assert.Equal("\"dbo\".\"person\".\"Id\"", engine.EscapeName("dbo.person.Id"));
+        }
+
+        [Fact]
+        public void Escape_Name_UpperCase()
+        {
+            IEngine engine = new Engine();
+            engine.Options.UpperCaseNames = true;
+
+            Assert.Equal("\"ID\"", engine.EscapeName("Id"));
+            Assert.Equal("\"PERSON\".\"ID\"", engine.EscapeName("person.Id"));
+            Assert.Equal("\"DBO\".\"PERSON\".\"ID\"", engine.EscapeName("dbo.person.Id"));
+        }
+
+        [Fact]
+        public void Escape_Name_LowerCase()
+        {
+            IEngine engine = new Engine();
+            engine.Options.LowerCaseNames = true;
+
+            Assert.Equal("\"id\"", engine.EscapeName("Id"));
+            Assert.Equal("\"person\".\"id\"", engine.EscapeName("person.Id"));
+            Assert.Equal("\"dbo\".\"person\".\"id\"", engine.EscapeName("dbo.person.Id"));
+        }
+
+        [Fact]
+        public void Escape_Name_With_Quotes()
+        {
+            IEngine engine = new Engine();
+
+            Assert.Equal("\"Id\"", engine.EscapeName("\"Id\""));
+            Assert.Equal("\"person\".\"Id\"", engine.EscapeName("\"person\".\"Id\""));
+            Assert.Equal("\"dbo\".\"person\".\"Id\"", engine.EscapeName("\"dbo\".\"person\".\"Id\""));
+            Assert.Equal("\";DELETE FROM person\"", engine.EscapeName("\";DELETE FROM person"));
         }
 
         [Fact]
@@ -60,11 +114,147 @@ namespace Suilder.Test.Engines
         }
 
         [Fact]
-        public void Is_Table()
+        public void Get_Registered_Types()
         {
-            TableBuilder tableBuilder = new TableBuilder();
+            ITableBuilder tableBuilder = new TableBuilder();
 
             tableBuilder.Add<Person>();
+
+            tableBuilder.Add<Employee>();
+
+            tableBuilder.Add<Department>();
+
+            IEngine engine = new Engine(tableBuilder);
+
+            Assert.Equal(new Type[] { typeof(Person), typeof(Employee), typeof(Department) }, engine.GetRegisteredTypes());
+        }
+
+        [Fact]
+        public void Get_Info()
+        {
+            ITableBuilder tableBuilder = new TableBuilder();
+
+            tableBuilder.Add<Person>();
+
+            tableBuilder.Add<Employee>();
+
+            tableBuilder.Add<Department>();
+
+            IEngine engine = new Engine(tableBuilder);
+
+            Assert.Equal(tableBuilder.GetConfig<Person>(), engine.GetInfo(typeof(Person)));
+            Assert.Equal(tableBuilder.GetConfig<Employee>(), engine.GetInfo(typeof(Employee)));
+            Assert.Equal(tableBuilder.GetConfig<Department>(), engine.GetInfo(typeof(Department)));
+        }
+
+        [Fact]
+        public void Get_Info_Not_Registered()
+        {
+            ITableBuilder tableBuilder = new TableBuilder();
+
+            IEngine engine = new Engine(tableBuilder);
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => engine.GetInfo(typeof(Person)));
+            Assert.Equal($"The type \"{typeof(Person)}\" is not registered.", ex.Message);
+        }
+
+        [Fact]
+        public void Get_Info_Generic()
+        {
+            ITableBuilder tableBuilder = new TableBuilder();
+
+            tableBuilder.Add<Person>();
+
+            tableBuilder.Add<Employee>();
+
+            tableBuilder.Add<Department>();
+
+            IEngine engine = new Engine(tableBuilder);
+
+            Assert.Equal(tableBuilder.GetConfig<Person>(), engine.GetInfo<Person>());
+            Assert.Equal(tableBuilder.GetConfig<Employee>(), engine.GetInfo<Employee>());
+            Assert.Equal(tableBuilder.GetConfig<Department>(), engine.GetInfo<Department>());
+        }
+
+        [Fact]
+        public void Get_Info_Generic_Not_Registered()
+        {
+            ITableBuilder tableBuilder = new TableBuilder();
+
+            IEngine engine = new Engine(tableBuilder);
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => engine.GetInfo<Person>());
+            Assert.Equal($"The type \"{typeof(Person)}\" is not registered.", ex.Message);
+        }
+
+        [Fact]
+        public void Get_Info_Or_Default()
+        {
+            ITableBuilder tableBuilder = new TableBuilder();
+
+            tableBuilder.Add<Person>();
+
+            tableBuilder.Add<Employee>();
+
+            tableBuilder.Add<Department>();
+
+            IEngine engine = new Engine(tableBuilder);
+
+            Assert.Equal(tableBuilder.GetConfig<Person>(), engine.GetInfoOrDefault(typeof(Person)));
+            Assert.Equal(tableBuilder.GetConfig<Employee>(), engine.GetInfoOrDefault(typeof(Employee)));
+            Assert.Equal(tableBuilder.GetConfig<Department>(), engine.GetInfoOrDefault(typeof(Department)));
+        }
+
+        [Fact]
+        public void Get_Info_Or_Default_Not_Registered()
+        {
+            ITableBuilder tableBuilder = new TableBuilder();
+
+            IEngine engine = new Engine(tableBuilder);
+
+            Assert.Null(engine.GetInfoOrDefault(typeof(Person)));
+            Assert.Null(engine.GetInfoOrDefault(typeof(Employee)));
+            Assert.Null(engine.GetInfoOrDefault(typeof(Department)));
+        }
+
+        [Fact]
+        public void Get_Info_Or_Default_Generic()
+        {
+            ITableBuilder tableBuilder = new TableBuilder();
+
+            tableBuilder.Add<Person>();
+
+            tableBuilder.Add<Employee>();
+
+            tableBuilder.Add<Department>();
+
+            IEngine engine = new Engine(tableBuilder);
+
+            Assert.Equal(tableBuilder.GetConfig<Person>(), engine.GetInfoOrDefault<Person>());
+            Assert.Equal(tableBuilder.GetConfig<Employee>(), engine.GetInfoOrDefault<Employee>());
+            Assert.Equal(tableBuilder.GetConfig<Department>(), engine.GetInfoOrDefault<Department>());
+        }
+
+        [Fact]
+        public void Get_Info_Or_Default_Generic_Not_Registered()
+        {
+            ITableBuilder tableBuilder = new TableBuilder();
+
+            IEngine engine = new Engine(tableBuilder);
+
+            Assert.Null(engine.GetInfoOrDefault<Person>());
+            Assert.Null(engine.GetInfoOrDefault<Employee>());
+            Assert.Null(engine.GetInfoOrDefault<Department>());
+        }
+
+        [Fact]
+        public void Is_Table()
+        {
+            ITableBuilder tableBuilder = new TableBuilder();
+
+            tableBuilder.Add<Person>();
+
+            tableBuilder.Add<Employee>();
 
             tableBuilder.Add<Department>();
 
@@ -72,147 +262,27 @@ namespace Suilder.Test.Engines
 
             Assert.False(engine.IsTable(typeof(BaseConfig)));
             Assert.True(engine.IsTable(typeof(Person)));
+            Assert.True(engine.IsTable(typeof(Employee)));
             Assert.True(engine.IsTable(typeof(Department)));
         }
 
         [Fact]
-        public void Get_Table_Name()
+        public void Is_Table_Generic()
         {
-            TableBuilder tableBuilder = new TableBuilder();
+            ITableBuilder tableBuilder = new TableBuilder();
 
             tableBuilder.Add<Person>();
+
+            tableBuilder.Add<Employee>();
 
             tableBuilder.Add<Department>();
 
             IEngine engine = new Engine(tableBuilder);
 
-            Assert.Equal("Person", engine.GetTableName(typeof(Person)));
-            Assert.Equal("Department", engine.GetTableName(typeof(Department)));
-        }
-
-        [Fact]
-        public void Get_Primary_Keys()
-        {
-            TableBuilder tableBuilder = new TableBuilder();
-
-            tableBuilder.Add<Person>();
-
-            tableBuilder.Add<Department>(config => config
-                .PrimaryKey(x => x.Guid));
-
-            IEngine engine = new Engine(tableBuilder);
-
-            Assert.Equal(new string[] { "Id" }, engine.GetPrimaryKeys(typeof(Person)));
-            Assert.Equal(new string[] { "Guid" }, engine.GetPrimaryKeys(typeof(Department)));
-        }
-
-        [Fact]
-        public void Get_Columns()
-        {
-            TableBuilder tableBuilder = new TableBuilder();
-
-            tableBuilder.Add<Person>();
-
-            tableBuilder.Add<Department>();
-
-            IEngine engine = new Engine(tableBuilder);
-
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "DepartmentId", "Department.Id" },
-                engine.GetColumns(typeof(Person)));
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id" }, engine.GetColumns(typeof(Department)));
-        }
-
-        [Fact]
-        public void Get_Column_Names()
-        {
-            TableBuilder tableBuilder = new TableBuilder();
-
-            tableBuilder.Add<Person>(config => config
-                .ColumnName(x => x.Id, "Id2"));
-
-            tableBuilder.Add<Department>(config => config
-                .ColumnName(x => x.Id, "Id3"));
-
-            IEngine engine = new Engine(tableBuilder);
-
-            Assert.Equal(new string[] { "Id2", "Guid", "Name", "SurName", "DepartmentId" },
-                engine.GetColumnNames(typeof(Person)));
-            Assert.Equal(new string[] { "Id3", "Guid", "Name", "BossId" }, engine.GetColumnNames(typeof(Department)));
-        }
-
-        [Fact]
-        public void Get_Column_Name()
-        {
-            TableBuilder tableBuilder = new TableBuilder();
-
-            tableBuilder.Add<Person>(config => config
-                .ColumnName(x => x.Id, "Id2"));
-
-            tableBuilder.Add<Department>(config => config
-                .ColumnName(x => x.Id, "Id3"));
-
-            IEngine engine = new Engine(tableBuilder);
-
-            Assert.Equal("Id2", engine.GetColumnName(typeof(Person), "Id"));
-            Assert.Equal("Id3", engine.GetColumnName(typeof(Department), "Id"));
-        }
-
-        [Fact]
-        public void Get_Column_Names_Dic()
-        {
-            TableBuilder tableBuilder = new TableBuilder();
-
-            tableBuilder.Add<Person>(config => config
-                .ColumnName(x => x.Id, "Id2"));
-
-            tableBuilder.Add<Department>(config => config
-                .ColumnName(x => x.Id, "Id3"));
-
-            IEngine engine = new Engine(tableBuilder);
-
-            Assert.Equal(new Dictionary<string, string>
-            {
-                ["Id"] = "Id2",
-                ["Guid"] = "Guid",
-                ["Name"] = "Name",
-                ["SurName"] = "SurName",
-                ["DepartmentId"] = "DepartmentId",
-                ["Department.Id"] = "DepartmentId"
-            }, engine.GetColumnNamesDic(typeof(Person)));
-
-            Assert.Equal(new Dictionary<string, string>
-            {
-                ["Id"] = "Id3",
-                ["Guid"] = "Guid",
-                ["Name"] = "Name",
-                ["Boss.Id"] = "BossId"
-            }, engine.GetColumnNamesDic(typeof(Department)));
-        }
-
-
-        public abstract class BaseConfig
-        {
-            public int Id { get; set; }
-
-            public string Guid { get; set; }
-
-            public string Name { get; set; }
-        }
-
-        public class Department : BaseConfig
-        {
-            public Person Boss { get; set; }
-
-            public List<Person> Employees { get; set; }
-        }
-
-        public class Person : BaseConfig
-        {
-            public string SurName { get; set; }
-
-            public int DepartmentId { get; set; }
-
-            public Department Department { get; set; }
+            Assert.False(engine.IsTable<BaseConfig>());
+            Assert.True(engine.IsTable<Person>());
+            Assert.True(engine.IsTable<Employee>());
+            Assert.True(engine.IsTable<Department>());
         }
     }
 }

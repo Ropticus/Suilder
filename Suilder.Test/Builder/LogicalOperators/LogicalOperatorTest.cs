@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.LogicalOperators
 {
-    public class LogicalOperatorTest : BaseTest
+    public class LogicalOperatorTest : BuilderBaseTest
     {
         [Fact]
         public void Or_Parentheses()
@@ -19,8 +19,12 @@ namespace Suilder.Test.Builder.LogicalOperators
 
             Assert.Equal("(\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1) "
                 + "AND \"person\".\"Name\" LIKE @p2", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = true, ["@p2"] = "%SomeName%" },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -33,8 +37,12 @@ namespace Suilder.Test.Builder.LogicalOperators
 
             Assert.Equal("\"person\".\"Id\" = @p0 OR (\"person\".\"Active\" = @p1 "
                 + "AND \"person\".\"Name\" LIKE @p2)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = true, ["@p2"] = "%SomeName%" },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%SomeName%"
+            }, result.Parameters);
         }
     }
 }

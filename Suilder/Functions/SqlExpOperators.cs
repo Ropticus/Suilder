@@ -1,4 +1,5 @@
 using System;
+using Suilder.Core;
 
 namespace Suilder.Functions
 {
@@ -201,6 +202,19 @@ namespace Suilder.Functions
         /// <param name="values">The arguments of the function.</param>
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static object Function(string name, params object[] values)
+        {
+            throw new InvalidOperationException("Only for expressions.");
+        }
+
+        /// <summary>
+        /// Returns the passed value.
+        /// <para>It prevents the value from being compiled into an <see cref="IQueryFragment"/> even if is an alias
+        /// or a registered function.</para>
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
+        public static T Val<T>(T value)
         {
             throw new InvalidOperationException("Only for expressions.");
         }

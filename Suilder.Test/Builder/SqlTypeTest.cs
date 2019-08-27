@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder
 {
-    public class SqlTypeTest : BaseTest
+    public class SqlTypeTest : BuilderBaseTest
     {
         [Fact]
         public void Type()

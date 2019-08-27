@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Query
 {
-    public class WithTest : BaseTest
+    public class WithTest : BuilderBaseTest
     {
         [Fact]
         public void With()
@@ -41,7 +41,7 @@ namespace Suilder.Test.Builder.Query
             IAlias dept = sql.Alias("dept");
             ICte cte1 = sql.Cte("personCte").As(sql.Query.Select(person.All).From(person));
             ICte cte2 = sql.Cte("deptCte").As(sql.Query.Select(dept.All).From(dept));
-            IQuery query = sql.Query.With(new List<IQueryFragment>() { cte1, cte2 });
+            IQuery query = sql.Query.With(new List<IQueryFragment> { cte1, cte2 });
 
             QueryResult result = engine.Compile(query);
 

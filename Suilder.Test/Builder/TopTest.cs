@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
 using Xunit;
 
 namespace Suilder.Test.Builder
 {
-    public class TopTest : BaseTest
+    public class TopTest : BuilderBaseTest
     {
         [Fact]
         public void Top()
@@ -15,7 +17,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(top);
 
             Assert.Equal("TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -26,7 +31,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(top);
 
             Assert.Equal("TOP(@p0) PERCENT", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -37,7 +45,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(top);
 
             Assert.Equal("TOP(@p0) WITH TIES", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -48,7 +59,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(top);
 
             Assert.Equal("TOP(@p0) PERCENT WITH TIES", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -62,6 +76,17 @@ namespace Suilder.Test.Builder
 
             Assert.Equal("TOP(10)", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Top_Not_Supported()
+        {
+            engine.Options.TopSupported = false;
+
+            ITop top = sql.Top(10);
+
+            Exception ex = Assert.Throws<ClauseNotSupportedException>(() => engine.Compile(top));
+            Assert.Equal("Top clause is not supported in this engine.", ex.Message);
         }
 
         [Fact]

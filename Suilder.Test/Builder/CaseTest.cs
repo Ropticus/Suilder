@@ -1,13 +1,15 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
 using Suilder.Extensions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
 namespace Suilder.Test.Builder
 {
-    public class CaseTest : BaseTest
+    public class CaseTest : BuilderBaseTest
     {
         [Fact]
         public void When()
@@ -23,7 +25,20 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void When_Else()
+        public void When_Then_Null()
+        {
+            IAlias person = sql.Alias("person");
+            ICase caseWhen = sql.Case
+                .When(person["Name"].IsNotNull(), null);
+
+            QueryResult result = engine.Compile(caseWhen);
+
+            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NOT NULL THEN NULL END", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Else()
         {
             IAlias person = sql.Alias("person");
             ICase caseWhen = sql.Case
@@ -34,6 +49,20 @@ namespace Suilder.Test.Builder
 
             Assert.Equal("CASE WHEN \"person\".\"Name\" IS NOT NULL THEN \"person\".\"Name\" "
                 + "ELSE \"person\".\"SurName\" END", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Else_Null()
+        {
+            IAlias person = sql.Alias("person");
+            ICase caseWhen = sql.Case
+                .When(person["Name"].IsNotNull(), person["Name"])
+                .Else(null);
+
+            QueryResult result = engine.Compile(caseWhen);
+
+            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NOT NULL THEN \"person\".\"Name\" ELSE NULL END", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -50,7 +79,7 @@ namespace Suilder.Test.Builder
 
             Assert.Equal("CASE WHEN \"person\".\"Salary\" > @p0 THEN @p1 "
                 + "WHEN \"person\".\"Salary\" > @p2 THEN @p3 ELSE @p4 END", result.Sql);
-            Assert.Equal(new Dictionary<string, object>()
+            Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 2000m,
                 ["@p1"] = "Greather than 2000",
@@ -70,6 +99,19 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(caseWhen);
 
             Assert.Equal("CASE WHEN \"person\".\"Name\" IS NOT NULL THEN \"person\".\"Name\" END", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void When_Then_Null_Expression()
+        {
+            Person person = null;
+            ICase caseWhen = sql.Case
+                .When(() => person.Name != null, null);
+
+            QueryResult result = engine.Compile(caseWhen);
+
+            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NOT NULL THEN NULL END", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -101,7 +143,7 @@ namespace Suilder.Test.Builder
 
             Assert.Equal("CASE WHEN \"person\".\"Salary\" > @p0 THEN @p1 "
                 + "WHEN \"person\".\"Salary\" > @p2 THEN @p3 ELSE @p4 END", result.Sql);
-            Assert.Equal(new Dictionary<string, object>()
+            Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 2000m,
                 ["@p1"] = "Greather than 2000",
@@ -109,6 +151,15 @@ namespace Suilder.Test.Builder
                 ["@p3"] = "Greather than 1000",
                 ["@p4"] = "Under 1000"
             }, result.Parameters);
+        }
+
+        [Fact]
+        public void Empty_List()
+        {
+            ICase caseWhen = sql.Case;
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(caseWhen));
+            Assert.Equal("Add at least one \"when\" clause.", ex.Message);
         }
 
         [Fact]

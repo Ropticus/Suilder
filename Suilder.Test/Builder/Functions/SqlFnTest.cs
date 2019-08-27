@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Functions
 {
-    public class SqlFnTest : BaseTest
+    public class SqlFnTest : BuilderBaseTest
     {
         [Fact]
         public void Abs()
@@ -209,7 +209,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("LTRIM(\"person\".\"Name\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]
@@ -237,7 +240,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("TRIM(LEADING @p0 FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]
@@ -284,7 +290,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("NULLIF(\"person\".\"Name\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "empty" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "empty"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -296,7 +305,11 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("REPLACE(\"person\".\"Name\", @p0, @p1)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "a", ["@p1"] = "b" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "a",
+                ["@p1"] = "b"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -320,7 +333,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("ROUND(\"person\".\"Salary\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 2m }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 2m
+            }, result.Parameters);
         }
 
         [Fact]
@@ -344,7 +360,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("RTRIM(\"person\".\"Name\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]
@@ -372,7 +391,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("TRIM(TRAILING @p0 FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]
@@ -384,7 +406,11 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("SUBSTRING(\"person\".\"Name\", @p0, @p1)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 2, ["@p1"] = 4 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 2,
+                ["@p1"] = 4
+            }, result.Parameters);
         }
 
         [Fact]
@@ -432,7 +458,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("TRIM(\"person\".\"Name\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]
@@ -460,7 +489,10 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("TRIM(@p0 FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ","
+            }, result.Parameters);
         }
 
         [Fact]

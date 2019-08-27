@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Query
 {
-    public class GroupByTest : BaseTest
+    public class GroupByTest : BuilderBaseTest
     {
         [Fact]
         public void GroupBy()
@@ -38,7 +38,7 @@ namespace Suilder.Test.Builder.Query
         public void GroupBy_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IQuery query = sql.Query.GroupBy(new List<object>() { person["Name"], person["SurName"] });
+            IQuery query = sql.Query.GroupBy(new List<object> { person["Name"], person["SurName"] });
 
             QueryResult result = engine.Compile(query);
 
@@ -74,8 +74,7 @@ namespace Suilder.Test.Builder.Query
         public void GroupBy_Expression_Enumerable()
         {
             Person person = null;
-            IQuery query = sql.Query.GroupBy(new List<Expression<Func<object>>>() { () => person.Name,
-                () => person.SurName });
+            IQuery query = sql.Query.GroupBy(new List<Expression<Func<object>>> { () => person.Name, () => person.SurName });
 
             QueryResult result = engine.Compile(query);
 

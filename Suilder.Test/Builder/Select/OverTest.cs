@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Select
 {
-    public class OverTest : BaseTest
+    public class OverTest : BuilderBaseTest
     {
         [Fact]
         public void Over()

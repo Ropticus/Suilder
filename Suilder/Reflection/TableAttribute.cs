@@ -21,23 +21,38 @@ namespace Suilder.Reflection
         /// <summary>
         /// If the type must inherit the table name and columns of the base type.
         /// </summary>
+        private bool? inheritTable;
+
+        /// <summary>
+        /// If the type must inherit the table name and columns of the base type.
+        /// </summary>
         /// <value>If the type must inherit the the table name and columns of the base type.</value>
-        public bool InheritTable { get; set; }
+        public bool InheritTable
+        {
+            get => inheritTable.GetValueOrDefault();
+            set => inheritTable = value;
+        }
+
+        /// <summary>
+        /// If the property <see cref="InheritTable"/> has value.
+        /// </summary>
+        /// <value>If the property <see cref="InheritTable"/> has value.</value>
+        public bool InheritTableHasValue { get => inheritTable.HasValue; }
 
         /// <summary>
         /// If the type must inherit the columns of the base type.
-        /// <para>By default is true for types whose base type is abstract.</para>
+        /// <para>By default is <see langword="true"/> for types whose base type is <see langword="abstract"/>.</para>
         /// </summary>
         private bool? inheritColumns;
 
         /// <summary>
         /// If the type must inherit the columns of the base type.
-        /// <para>By default is true for types whose base type is abstract.</para>
+        /// <para>By default is <see langword="true"/> for types whose base type is <see langword="abstract"/>.</para>
         /// </summary>
         /// <value>If the type must inherit the columns of the base type.</value>
         public bool InheritColumns
         {
-            get => inheritColumns ?? false;
+            get => inheritColumns.GetValueOrDefault();
             set => inheritColumns = value;
         }
 

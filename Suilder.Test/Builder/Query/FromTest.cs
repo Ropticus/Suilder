@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Query
 {
-    public class FromTest : BaseTest
+    public class FromTest : BuilderBaseTest
     {
         [Fact]
         public void From_String()
@@ -18,7 +18,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void From_String_With_Alias()
+        public void From_String_With_Alias_Name()
         {
             IQuery query = sql.Query.From("person", "per");
 
@@ -28,7 +28,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void From_StringAlias()
+        public void From_Alias()
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.From(person);
@@ -39,7 +39,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void From_StringAlias_With_Alias()
+        public void From_Alias_With_Alias_Name()
         {
             IAlias person = sql.Alias("person", "per");
             IQuery query = sql.Query.From(person);
@@ -50,7 +50,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void From_TypedAlias()
+        public void From_Typed_Alias()
         {
             IAlias<Person> person = sql.Alias<Person>();
             IQuery query = sql.Query.From(person);
@@ -61,7 +61,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void From_TypedAlias_With_Alias()
+        public void From_Typed_Alias_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
             IQuery query = sql.Query.From(person);
@@ -93,7 +93,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void From_Subquery_StringAlias()
+        public void From_Subquery_Alias()
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.From(sql.RawQuery("Subquery"), person);
@@ -104,7 +104,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void From_Subquery_StringAlias_With_Alias()
+        public void From_Subquery_Alias_With_Alias_Name()
         {
             IAlias person = sql.Alias("person", "per");
             IQuery query = sql.Query.From(sql.RawQuery("Subquery"), person);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
@@ -8,10 +9,10 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Operators
 {
-    public class LikeTest : BaseTest
+    public class LikeTest : BuilderBaseTest
     {
         [Fact]
-        public void Builder()
+        public void Builder_Object()
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.Like(person["Name"], "%SomeName%");
@@ -19,11 +20,14 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "%SomeName%" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
-        public void Builder_With_Null()
+        public void Builder_Object_Right_Null()
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.Like(person["Name"], null);
@@ -31,7 +35,7 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -43,11 +47,14 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "%SomeName%" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
-        public void Builder_Expression_With_Null()
+        public void Builder_Expression_Right_Null()
         {
             Person person = null;
             IOperator op = sql.Like(() => person.Name, null);
@@ -55,7 +62,7 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -72,7 +79,7 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Builder_Two_Expressions_With_Null()
+        public void Builder_Two_Expressions_Right_Null()
         {
             Person person = null;
             IOperator op = sql.Like(() => person.Name, () => null);
@@ -80,12 +87,12 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
 
         [Fact]
-        public void Extension()
+        public void Extension_Object()
         {
             IAlias person = sql.Alias("person");
             IOperator op = person["Name"].Like("%SomeName%");
@@ -93,11 +100,14 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "%SomeName%" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
-        public void Extension_With_Null()
+        public void Extension_Object_Null()
         {
             IAlias person = sql.Alias("person");
             IOperator op = person["Name"].Like(null);
@@ -105,7 +115,7 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -122,7 +132,7 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Extension_Expression_With_Null()
+        public void Extension_Expression_Null()
         {
             IAlias person = sql.Alias("person");
             IOperator op = person["Name"].Like(() => null);
@@ -130,7 +140,7 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -142,7 +152,10 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "%SomeName%" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -154,7 +167,10 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "%SomeName%" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -166,49 +182,25 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void ToLikeAny()
+        public void Expression_Invalid_Call()
         {
-            string value = sql.ToLikeAny("SomeName");
-            Assert.Equal("%SomeName%", value);
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<InvalidOperationException>(() => person.Name.Like("%SomeName%"));
+            Assert.Equal("Only for expressions.", ex.Message);
         }
 
         [Fact]
-        public void ToLikeAnyExtension()
+        public void Expression_Method_Invalid_Call()
         {
-            string value = "SomeName".ToLikeAny();
-            Assert.Equal("%SomeName%", value);
-        }
+            Person person = new Person();
 
-        [Fact]
-        public void ToLikeStart()
-        {
-            string value = sql.ToLikeStart("SomeName");
-            Assert.Equal("SomeName%", value);
-        }
-
-        [Fact]
-        public void ToLikeStartExtension()
-        {
-            string value = "SomeName".ToLikeStart();
-            Assert.Equal("SomeName%", value);
-        }
-
-        [Fact]
-        public void ToLikeEnd()
-        {
-            string value = sql.ToLikeEnd("SomeName");
-            Assert.Equal("%SomeName", value);
-        }
-
-        [Fact]
-        public void ToLikeEndExtension()
-        {
-            string value = "SomeName".ToLikeEnd();
-            Assert.Equal("%SomeName", value);
+            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Like(person.Name, "%SomeName%"));
+            Assert.Equal("Only for expressions.", ex.Message);
         }
 
         [Fact]

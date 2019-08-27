@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
 using Suilder.Extensions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
 namespace Suilder.Test.Builder.LogicalOperators
 {
-    public class OrTest : BaseTest
+    public class OrTest : BuilderBaseTest
     {
         [Fact]
         public void Add()
@@ -24,8 +25,12 @@ namespace Suilder.Test.Builder.LogicalOperators
 
             Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 "
                 + "OR \"person\".\"Name\" LIKE @p2", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = true, ["@p2"] = "%SomeName%" },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -38,23 +43,31 @@ namespace Suilder.Test.Builder.LogicalOperators
 
             Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 "
                 + "OR \"person\".\"Name\" LIKE @p2", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = true, ["@p2"] = "%SomeName%" },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
         public void Add_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.Or.Add(new List<IQueryFragment>() { person["Id"].Eq(1), person["Active"].Eq(true),
+            IOperator op = sql.Or.Add(new List<IQueryFragment> { person["Id"].Eq(1), person["Active"].Eq(true),
                 person["Name"].Like("%SomeName%") });
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 "
                 + "OR \"person\".\"Name\" LIKE @p2", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = true, ["@p2"] = "%SomeName%" },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -70,8 +83,12 @@ namespace Suilder.Test.Builder.LogicalOperators
 
             Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 "
                 + "OR \"person\".\"Name\" LIKE @p2", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = true, ["@p2"] = "%SomeName%" },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -84,23 +101,31 @@ namespace Suilder.Test.Builder.LogicalOperators
 
             Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 "
                 + "OR \"person\".\"Name\" LIKE @p2", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = true, ["@p2"] = "%SomeName%" },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
         public void Add_Expression_Enumerable()
         {
             Person person = null;
-            IOperator op = sql.Or.Add(new List<Expression<Func<bool>>>() { () => person.Id == 1, () => person.Active,
+            IOperator op = sql.Or.Add(new List<Expression<Func<bool>>> { () => person.Id == 1, () => person.Active,
                 () => person.Name.Like("%SomeName%")});
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 "
                 + "OR \"person\".\"Name\" LIKE @p2", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = true, ["@p2"] = "%SomeName%" },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -113,8 +138,12 @@ namespace Suilder.Test.Builder.LogicalOperators
 
             Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 "
                 + "OR \"person\".\"Name\" LIKE @p2", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = true, ["@p2"] = "%SomeName%" },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%SomeName%"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -127,8 +156,21 @@ namespace Suilder.Test.Builder.LogicalOperators
 
             Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 "
                 + "OR \"person\".\"Name\" LIKE @p2", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = true, ["@p2"] = "%SomeName%" },
-                result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%SomeName%"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Empty_List()
+        {
+            IOperator op = sql.Or;
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(op));
+            Assert.Equal("List is empty.", ex.Message);
         }
 
         [Fact]

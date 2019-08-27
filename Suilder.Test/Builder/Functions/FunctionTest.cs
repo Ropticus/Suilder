@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder
 {
-    public class FunctionTest : BaseTest
+    public class FunctionTest : BuilderBaseTest
     {
         [Fact]
         public void Add()
@@ -24,7 +24,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
@@ -36,19 +39,25 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
         public void Add_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IFunction func = sql.Function("CONCAT").Add(new List<object>() { person["Name"], ", ", person["SurName"] });
+            IFunction func = sql.Function("CONCAT").Add(new List<object> { person["Name"], ", ", person["SurName"] });
 
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
@@ -63,7 +72,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
@@ -75,20 +87,26 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
         public void Add_Expression_Enumerable()
         {
             Person person = null;
-            IFunction func = sql.Function("CONCAT").Add(new List<Expression<Func<object>>>() { () => person.Name,
-                () => ", ", () => person.SurName });
+            IFunction func = sql.Function("CONCAT").Add(new List<Expression<Func<object>>> { () => person.Name, () => ", ",
+                () => person.SurName });
 
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
@@ -100,11 +118,14 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
-        public void OnlyRegistered()
+        public void Only_Registered()
         {
             engine.Options.FunctionsOnlyRegistered = true;
 
@@ -118,7 +139,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
@@ -132,7 +156,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("TRANSLATED(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = ", " }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = ", "
+            }, result.Parameters);
         }
 
         [Fact]
@@ -178,15 +205,23 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void Delegate_KeyWord()
+        public void Delegate_Translation_Empty()
         {
-            engine.AddFunction("SYSDATE", FunctionHelper.NameOnly);
+            engine.AddFunction("CAST", null, (queryBuilder, engine, name, fn) =>
+            {
+                queryBuilder.Write(name + "(");
+                queryBuilder.WriteValue(fn.Args[0]);
+                queryBuilder.Write(" AS ");
+                queryBuilder.WriteValue(fn.Args[1]);
+                queryBuilder.Write(")");
+            });
 
-            IFunction func = (IFunction)sql.Val(() => SqlExp.Function("SYSDATE"));
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Function("CAST", person.Salary, sql.Type("VARCHAR")));
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("SYSDATE", result.Sql);
+            Assert.Equal("CAST(\"person\".\"Salary\" AS VARCHAR)", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder
 {
-    public class ParametersTest : BaseTest
+    public class ParametersTest : BuilderBaseTest
     {
         [Fact]
         public void Boolean_Value()
@@ -17,7 +17,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -29,7 +32,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -41,7 +47,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -53,7 +62,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -65,7 +77,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -77,7 +92,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -89,7 +107,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -101,7 +122,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -113,7 +137,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -125,7 +152,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -137,7 +167,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -149,7 +182,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -161,7 +197,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -173,7 +212,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -185,7 +227,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -209,7 +254,7 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("(@p0, @p1, @p2)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>()
+            Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = values[0],
                 ["@p1"] = values[1],
@@ -226,7 +271,7 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("(@p0, NULL, @p1)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>()
+            Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = values[0],
                 ["@p1"] = values[2]
@@ -242,7 +287,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -254,7 +302,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -266,7 +317,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -278,7 +332,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -290,7 +347,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -302,7 +362,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -314,7 +377,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -326,7 +392,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -338,7 +407,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -350,7 +422,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -362,7 +437,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -374,7 +452,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -386,7 +467,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -398,7 +482,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -410,7 +497,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = value }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
         [Fact]
@@ -434,7 +524,7 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("(@p0, @p1, @p2)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>()
+            Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = values[0],
                 ["@p1"] = values[1],
@@ -451,7 +541,7 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("(@p0, NULL, @p1)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>()
+            Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = values[0],
                 ["@p1"] = values[2]
@@ -466,7 +556,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = true }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true
+            }, result.Parameters);
         }
 
         [Fact]
@@ -477,7 +570,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = (byte)1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = (byte)1
+            }, result.Parameters);
         }
 
         [Fact]
@@ -488,7 +584,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = (sbyte)1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = (sbyte)1
+            }, result.Parameters);
         }
 
         [Fact]
@@ -499,7 +598,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = (short)1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = (short)1
+            }, result.Parameters);
         }
 
         [Fact]
@@ -510,7 +612,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = (ushort)1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = (ushort)1
+            }, result.Parameters);
         }
 
         [Fact]
@@ -521,7 +626,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
         }
 
         [Fact]
@@ -532,7 +640,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1u }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1u
+            }, result.Parameters);
         }
 
         [Fact]
@@ -543,7 +654,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1L }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1L
+            }, result.Parameters);
         }
 
         [Fact]
@@ -554,7 +668,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1uL }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1uL
+            }, result.Parameters);
         }
 
         [Fact]
@@ -565,7 +682,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1.5f }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1.5f
+            }, result.Parameters);
         }
 
         [Fact]
@@ -576,7 +696,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1.5 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1.5
+            }, result.Parameters);
         }
 
         [Fact]
@@ -587,7 +710,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1.5m }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1.5m
+            }, result.Parameters);
         }
 
         [Fact]
@@ -598,7 +724,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 'a' }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 'a'
+            }, result.Parameters);
         }
 
         [Fact]
@@ -609,7 +738,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "abcd" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "abcd"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -620,7 +752,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("@p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = new DateTime(2000, 1, 1) }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new DateTime(2000, 1, 1)
+            }, result.Parameters);
         }
 
         [Fact]
@@ -642,7 +777,7 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("(@p0, @p1, @p2)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>()
+            Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1,
                 ["@p1"] = 2,
@@ -658,7 +793,7 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(valList);
 
             Assert.Equal("(@p0, NULL, @p1)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>()
+            Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = "a",
                 ["@p1"] = "c"

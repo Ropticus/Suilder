@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
@@ -8,10 +9,10 @@ using Xunit;
 
 namespace Suilder.Test.Builder.Operators
 {
-    public class IsNullTest : BaseTest
+    public class IsNullTest : BuilderBaseTest
     {
         [Fact]
-        public void Builder()
+        public void Builder_Object()
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.IsNull(person["Name"]);
@@ -19,6 +20,17 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" IS NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Builder_Object_Right_Null()
+        {
+            IOperator op = sql.IsNull(null);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NULL IS NULL", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -35,7 +47,7 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Extension()
+        public void Extension_Object()
         {
             IAlias person = sql.Alias("person");
             IOperator op = person["Name"].IsNull();
@@ -68,6 +80,15 @@ namespace Suilder.Test.Builder.Operators
 
             Assert.Equal("\"person\".\"Name\" IS NULL", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_Invalid_Call()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.IsNull(person.Name));
+            Assert.Equal("Only for expressions.", ex.Message);
         }
 
         [Fact]

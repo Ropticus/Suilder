@@ -1,13 +1,15 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
 using Suilder.Extensions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
 namespace Suilder.Test.Builder.Query
 {
-    public class DeleteTest : BaseTest
+    public class DeleteTest : BuilderBaseTest
     {
         [Fact]
         public void Delete()
@@ -220,7 +222,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("DELETE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -231,7 +236,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("DELETE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -242,7 +250,35 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("DELETE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Delete_With_Alias_Invalid_From()
+        {
+            engine.Options.DeleteWithAlias = true;
+
+            IAlias person = sql.Alias("person");
+            IQuery query = sql.Query.Delete().From(sql.Raw("FROM {0}", person));
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(query));
+            Assert.Equal($"The \"from\" value must be a \"{typeof(IFrom)}\" instance or specify the alias to delete.",
+                 ex.Message);
+        }
+
+        [Fact]
+        public void Delete_With_Alias_Invalid_Alias_Name()
+        {
+            engine.Options.DeleteWithAlias = true;
+
+            IAlias alias = sql.Alias((string)null);
+            IQuery query = sql.Query.Delete().From(sql.From(alias));
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(query));
+            Assert.Equal("The \"from\" must have an alias or a table name.", ex.Message);
         }
     }
 }

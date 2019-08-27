@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
+using Suilder.Extensions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
 namespace Suilder.Test.Builder
 {
-    public class OrderByTest : BaseTest
+    public class OrderByTest : BuilderBaseTest
     {
         [Fact]
         public void Add()
@@ -66,7 +68,7 @@ namespace Suilder.Test.Builder
         public void Add_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IOrderBy orderBy = sql.OrderBy().Add(new List<object>() { person["Name"], person["SurName"] });
+            IOrderBy orderBy = sql.OrderBy().Add(new List<object> { person["Name"], person["SurName"] });
 
             QueryResult result = engine.Compile(orderBy);
 
@@ -78,7 +80,7 @@ namespace Suilder.Test.Builder
         public void Add_Enumerable_With_Order()
         {
             IAlias person = sql.Alias("person");
-            IOrderBy orderBy = sql.OrderBy().Add(new List<object>() { person["Name"], person["SurName"] }).Desc;
+            IOrderBy orderBy = sql.OrderBy().Add(new List<object> { person["Name"], person["SurName"] }).Desc;
 
             QueryResult result = engine.Compile(orderBy);
 
@@ -142,7 +144,7 @@ namespace Suilder.Test.Builder
         public void Add_Expression_Enumerable()
         {
             Person person = null;
-            IOrderBy orderBy = sql.OrderBy().Add(new List<Expression<Func<object>>>() { () => person.Name,
+            IOrderBy orderBy = sql.OrderBy().Add(new List<Expression<Func<object>>> { () => person.Name,
                 () => person.SurName });
 
             QueryResult result = engine.Compile(orderBy);
@@ -156,7 +158,7 @@ namespace Suilder.Test.Builder
         public void Add_Expression_Enumerable_With_Order()
         {
             Person person = null;
-            IOrderBy orderBy = sql.OrderBy().Add(new List<Expression<Func<object>>>() { () => person.Name,
+            IOrderBy orderBy = sql.OrderBy().Add(new List<Expression<Func<object>>> { () => person.Name,
                 () => person.SurName }).Desc;
 
             QueryResult result = engine.Compile(orderBy);
@@ -214,6 +216,22 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void Order_Not_Column()
+        {
+            IAlias person = sql.Alias("person");
+            IOrderBy orderBy = sql.OrderBy()
+                .Add(sql.Case
+                    .When(person["Name"].IsNotNull(), person["Name"])
+                    .Else(person["SurName"])).Desc;
+
+            QueryResult result = engine.Compile(orderBy);
+
+            Assert.Equal("ORDER BY CASE WHEN \"person\".\"Name\" IS NOT NULL THEN \"person\".\"Name\" "
+                + "ELSE \"person\".\"SurName\" END DESC", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Invalid_Order_Empty()
         {
             Exception ex = Assert.Throws<InvalidOperationException>(() => sql.OrderBy().Asc);
@@ -227,6 +245,15 @@ namespace Suilder.Test.Builder
 
             Exception ex = Assert.Throws<InvalidOperationException>(() => sql.OrderBy().Add(person.All).Asc);
             Assert.Equal("Cannot add order for select all column.", ex.Message);
+        }
+
+        [Fact]
+        public void Empty_List()
+        {
+            IOrderBy orderBy = sql.OrderBy();
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(orderBy));
+            Assert.Equal("List is empty.", ex.Message);
         }
 
         [Fact]

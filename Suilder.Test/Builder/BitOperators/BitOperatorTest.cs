@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Suilder.Test.Builder.BitOperators
 {
-    public class BitOperatorTest : BaseTest
+    public class BitOperatorTest : BuilderBaseTest
     {
         [Fact]
         public void Property_And_Value_Or_Value()
@@ -17,7 +17,11 @@ namespace Suilder.Test.Builder.BitOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("(\"person\".\"Id\" & @p0) | @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
         }
 
         [Fact]
@@ -29,7 +33,10 @@ namespace Suilder.Test.Builder.BitOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("(\"person\".\"Id\" & \"person\".\"Id\") | @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
         }
 
         [Fact]
@@ -41,7 +48,11 @@ namespace Suilder.Test.Builder.BitOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("(\"person\".\"Id\" & @p0) | (\"person\".\"Id\" ^ @p1)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
         }
 
         [Fact]
@@ -65,7 +76,11 @@ namespace Suilder.Test.Builder.BitOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("(\"person\".\"Id\" & @p0) > @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 1, ["@p1"] = 2 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
         }
     }
 }

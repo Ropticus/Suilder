@@ -63,7 +63,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Writes a <see cref="IQueryFragment"/> to the query.
+        /// Writes an <see cref="IQueryFragment"/> to the query.
         /// </summary>
         /// <param name="value">The <see cref="IQueryFragment"/> to write.</param>
         /// <returns>The query builder.</returns>
@@ -73,7 +73,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Writes a <see cref="IQueryFragment"/> to the query.
+        /// Writes an <see cref="IQueryFragment"/> to the query.
         /// </summary>
         /// <param name="value">The <see cref="IQueryFragment"/> to write.</param>
         /// <param name="addParentheses">If add parentheses to the <see cref="IQueryFragment"/>.</param>
@@ -162,7 +162,7 @@ namespace Suilder.Builder
         /// <returns>The query builder.</returns>
         public QueryBuilder RemoveLast(int length)
         {
-            Builder.Length -= length;
+            Builder.Length = Math.Max(Builder.Length - length, 0);
             return this;
         }
 

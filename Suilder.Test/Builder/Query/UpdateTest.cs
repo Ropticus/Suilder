@@ -1,13 +1,15 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
 using Suilder.Extensions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
 namespace Suilder.Test.Builder.Query
 {
-    public class UpdateTest : BaseTest
+    public class UpdateTest : BuilderBaseTest
     {
         [Fact]
         public void Update()
@@ -21,6 +23,74 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
+        public void Set_String_Column()
+        {
+            IAlias person = sql.Alias("person");
+            IQuery query = sql.Query.Update()
+                .Set("person.Name", "SomeName")
+                .From(person);
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Set_Column()
+        {
+            IAlias person = sql.Alias("person");
+            IQuery query = sql.Query.Update()
+                .Set(person["Name"], "SomeName")
+                .From(person);
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Set_Expression()
+        {
+            Person person = null;
+            IQuery query = sql.Query.Update()
+                .Set(() => person.Name, "SomeName")
+                .From(() => person); ;
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("UPDATE \"Person\" AS \"person\" SET \"Name\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Set_Expression_Value()
+        {
+            Person person = null;
+            IQuery query = sql.Query.Update()
+                .Set(() => person.Name, () => "SomeName")
+                .From(() => person);
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("UPDATE \"Person\" AS \"person\" SET \"Name\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
+        }
+
+        [Fact]
         public void Update_Set_Without_TableName()
         {
             IAlias person = sql.Alias("person");
@@ -31,7 +101,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -47,7 +120,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("UPDATE \"person\" SET \"person\".\"Name\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -63,7 +139,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0 FROM \"person\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -83,7 +162,10 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("UPDATE \"person\" INNER JOIN \"dept\" ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" "
                 + "SET \"person\".\"Name\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -103,7 +185,10 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0 FROM \"person\" INNER JOIN \"dept\" ON "
                 + "\"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -123,7 +208,10 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("UPDATE \"person\" INNER JOIN \"dept\" ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" "
                 + "SET \"dept\".\"Name\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -143,7 +231,10 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("UPDATE \"dept\" SET \"Name\" = @p0 FROM \"person\" INNER JOIN \"dept\" ON "
                 + "\"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -164,7 +255,11 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("UPDATE \"person\" INNER JOIN \"dept\" ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" "
                 + "SET \"person\".\"Name\" = @p0, \"dept\".\"Name\" = @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName", ["@p1"] = "SomeName2" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName",
+                ["@p1"] = "SomeName2"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -178,7 +273,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("UPDATE \"Person\" AS \"person\" SET \"Name\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -194,7 +292,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("UPDATE \"Person\" AS \"person\" SET \"person\".\"Name\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -210,7 +311,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0 FROM \"Person\" AS \"person\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -230,7 +334,10 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("UPDATE \"Person\" AS \"person\" INNER JOIN \"Dept\" AS \"dept\" "
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" SET \"person\".\"Name\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -250,7 +357,10 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0 FROM \"Person\" AS \"person\" INNER JOIN "
                 + "\"Dept\" AS \"dept\" ON \"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -270,7 +380,10 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("UPDATE \"Person\" AS \"person\" INNER JOIN \"Dept\" AS \"dept\" "
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" SET \"dept\".\"Name\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -290,7 +403,10 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("UPDATE \"dept\" SET \"Name\" = @p0 FROM \"Person\" AS \"person\" INNER JOIN "
                 + "\"Dept\" AS \"dept\" ON \"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
         }
 
         [Fact]
@@ -312,7 +428,25 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"Person\" AS \"person\" INNER JOIN \"Dept\" AS \"dept\" "
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" SET \"person\".\"Name\" = @p0, "
                 + "\"dept\".\"Name\" = @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "SomeName", ["@p1"] = "SomeName2" }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName",
+                ["@p1"] = "SomeName2"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Update_With_From_Invalid_Column()
+        {
+            engine.Options.UpdateWithFrom = true;
+
+            IAlias person = sql.Alias("person");
+            IQuery query = sql.Query.Update()
+                .Set("Name", "SomeName")
+                .From(person);
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(query));
+            Assert.Equal("The set column must have the table name.", ex.Message);
         }
 
         [Fact]
@@ -323,7 +457,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("UPDATE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -334,7 +471,10 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("UPDATE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
         }
 
         [Fact]
@@ -345,7 +485,22 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("UPDATE TOP(@p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Update_Invalid_From()
+        {
+            IAlias person = sql.Alias("person");
+            IQuery query = sql.Query.Update()
+                .Set(person["Name"], "SomeName")
+                .From(sql.Raw("FROM {0}", person));
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(query));
+            Assert.Equal($"The \"from\" value must be a \"{typeof(IFrom)}\" instance.", ex.Message);
         }
     }
 }

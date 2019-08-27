@@ -23,15 +23,8 @@ namespace Suilder.Core
         /// <summary>
         /// If the column is a select all.
         /// </summary>
-        /// <value>True if the column is a select all.</value>
+        /// <value><see langword="true"/> if the column is a select all, otherwise, <see langword="false"/>.</value>
         public bool SelectAll => ColumnName == "*";
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Column"/> class.
-        /// </summary>
-        protected Column()
-        {
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Column"/> class.
@@ -90,13 +83,6 @@ namespace Suilder.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="Column{T}"/> class.
         /// </summary>
-        protected Column()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Column{T}"/> class.
-        /// </summary>
         /// <param name="tableName">The table name or his alias.</param>
         /// <param name="columnName">The column name.</param>
         public Column(string tableName, string columnName) : base(tableName, columnName)
@@ -114,7 +100,7 @@ namespace Suilder.Core
             if (SelectAll)
             {
                 string sep = ", ";
-                foreach (string columnName in engine.GetColumnNames(typeof(T)))
+                foreach (string columnName in engine.GetInfo(typeof(T)).ColumnNames)
                 {
                     if (withTableName && TableName != null)
                     {
@@ -130,7 +116,7 @@ namespace Suilder.Core
                 {
                     queryBuilder.WriteName(TableName).Write(".");
                 }
-                queryBuilder.WriteName(engine.GetColumnName(typeof(T), ColumnName));
+                queryBuilder.WriteName(engine.GetInfo(typeof(T)).GetColumnName(ColumnName));
             }
         }
     }
