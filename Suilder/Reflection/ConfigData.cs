@@ -76,7 +76,7 @@ namespace Suilder.Reflection
         /// The foreign keys properties.
         /// </summary>
         /// <value>The ignored properties.</value>
-        public IDictionary<string, List<ColumnData>> ForeingKeys { get; set; } = new Dictionary<string, List<ColumnData>>();
+        public IDictionary<string, List<ColumnData>> ForeignKeys { get; set; } = new Dictionary<string, List<ColumnData>>();
 
         /// <summary>
         /// The properties of the type that can be a column.

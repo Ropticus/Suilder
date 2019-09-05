@@ -280,9 +280,9 @@ namespace Suilder.Reflection
                         {
                             continue;
                         }
-                        else if (config.ForeingKeys.ContainsKey(property.Name))
+                        else if (config.ForeignKeys.ContainsKey(property.Name))
                         {
-                            foreach (var key in config.ForeingKeys[property.Name])
+                            foreach (var key in config.ForeignKeys[property.Name])
                             {
                                 config.Columns.Add(key.PropertyName);
                                 config.ColumnsNames.Add(key.PropertyName, key.ColumnName);

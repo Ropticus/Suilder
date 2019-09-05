@@ -90,7 +90,7 @@ namespace Suilder.Core
         /// <summary>
         /// Initializes a new instance of the <see cref="Column{T}"/> class.
         /// </summary>
-        protected Column() : base()
+        protected Column()
         {
         }
 

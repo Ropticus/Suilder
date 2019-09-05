@@ -4,9 +4,9 @@ using Suilder.Core;
 using Suilder.Functions;
 using Xunit;
 
-namespace Suilder.Test.Builder.Functions
+namespace Suilder.Test.Engines.SQLiteTest.Functions
 {
-    public class SqlFnTest : BaseTest
+    public class SqlFnTest : SQLiteBaseTest
     {
         [Fact]
         public void Abs()
@@ -64,7 +64,7 @@ namespace Suilder.Test.Builder.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CEILING(\"person\".\"Salary\")", result.Sql);
+            Assert.Equal("CEIL(\"person\".\"Salary\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -83,20 +83,6 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Concat()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Concat(person["Name"], person["SurName"]);
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("CONCAT(\"person\".\"Name\", \"person\".\"SurName\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
-        public void Concat_With_Or()
-        {
-            engine.AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);
-
             IAlias person = sql.Alias("person");
             IFunction func = SqlFn.Concat(person["Name"], person["SurName"]);
 
@@ -160,7 +146,7 @@ namespace Suilder.Test.Builder.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("LASTINSERTID()", result.Sql);
+            Assert.Equal("LAST_INSERT_ROWID()", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -209,34 +195,6 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("LTRIM(\"person\".\"Name\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
-        }
-
-        [Fact]
-        public void LTrim_Trim_Leading()
-        {
-            engine.AddFunction(FunctionName.LTrim, FunctionHelper.TrimLeading);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.LTrim(person["Name"]);
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(LEADING FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
-        public void LTrim_Character_Trim_Leading()
-        {
-            engine.AddFunction(FunctionName.LTrim, FunctionHelper.TrimLeading);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.LTrim(person["Name"], ",");
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(LEADING @p0 FROM \"person\".\"Name\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
         }
 
@@ -348,34 +306,6 @@ namespace Suilder.Test.Builder.Functions
         }
 
         [Fact]
-        public void RTrim_Trim_Trailing()
-        {
-            engine.AddFunction(FunctionName.RTrim, FunctionHelper.TrimTrailing);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.RTrim(person["Name"]);
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(TRAILING FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
-        public void RTrim_Character_Trim_Trailing()
-        {
-            engine.AddFunction(FunctionName.RTrim, FunctionHelper.TrimTrailing);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.RTrim(person["Name"], ",");
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(TRAILING @p0 FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
-        }
-
-        [Fact]
         public void Substring()
         {
             IAlias person = sql.Alias("person");
@@ -383,7 +313,7 @@ namespace Suilder.Test.Builder.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("SUBSTRING(\"person\".\"Name\", @p0, @p1)", result.Sql);
+            Assert.Equal("SUBSTR(\"person\".\"Name\", @p0, @p1)", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 2, ["@p1"] = 4 }, result.Parameters);
         }
 
@@ -432,34 +362,6 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("TRIM(\"person\".\"Name\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
-        }
-
-        [Fact]
-        public void Trim_Both()
-        {
-            engine.AddFunction(FunctionName.Trim, FunctionHelper.TrimBoth);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Trim(person["Name"]);
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(\"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
-        public void Trim_Character_Both()
-        {
-            engine.AddFunction(FunctionName.Trim, FunctionHelper.TrimBoth);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Trim(person["Name"], ",");
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(@p0 FROM \"person\".\"Name\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
         }
     }

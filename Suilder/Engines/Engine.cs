@@ -74,6 +74,7 @@ namespace Suilder.Engines
         /// </summary>
         protected virtual void InitFunctions()
         {
+            AddFunction(FunctionName.Cast, FunctionHelper.Cast);
         }
 
         /// <summary>

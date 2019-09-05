@@ -11,7 +11,7 @@ namespace Suilder.Engines
         /// <summary>
         /// Initializes a new instance of the <see cref="PostgreSQL"/> class.
         /// </summary>
-        public PostgreSQL() : base()
+        public PostgreSQL()
         {
         }
 
@@ -51,7 +51,7 @@ namespace Suilder.Engines
         {
             AddFunction(FunctionName.Abs);
             AddFunction(FunctionName.Avg);
-            AddFunction(FunctionName.Cast);
+            AddFunction(FunctionName.Cast, FunctionHelper.Cast);
             AddFunction(FunctionName.Ceiling);
             AddFunction(FunctionName.Coalesce);
             AddFunction(FunctionName.Concat);

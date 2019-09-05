@@ -2,17 +2,18 @@ using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Functions;
+using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder.Functions
+namespace Suilder.Test.Engines.SQLiteTest.Functions
 {
-    public class SqlFnTest : BaseTest
+    public class SqlExpTest : SQLiteBaseTest
     {
         [Fact]
         public void Abs()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Abs(person["Salary"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Abs(person.Salary));
 
             QueryResult result = engine.Compile(func);
 
@@ -23,8 +24,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Avg()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Avg(person["Salary"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Avg(person.Salary));
 
             QueryResult result = engine.Compile(func);
 
@@ -35,8 +36,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void AvgDistinct()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.AvgDistinct(person["Salary"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.AvgDistinct(person.Salary));
 
             QueryResult result = engine.Compile(func);
 
@@ -47,8 +48,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Cast()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Cast(person["Salary"], sql.Type("VARCHAR"));
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Cast(person.Salary, sql.Type("VARCHAR")));
 
             QueryResult result = engine.Compile(func);
 
@@ -59,20 +60,20 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Ceiling()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Ceiling(person["Salary"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Ceiling(person.Salary));
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CEILING(\"person\".\"Salary\")", result.Sql);
+            Assert.Equal("CEIL(\"person\".\"Salary\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
         public void Coalesce()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Coalesce(person["Name"], person["SurName"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Coalesce(person.Name, person.SurName));
 
             QueryResult result = engine.Compile(func);
 
@@ -83,22 +84,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Concat()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Concat(person["Name"], person["SurName"]);
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("CONCAT(\"person\".\"Name\", \"person\".\"SurName\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
-        public void Concat_With_Or()
-        {
-            engine.AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Concat(person["Name"], person["SurName"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Concat(person.Name, person.SurName));
 
             QueryResult result = engine.Compile(func);
 
@@ -109,7 +96,7 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Count()
         {
-            IFunction func = SqlFn.Count();
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Count());
 
             QueryResult result = engine.Compile(func);
 
@@ -120,8 +107,10 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Count_Column()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Count(person["Name"]);
+            engine.AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);
+
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Count(person.Name));
 
             QueryResult result = engine.Compile(func);
 
@@ -132,8 +121,10 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Count_Distinct()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.CountDistinct(person["Name"]);
+            engine.AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);
+
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.CountDistinct(person.Name));
 
             QueryResult result = engine.Compile(func);
 
@@ -144,8 +135,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Floor()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Floor(person["Salary"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Floor(person.Salary));
 
             QueryResult result = engine.Compile(func);
 
@@ -156,19 +147,19 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void LastInsertId()
         {
-            IFunction func = SqlFn.LastInsertId();
+            IFunction func = (IFunction)sql.Val(() => SqlExp.LastInsertId());
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("LASTINSERTID()", result.Sql);
+            Assert.Equal("LAST_INSERT_ROWID()", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
         public void Length()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Length(person["Name"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Length(person.Name));
 
             QueryResult result = engine.Compile(func);
 
@@ -179,8 +170,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Lower()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Lower(person["Name"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Lower(person.Name));
 
             QueryResult result = engine.Compile(func);
 
@@ -191,8 +182,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void LTrim()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.LTrim(person["Name"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.LTrim(person.Name));
 
             QueryResult result = engine.Compile(func);
 
@@ -203,8 +194,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void LTrim_Character()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.LTrim(person["Name"], ",");
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.LTrim(person.Name, ","));
 
             QueryResult result = engine.Compile(func);
 
@@ -213,38 +204,10 @@ namespace Suilder.Test.Builder.Functions
         }
 
         [Fact]
-        public void LTrim_Trim_Leading()
-        {
-            engine.AddFunction(FunctionName.LTrim, FunctionHelper.TrimLeading);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.LTrim(person["Name"]);
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(LEADING FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
-        public void LTrim_Character_Trim_Leading()
-        {
-            engine.AddFunction(FunctionName.LTrim, FunctionHelper.TrimLeading);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.LTrim(person["Name"], ",");
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(LEADING @p0 FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
-        }
-
-        [Fact]
         public void Max()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Max(person["Salary"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Max(person.Salary));
 
             QueryResult result = engine.Compile(func);
 
@@ -255,8 +218,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Min()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Min(person["Salary"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Min(person.Salary));
 
             QueryResult result = engine.Compile(func);
 
@@ -267,7 +230,7 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Now()
         {
-            IFunction func = SqlFn.Now();
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Now());
 
             QueryResult result = engine.Compile(func);
 
@@ -278,8 +241,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void NullIf()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.NullIf(person["Name"], "empty");
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.NullIf(person.Name, "empty"));
 
             QueryResult result = engine.Compile(func);
 
@@ -290,8 +253,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Replace()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Replace(person["Name"], "a", "b");
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Replace(person.Name, "a", "b"));
 
             QueryResult result = engine.Compile(func);
 
@@ -302,8 +265,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Round()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Round(person["Salary"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Round(person.Salary));
 
             QueryResult result = engine.Compile(func);
 
@@ -314,20 +277,20 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Round_Places()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Round(person["Salary"], 2m);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Round(person.Salary, 2));
 
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("ROUND(\"person\".\"Salary\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 2m }, result.Parameters);
+            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 2 }, result.Parameters);
         }
 
         [Fact]
         public void RTrim()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.RTrim(person["Name"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.RTrim(person.Name));
 
             QueryResult result = engine.Compile(func);
 
@@ -338,8 +301,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void RTrim_Character()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.RTrim(person["Name"], ",");
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.RTrim(person.Name, ","));
 
             QueryResult result = engine.Compile(func);
 
@@ -348,50 +311,22 @@ namespace Suilder.Test.Builder.Functions
         }
 
         [Fact]
-        public void RTrim_Trim_Trailing()
-        {
-            engine.AddFunction(FunctionName.RTrim, FunctionHelper.TrimTrailing);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.RTrim(person["Name"]);
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(TRAILING FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
-        public void RTrim_Character_Trim_Trailing()
-        {
-            engine.AddFunction(FunctionName.RTrim, FunctionHelper.TrimTrailing);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.RTrim(person["Name"], ",");
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(TRAILING @p0 FROM \"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
-        }
-
-        [Fact]
         public void Substring()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Substring(person["Name"], 2, 4);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Substring(person.Name, 2, 4));
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("SUBSTRING(\"person\".\"Name\", @p0, @p1)", result.Sql);
+            Assert.Equal("SUBSTR(\"person\".\"Name\", @p0, @p1)", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 2, ["@p1"] = 4 }, result.Parameters);
         }
 
         [Fact]
         public void Sum()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Sum(person["Salary"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Sum(person.Salary));
 
             QueryResult result = engine.Compile(func);
 
@@ -402,8 +337,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void SumDistinct()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.SumDistinct(person["Salary"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.SumDistinct(person.Salary));
 
             QueryResult result = engine.Compile(func);
 
@@ -414,8 +349,8 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Trim()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Trim(person["Name"]);
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Trim(person.Name));
 
             QueryResult result = engine.Compile(func);
 
@@ -426,40 +361,12 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Trim_Character()
         {
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Trim(person["Name"], ",");
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Trim(person.Name, ","));
 
             QueryResult result = engine.Compile(func);
 
             Assert.Equal("TRIM(\"person\".\"Name\", @p0)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
-        }
-
-        [Fact]
-        public void Trim_Both()
-        {
-            engine.AddFunction(FunctionName.Trim, FunctionHelper.TrimBoth);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Trim(person["Name"]);
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(\"person\".\"Name\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
-        public void Trim_Character_Both()
-        {
-            engine.AddFunction(FunctionName.Trim, FunctionHelper.TrimBoth);
-
-            IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Trim(person["Name"], ",");
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("TRIM(@p0 FROM \"person\".\"Name\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
         }
     }

@@ -31,7 +31,7 @@ namespace Suilder.Functions
         /// <param name="func">The function.</param>
         public static void NameOnly(QueryBuilder queryBuilder, IEngine engine, string name, IFunction func)
         {
-            if(func.Args.Count > 0)
+            if (func.Args.Count > 0)
                 throw new CompileException("Invalid function \"" + func.Name + "\" , wrong number of parameters.");
 
             queryBuilder.Write(name);
@@ -46,12 +46,12 @@ namespace Suilder.Functions
         /// <param name="func">The function.</param>
         public static void Cast(QueryBuilder queryBuilder, IEngine engine, string name, IFunction func)
         {
-            if(func.Args.Count != 2)
+            if (func.Args.Count != 2)
                 throw new CompileException("Invalid function \"" + func.Name + "\" , wrong number of parameters.");
-                
+
             queryBuilder.Write(name + "(");
 
-            if(func.BeforeArgs != null)
+            if (func.BeforeArgs != null)
                 queryBuilder.WriteFragment(func.BeforeArgs).Write(" ");
 
             queryBuilder.WriteValue(func.Args[0]).Write(" AS ").WriteValue(func.Args[1]).Write(")");
@@ -66,7 +66,7 @@ namespace Suilder.Functions
         /// <param name="func">The function.</param>
         public static void ConcatOr(QueryBuilder queryBuilder, IEngine engine, string name, IFunction func)
         {
-            if(func.Args.Count == 0)
+            if (func.Args.Count == 0)
                 throw new CompileException("Invalid function \"" + func.Name + "\" , wrong number of parameters.");
 
             string separator = " || ";
@@ -86,15 +86,15 @@ namespace Suilder.Functions
         /// <param name="func">The function.</param>
         public static void TrimLeading(QueryBuilder queryBuilder, IEngine engine, string name, IFunction func)
         {
-            if(func.Args.Count > 2)
+            if (func.Args.Count > 2)
                 throw new CompileException("Invalid function \"" + func.Name + "\" , wrong number of parameters.");
 
             queryBuilder.Write("TRIM(LEADING ");
 
-            if(func.Args.Count > 1)
-                queryBuilder.WriteValue(func.Args[1]).Write(" FROM ");
-            
-            queryBuilder.WriteValue(func.Args[0]).Write(")");
+            if (func.Args.Count > 1)
+                queryBuilder.WriteValue(func.Args[1]).Write(" ");
+
+            queryBuilder.Write("FROM ").WriteValue(func.Args[0]).Write(")");
         }
 
         /// <summary>
@@ -106,15 +106,15 @@ namespace Suilder.Functions
         /// <param name="func">The function.</param>
         public static void TrimTrailing(QueryBuilder queryBuilder, IEngine engine, string name, IFunction func)
         {
-            if(func.Args.Count > 2)
+            if (func.Args.Count > 2)
                 throw new CompileException("Invalid function \"" + func.Name + "\" , wrong number of parameters.");
 
             queryBuilder.Write("TRIM(TRAILING ");
 
-            if(func.Args.Count > 1)
-                queryBuilder.WriteValue(func.Args[1]).Write(" FROM ");
+            if (func.Args.Count > 1)
+                queryBuilder.WriteValue(func.Args[1]).Write(" ");
 
-            queryBuilder.WriteValue(func.Args[0]).Write(")");
+            queryBuilder.Write("FROM ").WriteValue(func.Args[0]).Write(")");
         }
 
         /// <summary>
@@ -126,12 +126,12 @@ namespace Suilder.Functions
         /// <param name="func">The function.</param>
         public static void TrimBoth(QueryBuilder queryBuilder, IEngine engine, string name, IFunction func)
         {
-            if(func.Args.Count > 2)
+            if (func.Args.Count > 2)
                 throw new CompileException("Invalid function \"" + func.Name + "\" , wrong number of parameters.");
-                
+
             queryBuilder.Write("TRIM(");
-            
-            if(func.Args.Count > 1)
+
+            if (func.Args.Count > 1)
                 queryBuilder.WriteValue(func.Args[1]).Write(" FROM ");
 
             queryBuilder.WriteValue(func.Args[0]).Write(")");

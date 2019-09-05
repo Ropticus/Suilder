@@ -11,7 +11,7 @@ namespace Suilder.Engines
         /// <summary>
         /// Initializes a new instance of the <see cref="SQLite"/> class.
         /// </summary>
-        public SQLite() : base()
+        public SQLite()
         {
         }
 
@@ -50,7 +50,7 @@ namespace Suilder.Engines
         {
             AddFunction(FunctionName.Abs);
             AddFunction(FunctionName.Avg);
-            AddFunction(FunctionName.Cast);
+            AddFunction(FunctionName.Cast, FunctionHelper.Cast);
             AddFunction(FunctionName.Ceiling, "CEIL");
             AddFunction(FunctionName.Coalesce);
             AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);

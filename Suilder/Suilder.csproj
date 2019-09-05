@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <PackageId>Suilder</PackageId>
-    <VersionPrefix>1.1.0</VersionPrefix>
+    <VersionPrefix>1.1.1</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <Title>Suilder</Title>
     <Authors>Víctor Diez</Authors>
@@ -19,6 +19,7 @@ This library is only a query builder, so you have to combine with any other libr
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>sql; query; builder</PackageTags>
     <RepositoryUrl>https://github.com/Ropticus/Suilder</RepositoryUrl>
+    <PackageReleaseNotes>https://suilder.readthedocs.io/en/latest/releases/releases-notes/</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">

@@ -157,14 +157,14 @@ namespace Suilder.Reflection
             IList<MemberInfo> properties = GetProperties(expression.Body);
 
             List<ColumnData> keys = null;
-            if (!Data.ForeingKeys.ContainsKey(properties[0].Name))
+            if (!Data.ForeignKeys.ContainsKey(properties[0].Name))
             {
                 keys = new List<ColumnData>();
-                Data.ForeingKeys.Add(properties[0].Name, keys);
+                Data.ForeignKeys.Add(properties[0].Name, keys);
             }
             else
             {
-                keys = Data.ForeingKeys[properties[0].Name];
+                keys = Data.ForeignKeys[properties[0].Name];
             }
 
             keys.Add(new ColumnData()

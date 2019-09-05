@@ -23,7 +23,7 @@ namespace Suilder.Core
         /// Initializes a new instance of the <see cref="BitOperator"/> class.
         /// </summary>
         /// <param name="op">The operator.</param>
-        public BitOperator(string op) : base()
+        public BitOperator(string op)
         {
             this.Op = op;
         }

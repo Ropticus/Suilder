@@ -11,7 +11,7 @@ namespace Suilder.Engines
         /// <summary>
         /// Initializes a new instance of the <see cref="OracleDB"/> class.
         /// </summary>
-        public OracleDB() : base()
+        public OracleDB()
         {
         }
 
@@ -55,7 +55,7 @@ namespace Suilder.Engines
         {
             AddFunction(FunctionName.Abs);
             AddFunction(FunctionName.Avg);
-            AddFunction(FunctionName.Cast);
+            AddFunction(FunctionName.Cast, FunctionHelper.Cast);
             AddFunction(FunctionName.Ceiling, "CEIL");
             AddFunction(FunctionName.Coalesce);
             AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);

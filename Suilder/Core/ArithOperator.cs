@@ -23,7 +23,7 @@ namespace Suilder.Core
         /// Initializes a new instance of the <see cref="ArithOperator"/> class.
         /// </summary>
         /// <param name="op">The operator.</param>
-        public ArithOperator(string op) : base()
+        public ArithOperator(string op)
         {
             this.Op = op;
         }

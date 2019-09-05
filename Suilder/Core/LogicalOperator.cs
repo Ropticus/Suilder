@@ -23,7 +23,7 @@ namespace Suilder.Core
         /// Initializes a new instance of the <see cref="LogicalOperator"/> class.
         /// </summary>
         /// <param name="op">The operator.</param>
-        public LogicalOperator(string op) : base()
+        public LogicalOperator(string op)
         {
             this.Op = op;
         }
