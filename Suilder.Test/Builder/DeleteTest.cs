@@ -66,6 +66,17 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void Top_Raw()
+        {
+            IDelete delete = sql.Delete().Top(sql.Raw("TOP({0})", 10));
+
+            QueryResult result = engine.Compile(delete);
+
+            Assert.Equal("DELETE TOP(@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+        }
+
+        [Fact]
         public void Add()
         {
             IAlias person = sql.Alias("person");

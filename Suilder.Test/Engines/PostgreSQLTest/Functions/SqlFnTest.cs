@@ -364,5 +364,17 @@ namespace Suilder.Test.Engines.PostgreSQLTest.Functions
             Assert.Equal("TRIM(@p0 FROM \"person\".\"name\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
         }
+
+        [Fact]
+        public void Upper()
+        {
+            IAlias person = sql.Alias("person");
+            IFunction func = SqlFn.Upper(person["Name"]);
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("UPPER(\"person\".\"name\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
     }
 }

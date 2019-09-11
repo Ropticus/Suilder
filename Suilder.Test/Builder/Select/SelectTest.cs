@@ -286,6 +286,18 @@ namespace Suilder.Test.Builder.Select
         }
 
         [Fact]
+        public void Top_Raw()
+        {
+            IAlias person = sql.Alias("person");
+            ISelect select = sql.Select().Top(sql.Raw("TOP({0})", 10)).Add(person.All);
+
+            QueryResult result = engine.Compile(select);
+
+            Assert.Equal("SELECT TOP(@p0) \"person\".*", result.Sql);
+            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 10 }, result.Parameters);
+        }
+
+        [Fact]
         public void Top_Distinct()
         {
             IAlias person = sql.Alias("person");

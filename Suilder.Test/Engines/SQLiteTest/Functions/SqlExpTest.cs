@@ -369,5 +369,17 @@ namespace Suilder.Test.Engines.SQLiteTest.Functions
             Assert.Equal("TRIM(\"person\".\"Name\", @p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = "," }, result.Parameters);
         }
+
+        [Fact]
+        public void Upper()
+        {
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Upper(person.Name));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("UPPER(\"person\".\"Name\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
     }
 }

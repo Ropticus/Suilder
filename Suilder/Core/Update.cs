@@ -18,22 +18,34 @@ namespace Suilder.Core
         /// <summary>
         /// Adds a "top" clause.
         /// </summary>
-        /// <param name="fetch">The number of rows to return.</param>
+        /// <param name="top">The "top" clause.</param>
         /// <returns>The "update" statement.</returns>
-        public virtual IUpdateTop Top(object fetch)
+        public virtual IUpdate Top(ITop top)
         {
-            Top(SqlBuilder.Instance.Top(fetch));
+            TopValue = top;
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a raw "top" clause.
+        /// <para>You must write the entire clause.</para>
+        /// </summary>
+        /// <param name="top">The "top" clause.</param>
+        /// <returns>The "update" statement.</returns>
+        public virtual IUpdate Top(IRawSql top)
+        {
+            TopValue = top;
             return this;
         }
 
         /// <summary>
         /// Adds a "top" clause.
         /// </summary>
-        /// <param name="top">The "top" clause.</param>
+        /// <param name="fetch">The number of rows to return.</param>
         /// <returns>The "update" statement.</returns>
-        public virtual IUpdate Top(ITop top)
+        public virtual IUpdateTop Top(object fetch)
         {
-            TopValue = top;
+            Top(SqlBuilder.Instance.Top(fetch));
             return this;
         }
 

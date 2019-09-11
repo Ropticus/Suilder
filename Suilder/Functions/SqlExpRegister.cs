@@ -156,6 +156,7 @@ namespace Suilder.Functions
                 return ExpressionHelper.Function(expression, name).Before(SqlBuilder.Instance.Raw("DISTINCT"));
             });
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Trim));
+            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Upper));
         }
 
         /// <summary>
