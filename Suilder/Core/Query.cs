@@ -922,7 +922,8 @@ namespace Suilder.Core
         /// <param name="joinType">The type of join, by default inner join.</param>
         /// <typeparam name="T">The type of the table.</typeparam>
         /// <returns>The query.</returns>
-        public virtual IQueryJoin Join<T>(IQueryFragment value, Expression<Func<T>> alias, JoinType joinType = JoinType.Inner)
+        public virtual IQueryJoin Join<T>(IQueryFragment value, Expression<Func<T>> alias,
+            JoinType joinType = JoinType.Inner)
         {
             Joins.Add(SqlBuilder.Instance.Join(value, alias, joinType));
             return this;
@@ -1445,7 +1446,7 @@ namespace Suilder.Core
                 {
                     if (SetValues[0].Item1.TableName == null)
                     {
-                        throw new CompileException($"The set column must have the table name.");
+                        throw new CompileException("The set column must have the table name.");
                     }
 
                     queryBuilder.WriteName(SetValues[0].Item1.TableName).Write(" ");
@@ -1467,7 +1468,7 @@ namespace Suilder.Core
                     IFrom from = FromValue as IFrom;
 
                     if (from == null)
-                        throw new CompileException($"The from value must be a \"{typeof(IFrom)}\" instance.");
+                        throw new CompileException($"The \"from\" value must be a \"{typeof(IFrom)}\" instance.");
 
                     from.Compile(queryBuilder, engine, false);
                     queryBuilder.Write(" ");
@@ -1518,12 +1519,12 @@ namespace Suilder.Core
                 if (from == null)
                 {
                     throw new CompileException(
-                        $"The from value must be a \"{typeof(IFrom)}\" instance or specify the alias to delete.");
+                        $"The \"from\" value must be a \"{typeof(IFrom)}\" instance or specify the alias to delete.");
                 }
 
                 string aliasName = from.AliasOrTableName;
                 if (aliasName == null)
-                    throw new CompileException($"The from source must be a \"{typeof(IAlias)}\" instance.");
+                    throw new CompileException("The \"from\" must have an alias or a table name.");
 
                 queryBuilder.WriteName(aliasName).Write(" ");
             }

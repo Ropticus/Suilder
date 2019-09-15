@@ -12,7 +12,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool Eq(object left, object right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool NotEq(object left, object right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool Like(object left, object right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool NotLike(object left, object right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool Lt(object left, object right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool Le(object left, object right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool Gt(object left, object right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool Ge(object left, object right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool In(object left, object right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool NotIn(object left, object right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool Not(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool IsNull(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool IsNotNull(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool All(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool Any(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool Exists(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool Some(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static object Function(string name)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static object Function(string name, params object[] values)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
     }
 }

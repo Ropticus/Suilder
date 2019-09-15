@@ -257,7 +257,7 @@ namespace Suilder.Extensions
         {
             if (right == null)
                 return NotIn(left, (object)right);
-                
+
             return SqlBuilder.Instance.NotIn(left, SqlBuilder.Instance.Val(right));
         }
 
@@ -299,7 +299,7 @@ namespace Suilder.Extensions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool Like(this string left, string right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace Suilder.Extensions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool NotLike(this string left, string right)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace Suilder.Extensions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool In<T>(this T left, IEnumerable<T> right) where T : IComparable
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -332,7 +332,7 @@ namespace Suilder.Extensions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool NotIn<T>(this T left, IEnumerable<T> right) where T : IComparable
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>

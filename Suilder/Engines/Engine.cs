@@ -223,7 +223,7 @@ namespace Suilder.Engines
             if (Tables.TryGetValue(type.FullName, out TableInfo tableInfo))
                 return tableInfo.TableName;
 
-            throw new InvalidConfigurationException($"Type \"{type.FullName}\" is not registered.");
+            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace Suilder.Engines
             if (Tables.TryGetValue(type.FullName, out TableInfo tableInfo))
                 return tableInfo.PrimaryKeys;
 
-            throw new InvalidConfigurationException($"Type \"{type.FullName}\" is not registered.");
+            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace Suilder.Engines
             if (Tables.TryGetValue(type.FullName, out TableInfo tableInfo))
                 return tableInfo.Columns;
 
-            throw new InvalidConfigurationException($"Type \"{type.FullName}\" is not registered.");
+            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace Suilder.Engines
             if (Tables.TryGetValue(type.FullName, out TableInfo tableInfo))
                 return tableInfo.ColumnNames;
 
-            throw new InvalidConfigurationException($"Type \"{type.FullName}\" is not registered.");
+            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
         }
 
         /// <summary>
@@ -279,10 +279,10 @@ namespace Suilder.Engines
                     return columnName;
 
                 throw new InvalidConfigurationException(
-                    $"Property \"{propertyName}\" for type \"{type.FullName}\" is not registered.");
+                    $"Property \"{propertyName}\" for type \"{type}\" is not registered.");
             }
 
-            throw new InvalidConfigurationException($"Type \"{type.FullName}\" is not registered.");
+            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace Suilder.Engines
                     ?? tableInfo.ColumnNamesDic.ToDictionary(x => x.Key, x => x.Value);
             }
 
-            throw new InvalidConfigurationException($"Type \"{type.FullName}\" is not registered.");
+            throw new InvalidConfigurationException($"Type \"{type}\" is not registered.");
         }
     }
 }

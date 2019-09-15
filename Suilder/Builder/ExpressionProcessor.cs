@@ -89,11 +89,47 @@ namespace Suilder.Builder
                 case MemberTypes.Property:
                     tableType = ((PropertyInfo)list[0]).PropertyType;
                     break;
-                default:
-                    throw new ArgumentException("Invalid expression.");
             }
 
             return SqlBuilder.Instance.Alias(tableType, list[0].Name);
+        }
+
+        /// <summary>
+        /// Compile an expression to an <see cref="IColumn"/>.
+        /// </summary>
+        /// <param name="tableName">The table name or his alias.</param>
+        /// <param name="expression">The expression.</param>
+        /// <typeparam name="T">The type of the alias.</typeparam>
+        /// <returns>The column.</returns>
+        public static IColumn ParseColumn<T>(string tableName, Expression<Func<T, object>> expression)
+        {
+            return ParseColumn<T>(tableName, expression.Body);
+        }
+
+        /// <summary>
+        /// Compile an expression to an <see cref="IColumn"/>.
+        /// </summary>
+        /// <param name="tableName">The table name or his alias.</param>
+        /// <param name="expression">The expression.</param>
+        /// <typeparam name="T">The type of the alias.</typeparam>
+        /// <returns>The column.</returns>
+        public static IColumn ParseColumn<T>(string tableName, Expression expression)
+        {
+            if (expression.NodeType == ExpressionType.Convert)
+            {
+                return ParseColumn<T>(tableName, ((UnaryExpression)expression).Operand);
+            }
+
+            MemberExpression memberExp = expression as MemberExpression;
+            if (memberExp == null)
+            {
+                return SqlBuilder.Instance.Col<T>(tableName, "*");
+            }
+            else
+            {
+                IList<MemberInfo> list = GetMemberInfoList(memberExp);
+                return SqlBuilder.Instance.Col<T>(tableName, string.Join(".", list.Select(x => x.Name)));
+            }
         }
 
         /// <summary>
@@ -133,8 +169,6 @@ namespace Suilder.Builder
                 case MemberTypes.Property:
                     tableType = ((PropertyInfo)list[0]).PropertyType;
                     break;
-                default:
-                    throw new ArgumentException("Invalid expression.");
             }
 
             if (list.Count == 1)
@@ -144,44 +178,6 @@ namespace Suilder.Builder
             else
             {
                 return SqlBuilder.Instance.Col(tableType, list[0].Name, string.Join(".", list.Skip(1).Select(x => x.Name)));
-            }
-        }
-
-        /// <summary>
-        /// Compile an expression to an <see cref="IColumn"/>.
-        /// </summary>
-        /// <param name="tableName">The table name or his alias.</param>
-        /// <param name="expression">The expression.</param>
-        /// <typeparam name="T">The type of the alias.</typeparam>
-        /// <returns>The column.</returns>
-        public static IColumn ParseColumn<T>(string tableName, Expression<Func<T, object>> expression)
-        {
-            return ParseColumn<T>(tableName, expression.Body);
-        }
-
-        /// <summary>
-        /// Compile an expression to an <see cref="IColumn"/>.
-        /// </summary>
-        /// <param name="tableName">The table name or his alias.</param>
-        /// <param name="expression">The expression.</param>
-        /// <typeparam name="T">The type of the alias.</typeparam>
-        /// <returns>The column.</returns>
-        public static IColumn ParseColumn<T>(string tableName, Expression expression)
-        {
-            if (expression.NodeType == ExpressionType.Convert)
-            {
-                return ParseColumn<T>(tableName, ((UnaryExpression)expression).Operand);
-            }
-
-            MemberExpression memberExp = expression as MemberExpression;
-            if (memberExp == null)
-            {
-                return SqlBuilder.Instance.Col<T>(tableName, "*");
-            }
-            else
-            {
-                IList<MemberInfo> list = GetMemberInfoList(memberExp);
-                return SqlBuilder.Instance.Col<T>(tableName, string.Join(".", list.Select(x => x.Name)));
             }
         }
 
@@ -304,7 +300,6 @@ namespace Suilder.Builder
                             return SqlBuilder.Instance.Eq(function, true);
                         break;
                     }
-
             }
 
             throw new ArgumentException("Invalid expression.");
@@ -336,9 +331,9 @@ namespace Suilder.Builder
                     return SqlBuilder.Instance.Gt(ParseValue(expression.Left), ParseValue(expression.Right));
                 case ExpressionType.GreaterThanOrEqual:
                     return SqlBuilder.Instance.Ge(ParseValue(expression.Left), ParseValue(expression.Right));
+                default:
+                    throw new ArgumentException("Invalid expression.");
             }
-
-            throw new ArgumentException("Invalid expression.");
         }
 
         /// <summary>
@@ -419,24 +414,14 @@ namespace Suilder.Builder
             if (opDel != null)
             {
                 arithOperator = opDel();
-                BinaryExpression binaryExpLeft = expression.Left as BinaryExpression;
-                if (binaryExpLeft != null)
-                    arithOperator.Add(ParseArithmeticOperator(binaryExpLeft));
-                else
-                    arithOperator.Add(ParseValue(expression.Left));
+                arithOperator.Add(ParseValue(expression.Left));
             }
             else
             {
                 arithOperator = (IArithOperator)ParseValue(expression.Left);
             }
 
-            BinaryExpression binaryExpRight = expression.Right as BinaryExpression;
-            if (binaryExpRight != null)
-                arithOperator.Add(ParseArithmeticOperator(binaryExpRight));
-            else
-                arithOperator.Add(ParseValue(expression.Right));
-
-            return arithOperator;
+            return arithOperator.Add(ParseValue(expression.Right));
         }
 
         /// <summary>
@@ -470,24 +455,14 @@ namespace Suilder.Builder
             if (opDel != null)
             {
                 bitOperator = opDel();
-                BinaryExpression binaryExpLeft = expression.Left as BinaryExpression;
-                if (binaryExpLeft != null)
-                    bitOperator.Add(ParseArithmeticOperator(binaryExpLeft));
-                else
-                    bitOperator.Add(ParseValue(expression.Left));
+                bitOperator.Add(ParseValue(expression.Left));
             }
             else
             {
                 bitOperator = (IBitOperator)ParseValue(expression.Left);
             }
 
-            BinaryExpression binaryExpRight = expression.Right as BinaryExpression;
-            if (binaryExpRight != null)
-                bitOperator.Add(ParseBitOperator(binaryExpRight));
-            else
-                bitOperator.Add(ParseValue(expression.Right));
-
-            return bitOperator;
+            return bitOperator.Add(ParseValue(expression.Right));
         }
 
         /// <summary>
@@ -524,9 +499,32 @@ namespace Suilder.Builder
         /// <summary>
         /// Get all the nested members of an expression.
         /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>A list with the <see cref="MemberInfo"/> of all members.</returns>
+        public static IList<MemberInfo> GetProperties(Expression expression)
+        {
+            if (expression.NodeType == ExpressionType.Convert)
+            {
+                return GetProperties(((UnaryExpression)expression).Operand);
+            }
+
+            MemberExpression memberExp = expression as MemberExpression;
+            if (memberExp == null)
+            {
+                throw new ArgumentException("Invalid expression.");
+            }
+            else
+            {
+                return GetMemberInfoList(memberExp);
+            }
+        }
+
+        /// <summary>
+        /// Get all the nested members of an expression.
+        /// </summary>
         /// <param name="memberExp">The expression.</param>
         /// <returns>A list with the <see cref="MemberInfo"/> of all members.</returns>
-        private static IList<MemberInfo> GetMemberInfoList(MemberExpression memberExp)
+        public static IList<MemberInfo> GetMemberInfoList(MemberExpression memberExp)
         {
             List<MemberInfo> list = new List<MemberInfo>();
             while (memberExp != null)
@@ -536,6 +534,29 @@ namespace Suilder.Builder
             }
             list.Reverse();
             return list;
+        }
+
+        /// <summary>
+        /// Gets a specific nested property of the type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="propertyName">The property name.</param>
+        /// <returns>The property info.</returns>
+        public static PropertyInfo GetProperty(Type type, string propertyName)
+        {
+            PropertyInfo propertyInfo = null;
+
+            foreach (var property in propertyName.Split('.'))
+            {
+                propertyInfo = type.GetProperty(property);
+                if (propertyInfo == null)
+                {
+                    return null;
+                }
+                type = propertyInfo.PropertyType;
+            }
+
+            return propertyInfo;
         }
 
         /// <summary>
@@ -657,6 +678,24 @@ namespace Suilder.Builder
             {
                 Tables.Remove(type.FullName);
             }
+        }
+
+        /// <summary>
+        /// Determines if the type is registered.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>True if the type is registered.</returns>
+        public static bool ContainsTable(Type type)
+        {
+            return Tables.Contains(type.FullName);
+        }
+
+        /// <summary>
+        /// Removes all registered types.
+        /// </summary>
+        public static void ClearTables()
+        {
+            Tables.Clear();
         }
     }
 }

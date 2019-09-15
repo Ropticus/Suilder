@@ -9,7 +9,7 @@ namespace Suilder.Test.Builder.ArithOperators
     public class ArithOperatorTest : BaseTest
     {
         [Fact]
-        public void Combined1()
+        public void Property_Add_Property_Multiply_Value()
         {
             Person person = null;
             IOperator op = (IOperator)sql.Val(() => person.Salary + person.Salary * 0.5m);
@@ -21,7 +21,7 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
-        public void Combined2()
+        public void Property_Multiply_Value_Add_Property()
         {
             Person person = null;
             IOperator op = (IOperator)sql.Val(() => person.Salary * 0.5m + person.Salary);
@@ -29,11 +29,11 @@ namespace Suilder.Test.Builder.ArithOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("(\"person\".\"Salary\" * @p0) + \"person\".\"Salary\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 0.5m }, result.Parameters);;
+            Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 0.5m }, result.Parameters); ;
         }
 
         [Fact]
-        public void Combined3()
+        public void Property_Add_Property_Parentheses_Multiply_Value()
         {
             Person person = null;
             IOperator op = (IOperator)sql.Val(() => (person.Salary + person.Salary) * 0.5m);
@@ -45,7 +45,7 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
-        public void Combined4()
+        public void Property_Divide_Value_Add_Property_Multiply_Value_Subtract_Value()
         {
             Person person = null;
             IOperator op = (IOperator)sql.Val(() => person.Salary / 2 + person.Salary * 0.5m - 100);
@@ -55,6 +55,18 @@ namespace Suilder.Test.Builder.ArithOperators
             Assert.Equal("((\"person\".\"Salary\" / @p0) + (\"person\".\"Salary\" * @p1)) - @p2", result.Sql);
             Assert.Equal(new Dictionary<string, object>() { ["@p0"] = 2m, ["@p1"] = 0.5m, ["@p2"] = 100m },
                 result.Parameters);
+        }
+
+        [Fact]
+        public void With_Bit_Operator()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => (person.Id + person.Id) * (person.Id & person.Id));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Id\" + \"person\".\"Id\") * (\"person\".\"Id\" & \"person\".\"Id\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]

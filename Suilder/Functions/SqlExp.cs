@@ -16,7 +16,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T Abs<T>(T value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T Avg<T>(T value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T AvgDistinct<T>(T value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static object Cast(object value, object type)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T Ceiling<T>(T value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T Coalesce<T>(params T[] values)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static object Coalesce(params object[] values)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static string Concat(params object[] values)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static long Count()
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static long Count(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static long CountDistinct(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T Floor<T>(T value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static object LastInsertId()
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static int Length(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static string Lower(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static string LTrim(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static string LTrim(object value, object trimString)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T Max<T>(T value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T Min<T>(T value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static DateTime Now()
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -243,7 +243,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static object NullIf(object value1, object value2)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static string Replace(object value, object oldString, object newString)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -268,7 +268,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T Round<T>(T value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T Round<T>(T value, object decimalPlaces)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static string RTrim(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static string RTrim(object value, object trimString)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static string Substring(object value, object start, object length)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T Sum<T>(T value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -341,7 +341,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static T SumDistinct<T>(T value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -352,7 +352,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static string Trim(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -364,7 +364,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static string Trim(object value, object trimString)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
 
         /// <summary>
@@ -375,7 +375,7 @@ namespace Suilder.Functions
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static string Upper(object value)
         {
-            throw new InvalidOperationException("Only for expressions");
+            throw new InvalidOperationException("Only for expressions.");
         }
     }
 }
