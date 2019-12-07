@@ -9,5 +9,7 @@ namespace Suilder.Test.Reflection.Builder.TableNested.Tables
         public int DepartmentId { get; set; }
 
         public Department Department { get; set; }
+
+        public byte[] Image { get; set; }
     }
 }

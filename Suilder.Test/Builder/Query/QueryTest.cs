@@ -361,6 +361,20 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
+        public void Subquery()
+        {
+            IAlias person = sql.Alias("person");
+            IQuery query = sql.Query
+                .Select(person.All)
+                .From(person);
+
+            QueryResult result = engine.Compile(sql.Raw("{0}", query));
+
+            Assert.Equal("(SELECT \"person\".* FROM \"person\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void To_String()
         {
             IAlias person = sql.Alias("person");

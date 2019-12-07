@@ -115,7 +115,8 @@ namespace Suilder.Test.Reflection.Builder
             ITableInfo personInfo = tableBuilder.GetConfig<Nested.Person>();
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Employee.Address.Street", "Employee.Address.City",
-                "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Id" }, personInfo.Columns);
+                "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Id", "Employee.Image" },
+                personInfo.Columns);
         }
 
         [Fact]
@@ -130,7 +131,8 @@ namespace Suilder.Test.Reflection.Builder
             ITableInfo personInfo = tableBuilder.GetConfig<Nested.Person>();
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Employee.Address.Street", "Employee.Address.City",
-                "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Id" }, personInfo.Columns);
+                "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Id", "Employee.Image" },
+                personInfo.Columns);
         }
 
         [Fact]

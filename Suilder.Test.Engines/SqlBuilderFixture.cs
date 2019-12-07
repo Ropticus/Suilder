@@ -5,19 +5,12 @@ using Xunit;
 
 namespace Suilder.Test.Engines
 {
-    public class SqlBuilderFixture : IDisposable
+    public class SqlBuilderFixture
     {
         public SqlBuilderFixture()
         {
-            ISqlBuilder sql = SqlBuilder.Register(new SqlBuilder());
-            SqlBuilder.Register(sql, true);
+            SqlBuilder.Register(new SqlBuilder());
             SqlExp.Initialize();
-        }
-
-        public void Dispose()
-        {
-            ExpressionProcessor.ClearFunctions();
-            ExpressionProcessor.ClearTables();
         }
     }
 

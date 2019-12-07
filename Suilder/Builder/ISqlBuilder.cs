@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq.Expressions;
 using Suilder.Core;
 
@@ -377,7 +378,7 @@ namespace Suilder.Builder
         /// Creates an "in" operator.
         /// </summary>
         /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "in" operator.</returns>
         IOperator In(object left, object right);
 
@@ -385,7 +386,7 @@ namespace Suilder.Builder
         /// Creates an "in" operator.
         /// </summary>
         /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "in" operator.</returns>
         IOperator In(Expression<Func<object>> left, object right);
 
@@ -393,7 +394,7 @@ namespace Suilder.Builder
         /// Creates an "in" operator.
         /// </summary>
         /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "in" operator.</returns>
         IOperator In(Expression<Func<object>> left, Expression<Func<object>> right);
 
@@ -401,7 +402,7 @@ namespace Suilder.Builder
         /// Creates a "not in" operator.
         /// </summary>
         /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "not in" operator.</returns>
         IOperator NotIn(object left, object right);
 
@@ -409,7 +410,7 @@ namespace Suilder.Builder
         /// Creates a "not in" operator.
         /// </summary>
         /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "not in" operator.</returns>
         IOperator NotIn(Expression<Func<object>> left, object right);
 
@@ -417,7 +418,7 @@ namespace Suilder.Builder
         /// Creates a "not in" operator.
         /// </summary>
         /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "not in" operator.</returns>
         IOperator NotIn(Expression<Func<object>> left, Expression<Func<object>> right);
 
@@ -607,6 +608,12 @@ namespace Suilder.Builder
         /// </summary>
         /// <value>The list of values.</value>
         IValList ValList { get; }
+
+        /// <summary>
+        /// Creates a sublist of values.
+        /// </summary>
+        /// <value>The sublist of values.</value>
+        ISubList SubList { get; }
 
         /// <summary>
         /// Creates an "over" clause.

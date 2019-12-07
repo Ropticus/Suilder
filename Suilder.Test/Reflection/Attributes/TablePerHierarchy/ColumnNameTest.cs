@@ -52,7 +52,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Address.Street", "Address.City" },
                 personInfo.Columns);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Address.Street", "Address.City", "Salary",
-                "DepartmentId", "Department.Id" }, employeeInfo.Columns);
+                "DepartmentId", "Department.Id", "Image" }, employeeInfo.Columns);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id" }, deptInfo.Columns);
         }
 
@@ -83,7 +83,8 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
                 ["Address.City"] = "Address2City",
                 ["Salary"] = "Salary2",
                 ["DepartmentId"] = "DepartmentId2",
-                ["Department.Id"] = "DepartmentId2"
+                ["Department.Id"] = "DepartmentId2",
+                ["Image"] = "Image2"
             }, employeeInfo.ColumnNamesDic);
 
             Assert.Equal(new Dictionary<string, string>
@@ -105,7 +106,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
             Assert.Equal(new string[] { "Id2", "Guid", "Name2", "SurName", "Address2Street", "Address2City" },
                 personInfo.ColumnNames);
             Assert.Equal(new string[] { "Id2", "Guid", "Name2", "SurName", "Address2Street", "Address2City", "Salary2",
-                "DepartmentId2" }, employeeInfo.ColumnNames);
+                "DepartmentId2", "Image2" }, employeeInfo.ColumnNames);
             Assert.Equal(new string[] { "Id3", "Guid", "Name3", "BossId3" }, deptInfo.ColumnNames);
         }
 
@@ -150,6 +151,9 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
 
             [Column("DepartmentId2")]
             public virtual Department Department { get; set; }
+
+            [Column("Image2")]
+            public byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig

@@ -91,6 +91,23 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
+        public void Set_Enumerable()
+        {
+            IAlias person = sql.Alias("person");
+            IQuery query = sql.Query.Update()
+                .Set(person["Image"], new byte[] { 1, 2, 3 })
+                .From(person);
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("UPDATE \"person\" SET \"Image\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new byte[] { 1, 2, 3 }
+            }, result.Parameters);
+        }
+
+        [Fact]
         public void Update_Set_Without_TableName()
         {
             IAlias person = sql.Alias("person");

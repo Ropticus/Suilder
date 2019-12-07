@@ -17,5 +17,7 @@ namespace Suilder.Test.Reflection.Builder.NoInherit.Tables
         public int DepartmentId { get; set; }
 
         public Department Department { get; set; }
+
+        public byte[] Image { get; set; }
     }
 }

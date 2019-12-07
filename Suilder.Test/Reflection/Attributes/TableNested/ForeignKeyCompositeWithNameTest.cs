@@ -42,8 +42,8 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Employee.Address.Street", "Employee.Address.City",
-                "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Id", "Employee.Department.Guid" },
-                personInfo.Columns);
+                "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Id", "Employee.Department.Guid",
+                "Employee.Image" }, personInfo.Columns);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id", "Boss.Guid" }, deptInfo.Columns);
         }
 
@@ -64,7 +64,8 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
                 ["Employee.Salary"] = "EmployeeSalary",
                 ["Employee.DepartmentId"] = "DepartmentId2",
                 ["Employee.Department.Id"] = "DepartmentId2",
-                ["Employee.Department.Guid"] = "DepartmentGuid2"
+                ["Employee.Department.Guid"] = "DepartmentGuid2",
+                ["Employee.Image"] = "EmployeeImage"
             }, personInfo.ColumnNamesDic);
 
             Assert.Equal(new Dictionary<string, string>
@@ -84,7 +85,7 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "EmployeeAddressStreet", "EmployeeAddressCity",
-                "EmployeeSalary", "DepartmentId2", "DepartmentGuid2" }, personInfo.ColumnNames);
+                "EmployeeSalary", "DepartmentId2", "DepartmentGuid2", "EmployeeImage" }, personInfo.ColumnNames);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "BossId2", "BossGuid2" }, deptInfo.ColumnNames);
         }
 
@@ -127,6 +128,8 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             [ForeignKey("Id", "DepartmentId2")]
             [ForeignKey("Guid", "DepartmentGuid2")]
             public virtual Department Department { get; set; }
+
+            public byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig

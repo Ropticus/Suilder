@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Suilder.Builder;
@@ -215,7 +216,7 @@ namespace Suilder.Extensions
         /// Creates an "in" operator.
         /// </summary>
         /// <param name="left">The <see cref="IQueryFragment"/>.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "in" operator.</returns>
         public static IOperator In(this IQueryFragment left, object right)
         {
@@ -226,7 +227,7 @@ namespace Suilder.Extensions
         /// Creates an "in" operator.
         /// </summary>
         /// <param name="left">The <see cref="IQueryFragment"/>.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "in" operator.</returns>
         public static IOperator In(this IQueryFragment left, Expression<Func<object>> right)
         {
@@ -240,7 +241,7 @@ namespace Suilder.Extensions
         /// Creates an "not in" operator.
         /// </summary>
         /// <param name="left">The <see cref="IQueryFragment"/>.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "not in" operator.</returns>
         public static IOperator NotIn(this IQueryFragment left, object right)
         {
@@ -251,7 +252,7 @@ namespace Suilder.Extensions
         /// Creates an "not in" operator.
         /// </summary>
         /// <param name="left">The <see cref="IQueryFragment"/>.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "not in" operator.</returns>
         public static IOperator NotIn(this IQueryFragment left, Expression<Func<object>> right)
         {
@@ -317,7 +318,7 @@ namespace Suilder.Extensions
         /// Creates a "in" operator in an expression.
         /// </summary>
         /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right values.</param>
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool In<T>(this T left, IEnumerable<T> right) where T : IComparable
         {
@@ -328,7 +329,7 @@ namespace Suilder.Extensions
         /// Creates a "not in" operator in an expression.
         /// </summary>
         /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="right">Right values.</param>
         /// <exception cref="InvalidOperationException">The method is called outside an expression.</exception>
         public static bool NotIn<T>(this T left, IEnumerable<T> right) where T : IComparable
         {

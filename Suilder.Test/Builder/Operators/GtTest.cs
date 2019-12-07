@@ -27,6 +27,21 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
+        public void Builder_Object_Enumerable()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Gt(person["Image"], new byte[] { 1, 2, 3 });
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Image\" > @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new byte[] { 1, 2, 3 }
+            }, result.Parameters);
+        }
+
+        [Fact]
         public void Builder_Object_Right_Null()
         {
             IAlias person = sql.Alias("person");
@@ -50,6 +65,21 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Builder_Expression_Enumerable()
+        {
+            Person person = null;
+            IOperator op = sql.Gt(() => person.Image, new byte[] { 1, 2, 3 });
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Image\" > @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new byte[] { 1, 2, 3 }
             }, result.Parameters);
         }
 
@@ -79,6 +109,21 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
+        public void Builder_Two_Expressions_Right_Enumerable()
+        {
+            Person person = null;
+            IOperator op = sql.Gt(() => person.Image, () => new byte[] { 1, 2, 3 });
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Image\" > @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new byte[] { 1, 2, 3 }
+            }, result.Parameters);
+        }
+
+        [Fact]
         public void Builder_Two_Expressions_Right_Null()
         {
             Person person = null;
@@ -89,7 +134,6 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal("\"person\".\"Name\" > NULL", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
-
 
         [Fact]
         public void Extension_Object()
@@ -103,6 +147,21 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Extension_Object_Enumerable()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = person["Image"].Gt(new byte[] { 1, 2, 3 });
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Image\" > @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new byte[] { 1, 2, 3 }
             }, result.Parameters);
         }
 
@@ -129,6 +188,21 @@ namespace Suilder.Test.Builder.Operators
 
             Assert.Equal("\"person\".\"DepartmentId\" > \"dept\".\"Id\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Extension_Expression_Enumerable()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = person["Image"].Gt(() => new byte[] { 1, 2, 3 });
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Image\" > @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new byte[] { 1, 2, 3 }
+            }, result.Parameters);
         }
 
         [Fact]
@@ -174,6 +248,21 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
+        public void Expression_Method_Enumerable()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.Gt(person.Image, new byte[] { 1, 2, 3 }));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Image\" > @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new byte[] { 1, 2, 3 }
+            }, result.Parameters);
+        }
+
+        [Fact]
         public void Expression_Method_Null()
         {
             Person person = null;
@@ -195,12 +284,33 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
+        public void Subquery()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Gt(person["Id"], sql.RawQuery("Subquery"));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" > (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void To_String()
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.Gt(person["Id"], 1);
 
             Assert.Equal("person.Id > 1", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_Enumerable()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Gt(person["Id"], new byte[] { 1, 2, 3 });
+
+            Assert.Equal("person.Id > [1, 2, 3]", op.ToString());
         }
     }
 }

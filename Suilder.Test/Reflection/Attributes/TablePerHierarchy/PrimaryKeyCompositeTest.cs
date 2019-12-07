@@ -52,7 +52,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
             Assert.Equal(new string[] { "Guid", "Id", "Name", "SurName", "Address.Street", "Address.City" },
                 personInfo.Columns);
             Assert.Equal(new string[] { "Guid", "Id", "Name", "SurName", "Address.Street", "Address.City", "Salary",
-                "DepartmentId", "Department.Guid", "Department.Id" }, employeeInfo.Columns);
+                "DepartmentId", "Department.Guid", "Department.Id", "Image" }, employeeInfo.Columns);
             Assert.Equal(new string[] { "Guid", "Id", "Name", "Boss.Guid", "Boss.Id" }, deptInfo.Columns);
         }
 
@@ -84,7 +84,8 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
                 ["Salary"] = "Salary",
                 ["DepartmentId"] = "DepartmentId",
                 ["Department.Guid"] = "DepartmentGuid",
-                ["Department.Id"] = "DepartmentId"
+                ["Department.Id"] = "DepartmentId",
+                ["Image"] = "Image"
             }, employeeInfo.ColumnNamesDic);
 
             Assert.Equal(new Dictionary<string, string>
@@ -107,7 +108,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
             Assert.Equal(new string[] { "Guid", "Id", "Name", "SurName", "AddressStreet", "AddressCity" },
                 personInfo.ColumnNames);
             Assert.Equal(new string[] { "Guid", "Id", "Name", "SurName", "AddressStreet", "AddressCity", "Salary",
-                "DepartmentId", "DepartmentGuid" }, employeeInfo.ColumnNames);
+                "DepartmentId", "DepartmentGuid", "Image" }, employeeInfo.ColumnNames);
             Assert.Equal(new string[] { "Guid", "Id", "Name", "BossGuid", "BossId" }, deptInfo.ColumnNames);
         }
 
@@ -144,6 +145,8 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
             public virtual int DepartmentId { get; set; }
 
             public virtual Department Department { get; set; }
+
+            public byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig

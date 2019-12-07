@@ -61,6 +61,8 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
             public virtual int DepartmentId { get; set; }
 
             public virtual Department Department { get; set; }
+
+            public byte[] Image { get; set; }
         }
 
         [Table("prefix_Person")]

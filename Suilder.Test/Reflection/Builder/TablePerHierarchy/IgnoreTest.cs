@@ -19,7 +19,8 @@ namespace Suilder.Test.Reflection.Builder.TablePerHierarchy
 
             tableBuilder.Add<Employee>()
                 .Ignore(x => x.DepartmentId)
-                .Ignore(x => x.Department);
+                .Ignore(x => x.Department)
+                .Ignore(x => x.Image);
 
             tableBuilder.Add<Department>()
                 .Ignore(x => x.Boss);

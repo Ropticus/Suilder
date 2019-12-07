@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Suilder.Core;
@@ -114,42 +113,15 @@ namespace Suilder.Builder
         /// <returns>The query builder.</returns>
         public QueryBuilder AddParameter(object value)
         {
-            if (!(value is String) && value is IEnumerable list)
+            if (value == null)
             {
-                Builder.Append("(");
-                bool any = false;
-                string separator = ", ";
-                foreach (object item in list)
-                {
-                    if (item == null)
-                    {
-                        Builder.Append("NULL");
-                    }
-                    else
-                    {
-                        string key = Engine.Options.ParameterPrefix + (Parameters.Keys.Count);
-                        Parameters[key] = item;
-                        Builder.Append(key);
-                    }
-                    Builder.Append(separator);
-                    any = true;
-                }
-                if (any)
-                    RemoveLast(separator.Length);
-                Builder.Append(")");
+                Builder.Append("NULL");
             }
             else
             {
-                if (value == null)
-                {
-                    Builder.Append("NULL");
-                }
-                else
-                {
-                    string key = Engine.Options.ParameterPrefix + (Parameters.Keys.Count);
-                    Parameters[key] = value;
-                    Builder.Append(key);
-                }
+                string key = Engine.Options.ParameterPrefix + (Parameters.Keys.Count);
+                Parameters[key] = value;
+                Builder.Append(key);
             }
 
             return this;

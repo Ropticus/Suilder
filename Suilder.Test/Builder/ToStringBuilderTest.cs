@@ -1,3 +1,4 @@
+using System.Linq;
 using Suilder.Builder;
 using Suilder.Core;
 using Xunit;
@@ -97,7 +98,15 @@ namespace Suilder.Test.Builder
         {
             string result = ToStringBuilder.Build(b => b.WriteParameter(new object[] { "value", true, false, 1, null }));
 
-            Assert.Equal("(\"value\", true, false, 1, NULL)", result);
+            Assert.Equal("[\"value\", true, false, 1, NULL]", result);
+        }
+
+        [Fact]
+        public void WriteParameter_Enumerable_Max_Length()
+        {
+            string result = ToStringBuilder.Build(b => b.WriteParameter(Enumerable.Range(1, 20)));
+
+            Assert.Equal("[1, 2, 3, 4, 5, ...]", result);
         }
 
         [Fact]

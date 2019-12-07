@@ -41,7 +41,8 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Employee.Address.Street", "Employee.Address.City",
-                "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Id" }, personInfo.Columns);
+                "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Id", "Employee.Image" },
+                personInfo.Columns);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id" }, deptInfo.Columns);
         }
 
@@ -61,7 +62,8 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
                 ["Employee.Address.City"] = "EmployeeAddressCity",
                 ["Employee.Salary"] = "EmployeeSalary",
                 ["Employee.DepartmentId"] = "EmployeeDepartmentId",
-                ["Employee.Department.Id"] = "EmployeeDepartmentId"
+                ["Employee.Department.Id"] = "EmployeeDepartmentId",
+                ["Employee.Image"] = "EmployeeImage"
             }, personInfo.ColumnNamesDic);
 
             Assert.Equal(new Dictionary<string, string>
@@ -80,7 +82,7 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "EmployeeAddressStreet", "EmployeeAddressCity",
-                "EmployeeSalary", "EmployeeDepartmentId" }, personInfo.ColumnNames);
+                "EmployeeSalary", "EmployeeDepartmentId", "EmployeeImage" }, personInfo.ColumnNames);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "BossId" }, deptInfo.ColumnNames);
         }
 
@@ -121,6 +123,8 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
 
             [ForeignKey]
             public virtual Department Department { get; set; }
+
+            public byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig

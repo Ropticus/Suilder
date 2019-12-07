@@ -13,7 +13,8 @@ namespace Suilder.Test.Reflection.Builder.NoInherit
                 .Ignore(x => x.Guid)
                 .Ignore(x => x.Address)
                 .Ignore(x => x.DepartmentId)
-                .Ignore(x => x.Department);
+                .Ignore(x => x.Department)
+                .Ignore(x => x.Image);
 
             tableBuilder.Add<Department>()
                 .Ignore(x => x.Guid)

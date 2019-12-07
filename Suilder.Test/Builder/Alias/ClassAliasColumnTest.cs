@@ -31,7 +31,7 @@ namespace Suilder.Test.Builder.Alias
 
             Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
                 + "\"person\".\"AddressStreet\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
-                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\"", result.Sql);
+                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"", result.Sql);
         }
 
         [Fact]

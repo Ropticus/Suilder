@@ -13,7 +13,8 @@ namespace Suilder.Test.Reflection.Builder.TableNested
                 .Ignore(x => x.Guid);
 
             tableBuilder.Add<Person>()
-                .Ignore(x => x.Employee);
+                .Ignore(x => x.Employee)
+                .Ignore(x => x.Employee.Image);
 
             tableBuilder.AddNested<Employee>();
 

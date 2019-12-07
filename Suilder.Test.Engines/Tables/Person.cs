@@ -26,6 +26,8 @@ namespace Suilder.Test.Engines.Tables
 
         public Department Department { get; set; }
 
+        public byte[] Image { get; set; }
+
         [Ignore]
         public string Ignore { get; set; }
     }

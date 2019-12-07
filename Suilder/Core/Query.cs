@@ -464,9 +464,19 @@ namespace Suilder.Core
         }
 
         /// <summary>
+        /// Adds a row with the value to the "insert" statement.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The query.</returns>
+        public virtual IQuery Values(object value)
+        {
+            return Values(SqlBuilder.Instance.ValList.Add(value));
+        }
+
+        /// <summary>
         /// Adds a row with the values to the "insert" statement.
         /// </summary>
-        /// <param name="values">The array with the values</param>
+        /// <param name="values">The array with the values.</param>
         /// <returns>The query.</returns>
         public virtual IQuery Values(params object[] values)
         {
@@ -476,7 +486,7 @@ namespace Suilder.Core
         /// <summary>
         /// Adds a row with the values to the "insert" statement.
         /// </summary>
-        /// <param name="values">The values</param>
+        /// <param name="values">The values.</param>
         /// <returns>The query.</returns>
         public virtual IQuery Values(IValList values)
         {

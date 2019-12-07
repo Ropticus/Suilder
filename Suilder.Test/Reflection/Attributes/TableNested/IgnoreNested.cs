@@ -114,6 +114,9 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
 
             [Ignore]
             public virtual Department Department { get; set; }
+
+            [Ignore]
+            public byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig

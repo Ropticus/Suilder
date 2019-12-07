@@ -43,7 +43,7 @@ namespace Suilder.Test.Reflection.Builder.NoInherit
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Address.Street", "Address.City", "DepartmentId",
-                "Department.Guid" }, personInfo.Columns);
+                "Department.Guid", "Image" }, personInfo.Columns);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Guid" }, deptInfo.Columns);
         }
 
@@ -62,7 +62,8 @@ namespace Suilder.Test.Reflection.Builder.NoInherit
                 ["Address.Street"] = "AddressStreet",
                 ["Address.City"] = "AddressCity",
                 ["DepartmentId"] = "DepartmentId",
-                ["Department.Guid"] = "DepartmentGuid"
+                ["Department.Guid"] = "DepartmentGuid",
+                ["Image"] = "Image"
             }, personInfo.ColumnNamesDic);
 
             Assert.Equal(new Dictionary<string, string>
@@ -81,7 +82,7 @@ namespace Suilder.Test.Reflection.Builder.NoInherit
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "AddressStreet", "AddressCity", "DepartmentId",
-                "DepartmentGuid" }, personInfo.ColumnNames);
+                "DepartmentGuid", "Image" }, personInfo.ColumnNames);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "BossGuid" }, deptInfo.ColumnNames);
         }
     }

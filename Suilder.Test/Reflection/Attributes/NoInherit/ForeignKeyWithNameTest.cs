@@ -41,7 +41,7 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Address.Street", "Address.City", "DepartmentId",
-                "Department.Id" }, personInfo.Columns);
+                "Department.Id", "Image" }, personInfo.Columns);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id" }, deptInfo.Columns);
         }
 
@@ -60,7 +60,8 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
                 ["Address.Street"] = "AddressStreet",
                 ["Address.City"] = "AddressCity",
                 ["DepartmentId"] = "DepartmentId2",
-                ["Department.Id"] = "DepartmentId2"
+                ["Department.Id"] = "DepartmentId2",
+                ["Image"] = "Image"
             }, personInfo.ColumnNamesDic);
 
             Assert.Equal(new Dictionary<string, string>
@@ -78,8 +79,8 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
             ITableInfo personInfo = tableBuilder.GetConfig<Person>();
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "AddressStreet", "AddressCity", "DepartmentId2" },
-                personInfo.ColumnNames);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "AddressStreet", "AddressCity", "DepartmentId2",
+                "Image" }, personInfo.ColumnNames);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "BossId2" }, deptInfo.ColumnNames);
         }
 
@@ -124,6 +125,8 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
 
             [ForeignKey("DepartmentId2")]
             public Department Department { get; set; }
+
+            public byte[] Image { get; set; }
         }
     }
 }

@@ -131,7 +131,7 @@ namespace Suilder.Reflection.Builder.Processors
 
             // Ignore lists
             if (typeof(IEnumerable).IsAssignableFrom(propertyData.Info.PropertyType)
-                && propertyData.Info.PropertyType != typeof(string))
+                && propertyData.Info.PropertyType != typeof(string) && !propertyData.Info.PropertyType.IsArray)
             {
                 return true;
             }

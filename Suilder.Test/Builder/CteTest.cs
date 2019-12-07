@@ -119,9 +119,9 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(cte);
 
             Assert.Equal("\"cte\" (\"Id\", \"Active\", \"Name\", \"SurName\", \"AddressStreet\", \"AddressCity\", "
-                + "\"Salary\", \"DateCreated\", \"DepartmentId\") AS (SELECT \"person\".\"Id\", \"person\".\"Active\", "
+                + "\"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\") AS (SELECT \"person\".\"Id\", \"person\".\"Active\", "
                 + "\"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\" "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\" "
                 + "FROM \"Person\" AS \"person\")", result.Sql);
         }
 

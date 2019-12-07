@@ -229,7 +229,8 @@ namespace Suilder.Test.Builder.Select
 
             Assert.Equal("SELECT DISTINCT ON(\"person\".\"Id\") \"person\".\"Id\", \"person\".\"Active\", "
                 + "\"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\"", result.Sql);
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -244,7 +245,7 @@ namespace Suilder.Test.Builder.Select
             Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"SurName\") \"person\".\"Id\", "
                 + "\"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", "
                 + "\"person\".\"AddressCity\", \"person\".\"Salary\", \"person\".\"DateCreated\", "
-                + "\"person\".\"DepartmentId\"", result.Sql);
+                + "\"person\".\"DepartmentId\", \"person\".\"Image\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -260,7 +261,7 @@ namespace Suilder.Test.Builder.Select
             Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"SurName\") \"person\".\"Id\", "
                 + "\"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", "
                 + "\"person\".\"AddressCity\", \"person\".\"Salary\", \"person\".\"DateCreated\", "
-                + "\"person\".\"DepartmentId\"", result.Sql);
+                + "\"person\".\"DepartmentId\", \"person\".\"Image\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -418,8 +419,8 @@ namespace Suilder.Test.Builder.Select
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT SUM(\"person\".\"Salary\") OVER(PARTITION BY \"person\".\"DepartmentId\")",
-                engine.Compile(select).Sql);
+            Assert.Equal("SELECT SUM(\"person\".\"Salary\") OVER(PARTITION BY \"person\".\"DepartmentId\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]

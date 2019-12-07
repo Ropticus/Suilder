@@ -17,7 +17,8 @@ namespace Suilder.Test.Reflection.Builder.TablePerType
             tableBuilder.Add<Employee>()
                 .ColumnName(x => x.Salary, "Salary2")
                 .ColumnName(x => x.DepartmentId, "DepartmentId2")
-                .ColumnName(x => x.Department.Id, "DepartmentId2");
+                .ColumnName(x => x.Department.Id, "DepartmentId2")
+                .ColumnName(x => x.Image, "Image2");
 
             tableBuilder.Add<Department>()
                 .ColumnName(x => x.Id, "Id3")
@@ -58,7 +59,7 @@ namespace Suilder.Test.Reflection.Builder.TablePerType
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Address.Street", "Address.City" },
                 personInfo.Columns);
-            Assert.Equal(new string[] { "Id", "Salary", "DepartmentId", "Department.Id" }, employeeInfo.Columns);
+            Assert.Equal(new string[] { "Id", "Salary", "DepartmentId", "Department.Id", "Image" }, employeeInfo.Columns);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id" }, deptInfo.Columns);
         }
 
@@ -84,7 +85,8 @@ namespace Suilder.Test.Reflection.Builder.TablePerType
                 ["Id"] = "Id2",
                 ["Salary"] = "Salary2",
                 ["DepartmentId"] = "DepartmentId2",
-                ["Department.Id"] = "DepartmentId2"
+                ["Department.Id"] = "DepartmentId2",
+                ["Image"] = "Image2"
             }, employeeInfo.ColumnNamesDic);
 
             Assert.Equal(new Dictionary<string, string>
@@ -105,7 +107,7 @@ namespace Suilder.Test.Reflection.Builder.TablePerType
 
             Assert.Equal(new string[] { "Id2", "Guid", "Name2", "SurName", "Street2", "AddressCity" },
                 personInfo.ColumnNames);
-            Assert.Equal(new string[] { "Id2", "Salary2", "DepartmentId2" }, employeeInfo.ColumnNames);
+            Assert.Equal(new string[] { "Id2", "Salary2", "DepartmentId2", "Image2" }, employeeInfo.ColumnNames);
             Assert.Equal(new string[] { "Id3", "Guid", "Name3", "BossId3" }, deptInfo.ColumnNames);
         }
     }

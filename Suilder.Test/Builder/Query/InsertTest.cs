@@ -80,20 +80,55 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Values()
+        public void Values_One_Column()
         {
             Person person = null;
             IQuery query = sql.Query.Insert(x => x.Into(() => person)
-                .Add(() => person.Name, () => person.SurName))
-                .Values("Name1", "SurName1");
+                .Add(() => person.Name))
+                .Values("Name1");
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\") VALUES (@p0, @p1)", result.Sql);
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\") VALUES (@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "Name1"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Values_One_Column_Enumerable()
+        {
+            Person person = null;
+            IQuery query = sql.Query.Insert(x => x.Into(() => person)
+                .Add(() => person.Image))
+                .Values(new byte[] { 1, 2, 3 });
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("INSERT INTO \"Person\" (\"Image\") VALUES (@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new byte[] { 1, 2, 3 }
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Values_Params()
+        {
+            Person person = null;
+            IQuery query = sql.Query.Insert(x => x.Into(() => person)
+                .Add(() => person.Name, () => person.SurName, () => person.Image))
+                .Values("Name1", "SurName1", new byte[] { 1, 2, 3 });
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\", \"Image\") VALUES (@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = "Name1",
-                ["@p1"] = "SurName1"
+                ["@p1"] = "SurName1",
+                ["@p2"] = new byte[] { 1, 2, 3 }
             }, result.Parameters);
         }
 

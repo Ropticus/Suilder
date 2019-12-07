@@ -108,7 +108,7 @@ namespace Suilder.Test.Reflection.Builder
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
             Assert.Equal(new string[] { "Guid", "Id", "Name", "Address.Street", "Address.City", "DepartmentId",
-                "Department.Id" }, personInfo.Columns);
+                "Department.Id", "Image" }, personInfo.Columns);
             Assert.Equal(new string[] { "Guid", "Id", "Name", "Boss.Id" }, deptInfo.Columns);
         }
 
@@ -126,7 +126,8 @@ namespace Suilder.Test.Reflection.Builder
                 ["Address.Street"] = "Street2",
                 ["Address.City"] = "Address2City",
                 ["DepartmentId"] = "DepartmentId2",
-                ["Department.Id"] = "DepartmentId2"
+                ["Department.Id"] = "DepartmentId2",
+                ["Image"] = "Image"
             }, personInfo.ColumnNamesDic);
 
             Assert.Equal(new Dictionary<string, string>
@@ -144,7 +145,7 @@ namespace Suilder.Test.Reflection.Builder
             ITableInfo personInfo = tableBuilder.GetConfig<Person>();
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
-            Assert.Equal(new string[] { "Guid2", "Id2", "Name2", "Street2", "Address2City", "DepartmentId2" },
+            Assert.Equal(new string[] { "Guid2", "Id2", "Name2", "Street2", "Address2City", "DepartmentId2", "Image" },
                 personInfo.ColumnNames);
             Assert.Equal(new string[] { "Guid3", "Id3", "Name3", "BossId3" }, deptInfo.ColumnNames);
         }

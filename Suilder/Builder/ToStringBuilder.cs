@@ -99,19 +99,24 @@ namespace Suilder.Builder
         {
             if (!(value is String) && value is IEnumerable list)
             {
-                Builder.Append("(");
-                bool any = false;
+                Builder.Append("[");
                 string separator = ", ";
+                int i = 0, max = 5;
                 foreach (object item in list)
                 {
-                    WriteParameter(item);
+                    if (i < max)
+                        WriteParameter(item);
+                    else
+                        Builder.Append("...");
 
                     Builder.Append(separator);
-                    any = true;
+
+                    if (i++ >= max)
+                        break;
                 }
-                if (any)
+                if (i > 1)
                     RemoveLast(separator.Length);
-                Builder.Append(")");
+                Builder.Append("]");
             }
             else if (value == null)
             {

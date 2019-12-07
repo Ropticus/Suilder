@@ -64,6 +64,8 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
             public int DepartmentId { get; set; }
 
             public Department Department { get; set; }
+
+            public byte[] Image { get; set; }
         }
     }
 }

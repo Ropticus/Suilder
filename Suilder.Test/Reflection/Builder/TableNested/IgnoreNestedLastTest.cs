@@ -15,7 +15,8 @@ namespace Suilder.Test.Reflection.Builder.TableNested
             tableBuilder.Add<Person>()
                 .Ignore(x => x.Employee.Address.City)
                 .Ignore(x => x.Employee.DepartmentId)
-                .Ignore(x => x.Employee.Department.Id);
+                .Ignore(x => x.Employee.Department.Id)
+                .Ignore(x => x.Employee.Image);
 
             tableBuilder.AddNested<Employee>();
 

@@ -119,6 +119,9 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
 
             [Ignore]
             public Department Department { get; set; }
+
+            [Ignore]
+            public byte[] Image { get; set; }
         }
     }
 }

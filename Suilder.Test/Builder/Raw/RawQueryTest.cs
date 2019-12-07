@@ -161,6 +161,17 @@ namespace Suilder.Test.Builder.Raw
         }
 
         [Fact]
+        public void SubQuery()
+        {
+            IRawQuery rawQuery = sql.RawQuery("SELECT * FROM person");
+
+            QueryResult result = engine.Compile(sql.Raw("{0}", rawQuery));
+
+            Assert.Equal("(SELECT * FROM person)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void To_String()
         {
             IRawQuery rawQuery = sql.RawQuery("SELECT * FROM person").Offset(10).Fetch(20);

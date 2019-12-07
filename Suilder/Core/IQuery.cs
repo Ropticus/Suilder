@@ -178,16 +178,23 @@ namespace Suilder.Core
         IQuery Insert<T>(Expression<Func<T>> alias);
 
         /// <summary>
+        /// Adds a row with the value to the "insert" statement.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The query.</returns>
+        IQuery Values(object value);
+
+        /// <summary>
         /// Adds a row with the values to the "insert" statement.
         /// </summary>
-        /// <param name="values">The array with the values</param>
+        /// <param name="values">The array with the values.</param>
         /// <returns>The query.</returns>
         IQuery Values(params object[] values);
 
         /// <summary>
         /// Adds a row with the values to the "insert" statement.
         /// </summary>
-        /// <param name="values">The values</param>
+        /// <param name="values">The values.</param>
         /// <returns>The query.</returns>
         IQuery Values(IValList values);
 

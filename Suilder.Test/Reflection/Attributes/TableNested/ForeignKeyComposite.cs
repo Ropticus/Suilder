@@ -40,8 +40,8 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Employee.Address.Street", "Employee.Address.City",
-                "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Guid", "Employee.Department.Id" },
-                personInfo.Columns);
+                "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Guid", "Employee.Department.Id",
+                "Employee.Image" }, personInfo.Columns);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Guid", "Boss.Id" }, deptInfo.Columns);
         }
 
@@ -62,7 +62,8 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
                 ["Employee.Salary"] = "EmployeeSalary",
                 ["Employee.DepartmentId"] = "EmployeeDepartmentId",
                 ["Employee.Department.Guid"] = "EmployeeDepartmentGuid",
-                ["Employee.Department.Id"] = "EmployeeDepartmentId"
+                ["Employee.Department.Id"] = "EmployeeDepartmentId",
+                ["Employee.Image"] = "EmployeeImage"
             }, personInfo.ColumnNamesDic);
 
             Assert.Equal(new Dictionary<string, string>
@@ -82,7 +83,8 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "EmployeeAddressStreet", "EmployeeAddressCity",
-                "EmployeeSalary", "EmployeeDepartmentId", "EmployeeDepartmentGuid" }, personInfo.ColumnNames);
+                "EmployeeSalary", "EmployeeDepartmentId", "EmployeeDepartmentGuid", "EmployeeImage" },
+                personInfo.ColumnNames);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "BossGuid", "BossId" }, deptInfo.ColumnNames);
         }
 
@@ -124,6 +126,8 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             [ForeignKey(PropertyName = "Guid")]
             [ForeignKey(PropertyName = "Id")]
             public virtual Department Department { get; set; }
+
+            public byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig

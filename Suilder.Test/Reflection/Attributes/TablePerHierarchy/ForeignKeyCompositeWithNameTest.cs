@@ -52,7 +52,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Address.Street", "Address.City" },
                 personInfo.Columns);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Address.Street", "Address.City", "Salary",
-                "DepartmentId", "Department.Id", "Department.Guid" }, employeeInfo.Columns);
+                "DepartmentId", "Department.Id", "Department.Guid", "Image" }, employeeInfo.Columns);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id", "Boss.Guid" }, deptInfo.Columns);
         }
 
@@ -84,7 +84,8 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
                 ["Salary"] = "Salary",
                 ["DepartmentId"] = "DepartmentId2",
                 ["Department.Id"] = "DepartmentId2",
-                ["Department.Guid"] = "DepartmentGuid2"
+                ["Department.Guid"] = "DepartmentGuid2",
+                ["Image"] = "Image"
             }, employeeInfo.ColumnNamesDic);
 
             Assert.Equal(new Dictionary<string, string>
@@ -107,7 +108,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "AddressStreet", "AddressCity" },
                 personInfo.ColumnNames);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "AddressStreet", "AddressCity", "Salary",
-                "DepartmentId2", "DepartmentGuid2" }, employeeInfo.ColumnNames);
+                "DepartmentId2", "DepartmentGuid2", "Image" }, employeeInfo.ColumnNames);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "BossId2", "BossGuid2" }, deptInfo.ColumnNames);
         }
 
@@ -147,6 +148,8 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
             [ForeignKey("Id", "DepartmentId2")]
             [ForeignKey("Guid", "DepartmentGuid2")]
             public virtual Department Department { get; set; }
+
+            public byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig

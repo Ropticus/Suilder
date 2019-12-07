@@ -22,7 +22,7 @@ namespace Suilder.Test.Builder
 
             QueryResult result = engine.Compile(list);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", engine.Compile(list).Sql);
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -34,7 +34,7 @@ namespace Suilder.Test.Builder
 
             QueryResult result = engine.Compile(list);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", engine.Compile(list).Sql);
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -46,7 +46,7 @@ namespace Suilder.Test.Builder
 
             QueryResult result = engine.Compile(list);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", engine.Compile(list).Sql);
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -61,7 +61,7 @@ namespace Suilder.Test.Builder
 
             QueryResult result = engine.Compile(list);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", engine.Compile(list).Sql);
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -73,7 +73,7 @@ namespace Suilder.Test.Builder
 
             QueryResult result = engine.Compile(list);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", engine.Compile(list).Sql);
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -86,7 +86,7 @@ namespace Suilder.Test.Builder
 
             QueryResult result = engine.Compile(list);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", engine.Compile(list).Sql);
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

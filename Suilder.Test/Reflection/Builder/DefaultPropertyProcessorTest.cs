@@ -16,7 +16,7 @@ namespace Suilder.Test.Reflection.Builder
 
             ITableInfo propertyInfo = tableBuilder.GetConfig<PropertyTest>();
 
-            Assert.Equal(new string[] { "PropertyPublicGetSet" }, propertyInfo.Columns);
+            Assert.Equal(new string[] { "PropertyPublicGetSet", "Array" }, propertyInfo.Columns);
         }
 
         [Fact]
@@ -66,6 +66,8 @@ namespace Suilder.Test.Reflection.Builder
             public string fieldPublic;
 
             private string fieldPrivate;
+
+            public byte[] Array { get; set; }
 
             public IList<string> List { get; set; }
         }
