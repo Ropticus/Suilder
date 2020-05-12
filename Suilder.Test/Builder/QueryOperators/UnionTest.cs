@@ -34,7 +34,7 @@ namespace Suilder.Test.Builder.QueryOperators
             {
                 sql.Union(null, sql.Query.Select(() => person.Name).From(() => person));
             });
-            Assert.Equal($"Left value is null.{Environment.NewLine}Parameter name: left", ex.Message);
+            Assert.Equal($"Left value is null. (Parameter 'left')", ex.Message);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace Suilder.Test.Builder.QueryOperators
             {
                 sql.Union(sql.Query.Select(() => person.Name).From(() => person), null);
             });
-            Assert.Equal($"Right value is null.{Environment.NewLine}Parameter name: right", ex.Message);
+            Assert.Equal($"Right value is null. (Parameter 'right')", ex.Message);
         }
 
         [Fact]

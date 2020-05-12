@@ -167,8 +167,8 @@ namespace Suilder.Test.Reflection.Builder
                 tableBuilder.Add<Person>()
                     .PrimaryKey("Other");
             });
-            Assert.Equal($"The type \"{typeof(Person)}\" does not have property \"Other\".{Environment.NewLine}"
-                + "Parameter name: propertyName", ex.Message);
+            Assert.Equal($"The type \"{typeof(Person)}\" does not have property \"Other\". (Parameter 'propertyName')",
+                ex.Message);
         }
 
         [Fact]
