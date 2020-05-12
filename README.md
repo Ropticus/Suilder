@@ -1,4 +1,6 @@
 # Suilder - SQL query builder
+[![Build Status](https://img.shields.io/github/workflow/status/Ropticus/Suilder/Build)](https://github.com/Ropticus/Suilder/actions?query=workflow%3ABuild)
+[![Test Status](https://img.shields.io/github/workflow/status/Ropticus/Suilder/Test?label=test)](https://github.com/Ropticus/Suilder/actions?query=workflow%3ATest)
 [![Documentation Status](https://readthedocs.org/projects/suilder/badge/?version=latest)](https://suilder.readthedocs.io/en/latest/?badge=latest)
 [![GitHub release](https://img.shields.io/github/release/Ropticus/Suilder)](https://github.com/Ropticus/Suilder/releases/latest)
 
