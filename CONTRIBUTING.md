@@ -9,35 +9,40 @@ The following apply to C# code:
 * Format correctly the code and trim trailing spaces.
 * Follow language conventions.
 
-### Run unit test
-We use [xUnit](https://xunit.net/) for unit test.
+### Run unit tests
+We use [xUnit](https://xunit.net/) for unit testing.
 
-Run all test:
+Run all tests:
 ```sh
 dotnet test
 ```
 
-Run **Suilder** test:
+Run **Suilder** tests:
 ```sh
 dotnet test "./Suilder.Test"
 ```
 
-Run **Suilder.Engines** test:
+Run **Suilder.Engines** tests:
 ```sh
 dotnet test "./Suilder.Test.Engines"
 ```
 
 ### Run code coverage
-We use [Coverlet](https://github.com/tonerdo/coverlet) for code coverage.
+We use [Coverlet](https://github.com/coverlet-coverage/coverlet) for code coverage.
+
+Run all code coverage:
+```sh
+dotnet test --collect:"XPlat Code Coverage"
+```
 
 Run **Suilder** code coverage:
 ```sh
-dotnet test "./Suilder.Test" /p:CollectCoverage=true /p:Include="[Suilder]*" /p:CoverletOutput="./coverage/" /p:CoverletOutputFormat="opencover"
+dotnet test "./Suilder.Test" --collect:"XPlat Code Coverage"
 ```
 
 Run **Suilder.Engines** code coverage:
 ```sh
-dotnet test "./Suilder.Test.Engines" /p:CollectCoverage=true /p:Include="[Suilder.Engines]*" /p:CoverletOutput="./coverage/" /p:CoverletOutputFormat="opencover"
+dotnet test "./Suilder.Test.Engines" --collect:"XPlat Code Coverage"
 ```
 
 ## Contributing to documentation

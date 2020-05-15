@@ -452,9 +452,53 @@ namespace Suilder.Test.Builder.Select
         public void To_String()
         {
             IAlias person = sql.Alias("person");
+            ISelect select = sql.Select().Add(person["Name"]).As("Name");
+
+            Assert.Equal("SELECT person.Name AS Name", select.ToString());
+        }
+
+        [Fact]
+        public void To_String_Distinct()
+        {
+            IAlias person = sql.Alias("person");
+            ISelect select = sql.Select().Distinct().Add(person["Name"]).As("Name");
+
+            Assert.Equal("SELECT DISTINCT person.Name AS Name", select.ToString());
+        }
+
+        [Fact]
+        public void To_String_Distinct_On()
+        {
+            IAlias person = sql.Alias("person");
+            ISelect select = sql.Select().DistinctOn(person["Id"]).Add(person.All);
+
+            Assert.Equal("SELECT DISTINCT ON(person.Id) person.*", select.ToString());
+        }
+
+        [Fact]
+        public void To_String_Top()
+        {
+            IAlias person = sql.Alias("person");
+            ISelect select = sql.Select().Top(10).Add(person["Name"]).As("Name");
+
+            Assert.Equal("SELECT TOP(10) person.Name AS Name", select.ToString());
+        }
+
+        [Fact]
+        public void To_String_Top_Distinct()
+        {
+            IAlias person = sql.Alias("person");
             ISelect select = sql.Select().Distinct().Top(10).Add(person["Name"]).As("Name");
 
             Assert.Equal("SELECT DISTINCT TOP(10) person.Name AS Name", select.ToString());
+        }
+
+        [Fact]
+        public void To_String_Over()
+        {
+            ISelect select = sql.Select().Add(SqlFn.Count()).Over();
+
+            Assert.Equal("SELECT COUNT(*) OVER()", select.ToString());
         }
     }
 }

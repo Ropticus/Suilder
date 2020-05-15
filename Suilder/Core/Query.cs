@@ -1558,7 +1558,6 @@ namespace Suilder.Core
                     .Join(", ", x, item => b.WriteFragment(item.Item1).Write(" = ").WriteValue(item.Item2)).Write(" "))
                 .IfNotNull(DeleteValue, x => b.WriteFragment(x).Write(" "))
                 .IfNotNull(FromValue, x => b.WriteFragment(x).Write(" "))
-                .IfNotNull(DeleteValue, x => b.WriteFragment(x).Write(" "))
                 .ForEach(Joins, x => b.WriteFragment(x).Write(" "))
                 .IfNotNull(WhereValue, x => b.IfNot(x is IRawSql, () => b.Write("WHERE ")).WriteFragment(x).Write(" "))
                 .IfNotNull(GroupByValue, x => b.IfNot(x is IRawSql, () => b.Write("GROUP BY ")).WriteFragment(x).Write(" "))

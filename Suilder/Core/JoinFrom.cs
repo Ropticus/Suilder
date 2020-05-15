@@ -75,8 +75,9 @@ namespace Suilder.Core
         /// <returns>The "join" clause.</returns>
         public virtual IJoin Join(string tableName, string aliasName)
         {
-            Source = SqlBuilder.Instance.Alias(tableName);
-            AliasName = aliasName;
+            IAlias alias = SqlBuilder.Instance.Alias(tableName, aliasName);
+            Source = alias;
+            AliasName = alias.AliasName;
             return this;
         }
 
@@ -249,8 +250,7 @@ namespace Suilder.Core
                 {
                     if (source is IAlias alias)
                     {
-                        return b.WriteFragment(source).If(alias.AliasName == null && AliasName != null,
-                            () => b.Write(" AS " + AliasName));
+                        return b.WriteFragment(source);
                     }
                     else
                     {

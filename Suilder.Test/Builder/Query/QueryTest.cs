@@ -421,5 +421,50 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("UPDATE SET person.Name = \"SomeName\" FROM person", query.ToString());
         }
+
+        [Fact]
+        public void To_String_Delete()
+        {
+            IAlias person = sql.Alias("person");
+
+            IQuery query = sql.Query.Delete()
+                .From(person);
+
+            Assert.Equal("DELETE FROM person", query.ToString());
+        }
+
+        [Fact]
+        public void To_String_With()
+        {
+            IAlias person = sql.Alias("person");
+            ICte cte = sql.Cte("personCte").As(sql.Query.Select(person.All).From(person));
+            IQuery query = sql.Query.With(cte);
+
+            Assert.Equal("WITH personCte AS (SELECT person.* FROM person)", query.ToString());
+        }
+
+        [Fact]
+        public void To_String_Before()
+        {
+            IAlias person = sql.Alias("person");
+            IQuery query = sql.Query
+                .Before(sql.Raw("BEFORE VALUE"))
+                .Select(person.All)
+                .From(person);
+
+            Assert.Equal("BEFORE VALUE SELECT person.* FROM person", query.ToString());
+        }
+
+        [Fact]
+        public void To_String_After()
+        {
+            IAlias person = sql.Alias("person");
+            IQuery query = sql.Query
+                .Select(person.All)
+                .From(person)
+                .After(sql.Raw("AFTER VALUE"));
+
+            Assert.Equal("SELECT person.* FROM person AFTER VALUE", query.ToString());
+        }
     }
 }

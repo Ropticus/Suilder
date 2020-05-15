@@ -276,10 +276,28 @@ namespace Suilder.Test.Builder
         [Fact]
         public void To_String()
         {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+
+            Assert.Equal("FROM person", from.ToString());
+        }
+
+        [Fact]
+        public void To_String_With_Alias_Name()
+        {
             IAlias person = sql.Alias("person", "per");
             IFrom from = sql.From(person);
 
             Assert.Equal("FROM person AS per", from.ToString());
+        }
+
+        [Fact]
+        public void To_String_Options()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person).Options(sql.Raw("WITH (NO LOCK)"));
+
+            Assert.Equal("FROM person WITH (NO LOCK)", from.ToString());
         }
 
         [Fact]

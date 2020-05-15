@@ -130,8 +130,7 @@ namespace Suilder.Core
                 {
                     if (source is IAlias alias)
                     {
-                        return b.WriteFragment(source).If(alias.AliasName == null && AliasName != null,
-                            () => b.Write(" AS " + AliasName));
+                        return b.WriteFragment(source);
                     }
                     else
                     {

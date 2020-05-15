@@ -576,10 +576,29 @@ namespace Suilder.Test.Builder
         [Fact]
         public void To_String()
         {
+            IAlias person = sql.Alias("person");
+            IJoin join = sql.Left.Join(person);
+
+            Assert.Equal("LEFT JOIN person", join.ToString());
+        }
+
+        [Fact]
+        public void To_String_With_Alias_Name()
+        {
             IAlias person = sql.Alias("person", "per");
             IJoin join = sql.Left.Join(person);
 
             Assert.Equal("LEFT JOIN person AS per", join.ToString());
+        }
+
+        [Fact]
+        public void To_String_Options()
+        {
+            IAlias person = sql.Alias("person");
+            IJoin join = sql.Left.Join(person)
+                .Options(sql.Raw("USE INDEX (myIndex)"));
+
+            Assert.Equal("LEFT JOIN person USE INDEX (myIndex)", join.ToString());
         }
 
         [Fact]

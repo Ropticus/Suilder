@@ -70,7 +70,7 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void With_ToString()
+        public void To_String()
         {
             IAlias person = sql.Alias("person");
             ICte cte = sql.Cte("cte1").As(sql.Query.Select(person["Id"], person["Name"]).From(person));

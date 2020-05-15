@@ -174,9 +174,37 @@ namespace Suilder.Test.Builder.Raw
         [Fact]
         public void To_String()
         {
+            IRawQuery rawQuery = sql.RawQuery("SELECT * FROM person");
+
+            Assert.Equal("SELECT * FROM person", rawQuery.ToString());
+        }
+
+        [Fact]
+        public void To_String_Offset()
+        {
             IRawQuery rawQuery = sql.RawQuery("SELECT * FROM person").Offset(10).Fetch(20);
 
             Assert.Equal("SELECT * FROM person OFFSET 10 FETCH 20", rawQuery.ToString());
+        }
+
+        [Fact]
+        public void To_String_Before()
+        {
+            IRawQuery rawQuery = sql.RawQuery("SELECT * FROM person")
+                .Before(sql.Raw("BEFORE VALUE"))
+                .Offset(10).Fetch(20);
+
+            Assert.Equal("BEFORE VALUE SELECT * FROM person OFFSET 10 FETCH 20", rawQuery.ToString());
+        }
+
+        [Fact]
+        public void To_String_After()
+        {
+            IRawQuery rawQuery = sql.RawQuery("SELECT * FROM person")
+                .Offset(10).Fetch(20)
+                .After(sql.Raw("AFTER VALUE"));
+
+            Assert.Equal("SELECT * FROM person OFFSET 10 FETCH 20 AFTER VALUE", rawQuery.ToString());
         }
     }
 }

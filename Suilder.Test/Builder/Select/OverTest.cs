@@ -113,10 +113,33 @@ namespace Suilder.Test.Builder.Select
         {
             IAlias person = sql.Alias("person");
             IOver over = sql.Over
+                .PartitionBy(x => x.Add(person["DepartmentId"]));
+
+            Assert.Equal("OVER(PARTITION BY person.DepartmentId)", over.ToString());
+        }
+
+        [Fact]
+        public void To_String_OrderBy()
+        {
+            IAlias person = sql.Alias("person");
+            IOver over = sql.Over
                 .PartitionBy(x => x.Add(person["DepartmentId"]))
                 .OrderBy(x => x.Add(person["Name"]).Asc);
 
             Assert.Equal("OVER(PARTITION BY person.DepartmentId ORDER BY person.Name ASC)", over.ToString());
+        }
+
+        [Fact]
+        public void To_String_OrderBy_Range()
+        {
+            IAlias person = sql.Alias("person");
+            IOver over = sql.Over
+                .PartitionBy(x => x.Add(person["DepartmentId"]))
+                .OrderBy(x => x.Add(person["Name"]).Asc)
+                .Range(sql.Raw("ROWS 5 PRECEDING"));
+
+            Assert.Equal("OVER(PARTITION BY person.DepartmentId ORDER BY person.Name ASC ROWS 5 PRECEDING)",
+                over.ToString());
         }
     }
 }

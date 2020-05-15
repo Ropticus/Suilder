@@ -125,6 +125,20 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void Before()
+        {
+            IAlias person = sql.Alias("person");
+            IFunction func = sql.Function("COUNT")
+                .Before(sql.Raw("DISTINCT"))
+                .Add(person["Name"]);
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("COUNT(DISTINCT \"person\".\"Name\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Only_Registered()
         {
             engine.Options.FunctionsOnlyRegistered = true;
@@ -235,6 +249,17 @@ namespace Suilder.Test.Builder
                 .Add(person["SurName"]);
 
             Assert.Equal("CONCAT(person.Name, \", \", person.SurName)", func.ToString());
+        }
+
+        [Fact]
+        public void To_String_Before()
+        {
+            IAlias person = sql.Alias("person");
+            IFunction func = sql.Function("COUNT")
+                .Before(sql.Raw("DISTINCT"))
+                .Add(person["Name"]);
+
+            Assert.Equal("COUNT(DISTINCT person.Name)", func.ToString());
         }
     }
 }

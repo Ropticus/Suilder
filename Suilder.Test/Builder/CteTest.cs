@@ -119,10 +119,10 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(cte);
 
             Assert.Equal("\"cte\" (\"Id\", \"Active\", \"Name\", \"SurName\", \"AddressStreet\", \"AddressCity\", "
-                + "\"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\") AS (SELECT \"person\".\"Id\", \"person\".\"Active\", "
-                + "\"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\" "
-                + "FROM \"Person\" AS \"person\")", result.Sql);
+                + "\"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\") AS (SELECT \"person\".\"Id\", "
+                + "\"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", "
+                + "\"person\".\"AddressCity\", \"person\".\"Salary\", \"person\".\"DateCreated\", "
+                + "\"person\".\"DepartmentId\", \"person\".\"Image\" FROM \"Person\" AS \"person\")", result.Sql);
         }
 
         [Fact]
@@ -146,12 +146,24 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void Cte_ToString()
+        public void To_String()
         {
             IAlias person = sql.Alias("person");
             ICte cte = sql.Cte("cte").As(sql.Query.Select(person["Id"], person["Name"]).From(person));
 
             Assert.Equal("cte AS (SELECT person.Id, person.Name FROM person)", cte.ToString());
+        }
+
+        [Fact]
+        public void To_String_With_Columns()
+        {
+            IAlias person = sql.Alias("person");
+            ICte cte = sql.Cte("cte")
+                .Add(person["Id"])
+                .Add(person["Name"])
+                .As(sql.Query.Select(person["Id"], person["Name"]).From(person));
+
+            Assert.Equal("cte (person.Id, person.Name) AS (SELECT person.Id, person.Name FROM person)", cte.ToString());
         }
     }
 }
