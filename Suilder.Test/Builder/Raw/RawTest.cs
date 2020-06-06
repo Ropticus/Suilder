@@ -148,6 +148,15 @@ namespace Suilder.Test.Builder.Raw
         }
 
         [Fact]
+        public void Invalid_Index_Empty_Only_Index()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<FormatException>(() => sql.Raw("{}", person["Name"]));
+            Assert.Equal("Input string was not in a correct format.", ex.Message);
+        }
+
+        [Fact]
         public void Invalid_Index()
         {
             IAlias person = sql.Alias("person");

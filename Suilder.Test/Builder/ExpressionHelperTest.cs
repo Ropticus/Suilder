@@ -448,10 +448,7 @@ namespace Suilder.Test.Builder
         [Fact]
         public void Val_Static()
         {
-            Person person = new Person()
-            {
-                Name = "Value1"
-            };
+            Person person = new Person() { Name = "Value1" };
             Expression<Func<object>> expression = () => Custom.Val(person.Name);
             MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
 

@@ -81,6 +81,36 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
+        public void Builder_Expression_Nested()
+        {
+            Person person = null;
+            IOperator op = sql.Eq(() => person.Address.Street, "SomeName");
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressStreet\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Builder_Expression_ForeignKey()
+        {
+            Person person = null;
+            IOperator op = sql.Eq(() => person.Department.Id, 1);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentId\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
+        }
+
+        [Fact]
         public void Builder_Expression_Enumerable()
         {
             Person person = null;
@@ -245,6 +275,36 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
+        public void Expression_Nested()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Address.Street == "SomeName");
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressStreet\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_ForeignKey()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Department.Id == 1);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentId\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
+        }
+
+        [Fact]
         public void Expression_Bool_Property()
         {
             Person person = null;
@@ -313,6 +373,36 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_Nested()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.Eq(person.Address.Street, "SomeName"));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressStreet\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "SomeName"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_ForeignKey()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.Eq(person.Department.Id, 1));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentId\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1

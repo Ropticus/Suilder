@@ -85,8 +85,9 @@ namespace Suilder.Test.Builder.Alias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
-                + "\"person\".\"AddressStreet\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
-                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"", result.Sql);
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
         }
 
         [Fact]
@@ -107,8 +108,9 @@ namespace Suilder.Test.Builder.Alias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
-                + "\"person\".\"AddressStreet\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
-                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"", result.Sql);
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
         }
 
         [Fact]
@@ -129,8 +131,9 @@ namespace Suilder.Test.Builder.Alias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
-                + "\"person\".\"AddressStreet\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
-                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"", result.Sql);
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
         }
 
         [Fact]
@@ -151,8 +154,9 @@ namespace Suilder.Test.Builder.Alias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
-                + "\"person\".\"AddressStreet\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
-                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"", result.Sql);
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
         }
 
         [Fact]
@@ -192,8 +196,8 @@ namespace Suilder.Test.Builder.Alias
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"Id\", \"Active\", \"Name\", \"SurName\", \"AddressStreet\", \"AddressCity\", \"Salary\", "
-                + "\"DateCreated\", \"DepartmentId\", \"Image\"", result.Sql);
+            Assert.Equal("\"Id\", \"Active\", \"Name\", \"SurName\", \"AddressStreet\", \"AddressNumber\", "
+                + "\"AddressCity\", \"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\"", result.Sql);
         }
 
         [Fact]

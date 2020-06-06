@@ -22,19 +22,6 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Expression_All_Columns()
-        {
-            Person person = null;
-            IColumn column = sql.Col(() => person);
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
-                + "\"person\".\"AddressStreet\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
-                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"", result.Sql);
-        }
-
-        [Fact]
         public void Expression_Column_Nested()
         {
             Person person = null;
@@ -54,6 +41,20 @@ namespace Suilder.Test.Builder.Alias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"DepartmentId\"", result.Sql);
+        }
+
+        [Fact]
+        public void Expression_All_Columns()
+        {
+            Person person = null;
+            IColumn column = sql.Col(() => person);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
         }
 
         [Fact]

@@ -36,10 +36,7 @@ namespace Suilder.Test.Builder.Functions
         public void Val_Alias()
         {
             Person person = null;
-            Person personValue = new Person()
-            {
-                Id = 1
-            };
+            Person personValue = new Person() { Id = 1 };
             IOperator func = (IOperator)sql.Op(() => person.Id == SqlExp.Val(personValue.Id));
 
             QueryResult result = engine.Compile(func);
@@ -55,10 +52,7 @@ namespace Suilder.Test.Builder.Functions
         public void Val_Method()
         {
             Person person = null;
-            Person personValue = new Person()
-            {
-                Name = "SomeName"
-            };
+            Person personValue = new Person() { Name = "SomeName" };
             IOperator func = (IOperator)sql.Op(() => person.Active == SqlExp.Val(personValue.Name.Contains("Name")));
 
             QueryResult result = engine.Compile(func);

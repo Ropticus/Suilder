@@ -7,6 +7,8 @@ namespace Suilder.Test.Builder.Tables
     {
         public string Street { get; set; }
 
+        public int Number { get; set; }
+
         public string City { get; set; }
 
         [Ignore]

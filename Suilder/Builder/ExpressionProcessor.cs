@@ -206,11 +206,7 @@ namespace Suilder.Builder
                     return ParseValue(((UnaryExpression)expression).Operand);
                 case ExpressionType.MemberAccess:
                     MemberExpression memberExp = (MemberExpression)expression;
-                    if (Tables.Contains(memberExp.Type.FullName)
-                        || Tables.Contains(memberExp.Member.ReflectedType.FullName))
-                        return ParseColumn(memberExp);
-                    else
-                        return Compile(memberExp);
+                    return IsAlias(memberExp) ? ParseColumn(memberExp) : Compile(memberExp);
                 case ExpressionType.New:
                 case ExpressionType.NewArrayInit:
                     return Compile(expression);
@@ -243,9 +239,9 @@ namespace Suilder.Builder
         public static object ParseMethod(MethodCallExpression expression)
         {
             string methodName = GetMethodFullName(expression);
-            if (Functions.ContainsKey(methodName))
+            if (Functions.TryGetValue(methodName, out var method))
             {
-                return Functions[methodName](expression);
+                return method(expression);
             }
             else
             {
@@ -476,6 +472,21 @@ namespace Suilder.Builder
         }
 
         /// <summary>
+        /// Determines if the expression is an alias.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns><see langword="true"/> if the expression is an alias, otherwise, <see langword="false"/>.</returns>
+        public static bool IsAlias(MemberExpression expression)
+        {
+            while (expression.Expression is MemberExpression memberExp)
+            {
+                expression = memberExp;
+            }
+
+            return Tables.Contains(expression.Type.FullName);
+        }
+
+        /// <summary>
         /// Get the full method name.
         /// </summary>
         /// <param name="type">The type of the class of the method.</param>
@@ -578,15 +589,15 @@ namespace Suilder.Builder
         /// <summary>
         /// Get all the nested members of an expression.
         /// </summary>
-        /// <param name="memberExp">The expression.</param>
+        /// <param name="expression">The expression.</param>
         /// <returns>A list with the <see cref="MemberInfo"/> of all members.</returns>
-        public static IList<MemberInfo> GetMemberInfoList(MemberExpression memberExp)
+        public static IList<MemberInfo> GetMemberInfoList(MemberExpression expression)
         {
             List<MemberInfo> list = new List<MemberInfo>();
-            while (memberExp != null)
+            while (expression != null)
             {
-                list.Add(memberExp.Member);
-                memberExp = memberExp.Expression as MemberExpression;
+                list.Add(expression.Member);
+                expression = expression.Expression as MemberExpression;
             }
             list.Reverse();
             return list;

@@ -16,7 +16,7 @@ namespace Suilder.Core
         /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         public ListOperator(string op, object left, object right) : base(op, left, right)
         {
-            if (right is IEnumerable list && !(right is IQueryFragment))
+            if (right is IEnumerable list && !(right is string) && !(right is IQueryFragment))
             {
                 ISubList subList = SqlBuilder.Instance.SubList;
                 foreach (object value in list)

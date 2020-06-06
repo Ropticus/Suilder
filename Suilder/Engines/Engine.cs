@@ -31,7 +31,7 @@ namespace Suilder.Engines
         /// The registered functions.
         /// </summary>
         /// <value>The registered functions.</value>
-        protected IDictionary<string, FunctionData> Functions { get; set; } = new Dictionary<string, FunctionData>();
+        protected IDictionary<string, IFunctionData> Functions { get; set; } = new Dictionary<string, IFunctionData>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Engine"/> class.
@@ -168,7 +168,8 @@ namespace Suilder.Engines
         public virtual IFunctionData GetFunction(string name)
         {
             name = name.ToUpperInvariant();
-            return Functions.ContainsKey(name) ? Functions[name] : null;
+            Functions.TryGetValue(name, out IFunctionData func);
+            return func;
         }
 
         /// <summary>
