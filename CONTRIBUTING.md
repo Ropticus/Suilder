@@ -45,6 +45,14 @@ Run **Suilder.Engines** code coverage:
 dotnet test "./Suilder.Test.Engines" --collect:"XPlat Code Coverage"
 ```
 
+### Run performance tests
+We use [BenchmarkDotNet](https://benchmarkdotnet.org/) for benchmarking.
+
+Run all benchmarks:
+```sh
+dotnet run -p "./Suilder.Performance" -c Release -- -f *
+```
+
 ## Contributing to documentation
 The documentation is built with [MkDocs](https://www.mkdocs.org/) and is in the [Suider-docs](https://github.com/Ropticus/Suilder-docs) repository.
 

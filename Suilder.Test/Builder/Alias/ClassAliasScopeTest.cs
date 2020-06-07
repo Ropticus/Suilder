@@ -185,7 +185,6 @@ namespace Suilder.Test.Builder.Alias
             public static Person person = null;
 
             public static Person Person { get; set; }
-
         }
 
         protected class TablesNonStatic
@@ -193,7 +192,6 @@ namespace Suilder.Test.Builder.Alias
             public Person person = null;
 
             public Person Person { get; set; }
-
         }
     }
 }

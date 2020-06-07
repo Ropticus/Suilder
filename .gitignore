@@ -12,3 +12,6 @@
 
 # Code coverage
 coverage/
+
+# Benchmark
+benchmark/
