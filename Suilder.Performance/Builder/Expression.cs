@@ -26,12 +26,26 @@ namespace Suilder.Performance.Builder
             return sql.Alias(expression);
         }
 
+        private IAlias<Person> person;
+
+        [GlobalSetup(Targets = new[] { nameof(Column_Typed), nameof(Column_Typed_All) })]
+        public void Column_Setup()
+        {
+            person = sql.Alias<Person>();
+        }
+
         [Benchmark]
         [BenchmarkCategory("Alias")]
         public IColumn Column_Typed()
         {
-            IAlias<Person> person = sql.Alias<Person>();
             return person.Col(x => x.Id);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Alias")]
+        public IColumn Column_Typed_All()
+        {
+            return person.Col(x => x);
         }
 
         [Benchmark]
@@ -40,6 +54,14 @@ namespace Suilder.Performance.Builder
         {
             Person person = null;
             return sql.Col(() => person.Id);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Alias")]
+        public IColumn Column_Object_All()
+        {
+            Person person = null;
+            return sql.Col(() => person);
         }
 
         [Benchmark]

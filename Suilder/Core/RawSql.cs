@@ -49,36 +49,44 @@ namespace Suilder.Core
             List<object> valuesList = new List<object>();
 
             StringBuilder builder = new StringBuilder();
-            bool startValue = false;
 
             for (int i = 0; i < sql.Length; i++)
             {
-                if (sql[i] == '{')
+                char ch = sql[i];
+
+                if (ch == '{')
                 {
-                    if (startValue || i + 1 == sql.Length)
+                    i++;
+
+                    if (i == sql.Length)
                         throw new FormatException("Input string was not in a correct format.");
 
+                    ch = sql[i];
+
                     // Escape value
-                    if (sql[i + 1] == '{')
+                    if (ch == '{')
                     {
-                        builder.Append(sql[++i]);
+                        builder.Append(ch);
                     }
                     else
                     {
-                        startValue = true;
                         sqlList.Add(builder.ToString());
                         builder.Clear();
-                    }
-                }
-                else if (sql[i] == '}')
-                {
-                    if (startValue)
-                    {
-                        string valueIndex = builder.ToString();
-                        builder.Clear();
 
-                        int index;
-                        if (!int.TryParse(valueIndex, out index))
+                        for (; i < sql.Length; i++)
+                        {
+                            ch = sql[i];
+
+                            if (ch == '}')
+                                break;
+
+                            builder.Append(ch);
+                        }
+
+                        if (i == sql.Length)
+                            throw new FormatException("Input string was not in a correct format.");
+
+                        if (!int.TryParse(builder.ToString(), out int index))
                             throw new FormatException("Input string was not in a correct format.");
 
                         if (index < 0 || index >= values.Length)
@@ -87,17 +95,19 @@ namespace Suilder.Core
                                 + "than the size of the argument list");
                         }
 
-                        startValue = false;
                         valuesList.Add(values[index]);
+                        builder.Clear();
                     }
-                    else
-                    {
-                        // Escape value
-                        if (i + 1 == sql.Length || sql[i + 1] != '}')
-                            throw new FormatException("Input string was not in a correct format.");
+                }
+                else if (ch == '}')
+                {
+                    i++;
 
-                        builder.Append(sql[++i]);
-                    }
+                    if (i == sql.Length || sql[i] != '}')
+                        throw new FormatException("Input string was not in a correct format.");
+
+                    // Escape value
+                    builder.Append(ch);
                 }
                 else
                 {
@@ -105,9 +115,7 @@ namespace Suilder.Core
                 }
             }
 
-            if (startValue)
-                throw new FormatException("Input string was not in a correct format.");
-            else if (builder.Length > 0)
+            if (builder.Length > 0)
                 sqlList.Add(builder.ToString());
 
             Sql = sqlList.ToArray();

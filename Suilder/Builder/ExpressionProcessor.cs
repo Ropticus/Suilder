@@ -26,6 +26,21 @@ namespace Suilder.Builder
             = new ConcurrentDictionary<string, Func<MethodCallExpression, object>>();
 
         /// <summary>
+        /// Determines if the expression is an alias.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns><see langword="true"/> if the expression is an alias, otherwise, <see langword="false"/>.</returns>
+        public static bool IsAlias(MemberExpression expression)
+        {
+            while (expression.Expression is MemberExpression nextExp)
+            {
+                expression = nextExp;
+            }
+
+            return Tables.Contains(expression.Type.FullName);
+        }
+
+        /// <summary>
         /// Compile an expression to an <see cref="IAlias"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
@@ -48,11 +63,10 @@ namespace Suilder.Builder
             if (memberExp == null)
                 throw new ArgumentException("Invalid expression.");
 
-            IList<MemberInfo> list = GetMemberInfoList(memberExp);
-            if (list.Count > 1)
+            if (memberExp.Expression is MemberExpression)
                 throw new ArgumentException("Invalid expression.");
 
-            return SqlBuilder.Instance.Alias<T>(list[0].Name);
+            return SqlBuilder.Instance.Alias<T>(memberExp.Member.Name);
         }
 
         /// <summary>
@@ -76,22 +90,10 @@ namespace Suilder.Builder
             if (memberExp == null)
                 throw new ArgumentException("Invalid expression.");
 
-            IList<MemberInfo> list = GetMemberInfoList(memberExp);
-            if (list.Count > 1)
+            if (memberExp.Expression is MemberExpression)
                 throw new ArgumentException("Invalid expression.");
 
-            Type tableType = null;
-            switch (list[0].MemberType)
-            {
-                case MemberTypes.Field:
-                    tableType = ((FieldInfo)list[0]).FieldType;
-                    break;
-                case MemberTypes.Property:
-                    tableType = ((PropertyInfo)list[0]).PropertyType;
-                    break;
-            }
-
-            return SqlBuilder.Instance.Alias(tableType, list[0].Name);
+            return SqlBuilder.Instance.Alias(memberExp.Type, memberExp.Member.Name);
         }
 
         /// <summary>
@@ -120,15 +122,34 @@ namespace Suilder.Builder
                 return ParseColumn<T>(tableName, ((UnaryExpression)expression).Operand);
             }
 
-            MemberExpression memberExp = expression as MemberExpression;
-            if (memberExp == null)
+            if (expression is MemberExpression memberExp)
             {
-                return SqlBuilder.Instance.Col<T>(tableName, "*");
+                // Nested property
+                if (memberExp.Expression is MemberExpression lastExp)
+                {
+                    List<string> list = new List<string>
+                    {
+                        memberExp.Member.Name,
+                        lastExp.Member.Name
+                    };
+
+                    while (lastExp.Expression is MemberExpression nextExp)
+                    {
+                        list.Add(lastExp.Member.Name);
+                        lastExp = nextExp;
+                    }
+
+                    list.Reverse();
+                    return SqlBuilder.Instance.Col<T>(tableName, string.Join(".", list));
+                }
+                else
+                {
+                    return SqlBuilder.Instance.Col<T>(tableName, memberExp.Member.Name);
+                }
             }
             else
             {
-                IList<MemberInfo> list = GetMemberInfoList(memberExp);
-                return SqlBuilder.Instance.Col<T>(tableName, string.Join(".", list.Select(x => x.Name)));
+                return SqlBuilder.Instance.Col<T>(tableName, "*");
             }
         }
 
@@ -158,26 +179,44 @@ namespace Suilder.Builder
             if (memberExp == null)
                 throw new ArgumentException("Invalid expression.");
 
-            IList<MemberInfo> list = GetMemberInfoList(memberExp);
+            return ParseColumn(memberExp);
+        }
 
-            Type tableType = null;
-            switch (list[0].MemberType)
+        /// <summary>
+        /// Compile an expression to an <see cref="IColumn"/>.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The column.</returns>
+        public static IColumn ParseColumn(MemberExpression expression)
+        {
+            if (expression.Expression is MemberExpression memberExp)
             {
-                case MemberTypes.Field:
-                    tableType = ((FieldInfo)list[0]).FieldType;
-                    break;
-                case MemberTypes.Property:
-                    tableType = ((PropertyInfo)list[0]).PropertyType;
-                    break;
-            }
+                // Nested property
+                if (memberExp.Expression is MemberExpression lastExp)
+                {
+                    List<string> list = new List<string>
+                    {
+                        expression.Member.Name,
+                        memberExp.Member.Name
+                    };
 
-            if (list.Count == 1)
-            {
-                return SqlBuilder.Instance.Col(tableType, list[0].Name, "*");
+                    while (lastExp.Expression is MemberExpression nextExp)
+                    {
+                        list.Add(lastExp.Member.Name);
+                        lastExp = nextExp;
+                    }
+
+                    list.Reverse();
+                    return SqlBuilder.Instance.Col(lastExp.Type, lastExp.Member.Name, string.Join(".", list));
+                }
+                else
+                {
+                    return SqlBuilder.Instance.Col(memberExp.Type, memberExp.Member.Name, expression.Member.Name);
+                }
             }
             else
             {
-                return SqlBuilder.Instance.Col(tableType, list[0].Name, string.Join(".", list.Skip(1).Select(x => x.Name)));
+                return SqlBuilder.Instance.Col(expression.Type, expression.Member.Name, "*");
             }
         }
 
@@ -204,14 +243,15 @@ namespace Suilder.Builder
             {
                 case ExpressionType.Convert:
                     return ParseValue(((UnaryExpression)expression).Operand);
+                case ExpressionType.Constant:
+                    return ((ConstantExpression)expression).Value;
                 case ExpressionType.MemberAccess:
                     MemberExpression memberExp = (MemberExpression)expression;
                     return IsAlias(memberExp) ? ParseColumn(memberExp) : Compile(memberExp);
                 case ExpressionType.New:
+                    return Compile((NewExpression)expression);
                 case ExpressionType.NewArrayInit:
-                    return Compile(expression);
-                case ExpressionType.Constant:
-                    return ((ConstantExpression)expression).Value;
+                    return Compile((NewArrayExpression)expression);
                 case ExpressionType.Call:
                     return ParseMethod((MethodCallExpression)expression);
                 case ExpressionType.Add:
@@ -468,22 +508,107 @@ namespace Suilder.Builder
         /// <returns>The result of the expression.</returns>
         public static object Compile(Expression expression)
         {
+            switch (expression.NodeType)
+            {
+                case ExpressionType.Convert:
+                    return Compile(((UnaryExpression)expression).Operand);
+                case ExpressionType.Constant:
+                    return ((ConstantExpression)expression).Value;
+                case ExpressionType.MemberAccess:
+                    return Compile((MemberExpression)expression);
+                case ExpressionType.New:
+                    return Compile((NewExpression)expression);
+                case ExpressionType.NewArrayInit:
+                    return Compile((NewArrayExpression)expression);
+                case ExpressionType.Call:
+                    return Compile((MethodCallExpression)expression);
+            }
+
             return Expression.Lambda(expression).Compile().DynamicInvoke();
         }
 
         /// <summary>
-        /// Determines if the expression is an alias.
+        /// Compile an expression.
         /// </summary>
         /// <param name="expression">The expression.</param>
-        /// <returns><see langword="true"/> if the expression is an alias, otherwise, <see langword="false"/>.</returns>
-        public static bool IsAlias(MemberExpression expression)
+        /// <returns>The result of the expression.</returns>
+        public static object Compile(MemberExpression expression)
         {
-            while (expression.Expression is MemberExpression memberExp)
+            object value = expression.Expression != null ? Compile(expression.Expression) : null;
+
+            switch (expression.Member.MemberType)
             {
-                expression = memberExp;
+                case MemberTypes.Field:
+                    FieldInfo fieldInfo = (FieldInfo)expression.Member;
+                    return fieldInfo.GetValue(value);
+                case MemberTypes.Property:
+                    PropertyInfo propertyInfo = (PropertyInfo)expression.Member;
+                    return propertyInfo.GetValue(value);
             }
 
-            return Tables.Contains(expression.Type.FullName);
+            return Expression.Lambda(expression).Compile().DynamicInvoke();
+        }
+
+        /// <summary>
+        /// Compile an expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The result of the expression.</returns>
+        public static object Compile(NewExpression expression)
+        {
+            if (expression.Constructor == null)
+                return Activator.CreateInstance(expression.Type);
+
+            object[] args = null;
+            if (expression.Arguments.Count > 0)
+            {
+                args = new object[expression.Arguments.Count];
+                for (int i = 0; i < expression.Arguments.Count; i++)
+                {
+                    args[i] = Compile(expression.Arguments[i]);
+                }
+            }
+
+            return expression.Constructor.Invoke(args);
+        }
+
+        /// <summary>
+        /// Compile an expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The result of the expression.</returns>
+        public static object Compile(NewArrayExpression expression)
+        {
+            Array value = Array.CreateInstance(expression.Type.GetElementType(), expression.Expressions.Count);
+
+            for (int i = 0; i < expression.Expressions.Count; i++)
+            {
+                value.SetValue(Compile(expression.Expressions[i]), i);
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// Compile an expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The result of the expression.</returns>
+        public static object Compile(MethodCallExpression expression)
+        {
+            object value = expression.Object != null ? Compile(expression.Object) : null;
+
+            object[] args = null;
+            if (expression.Arguments.Count > 0)
+            {
+                args = new object[expression.Arguments.Count];
+                for (int i = 0; i < expression.Arguments.Count; i++)
+                {
+                    args[i] = Compile(expression.Arguments[i]);
+                }
+            }
+
+            return expression.Method.Invoke(value, args);
         }
 
         /// <summary>
@@ -594,11 +719,13 @@ namespace Suilder.Builder
         public static IList<MemberInfo> GetMemberInfoList(MemberExpression expression)
         {
             List<MemberInfo> list = new List<MemberInfo>();
-            while (expression != null)
+
+            do
             {
                 list.Add(expression.Member);
                 expression = expression.Expression as MemberExpression;
-            }
+            } while (expression != null);
+
             list.Reverse();
             return list;
         }

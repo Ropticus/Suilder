@@ -73,8 +73,7 @@ namespace Suilder.Builder
         /// <returns>The alias.</returns>
         public virtual IAlias Alias(Type aliasType, string aliasName)
         {
-            Type type = typeof(Alias<>).MakeGenericType(aliasType);
-            return (IAlias)Activator.CreateInstance(type, new object[] { aliasName });
+            return new EntityAlias(aliasType, aliasName);
         }
 
         /// <summary>
@@ -84,7 +83,7 @@ namespace Suilder.Builder
         /// <returns>The alias.</returns>
         public virtual IAlias<T> Alias<T>()
         {
-            return new Alias<T>();
+            return new EntityAlias<T>();
         }
 
         /// <summary>
@@ -95,7 +94,7 @@ namespace Suilder.Builder
         /// <returns>The alias.</returns>
         public virtual IAlias<T> Alias<T>(string aliasName)
         {
-            return new Alias<T>(aliasName);
+            return new EntityAlias<T>(aliasName);
         }
 
         /// <summary>
@@ -176,9 +175,9 @@ namespace Suilder.Builder
         {
             int index = columnName.LastIndexOf('.');
             if (index >= 0)
-                return new Column<T>(columnName.Substring(0, index), columnName.Substring(index + 1));
+                return new EntityColumn(typeof(T), columnName.Substring(0, index), columnName.Substring(index + 1));
             else
-                return new Column<T>(null, columnName);
+                return new EntityColumn(typeof(T), null, columnName);
         }
 
         /// <summary>
@@ -190,7 +189,7 @@ namespace Suilder.Builder
         /// <returns>The column.</returns>
         public virtual IColumn Col<T>(string tableName, string columnName)
         {
-            return new Column<T>(tableName, columnName);
+            return new EntityColumn(typeof(T), tableName, columnName);
         }
 
         /// <summary>
@@ -227,8 +226,7 @@ namespace Suilder.Builder
         /// <returns>The column.</returns>
         public IColumn Col(Type aliasType, string tableName, string columnName)
         {
-            Type columType = typeof(Column<>).MakeGenericType(aliasType);
-            return (IColumn)Activator.CreateInstance(columType, new object[] { tableName, columnName });
+            return new EntityColumn(aliasType, tableName, columnName);
         }
 
         /// <summary>

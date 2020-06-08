@@ -47,6 +47,21 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void Column_All()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => person);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Local_Value()
         {
             int value = 1;
