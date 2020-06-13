@@ -47,6 +47,18 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
+        public void Builder_Expression_ForeignKey()
+        {
+            Person person = null;
+            IOperator op = sql.IsNull(() => person.Department.Id);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentId\" IS NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Builder_Expression_Nested()
         {
             Person person = null;
@@ -59,14 +71,14 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Builder_Expression_ForeignKey()
+        public void Builder_Expression_Nested_Deep()
         {
-            Person person = null;
-            IOperator op = sql.IsNull(() => person.Department.Id);
+            Person2 person = null;
+            IOperator op = sql.IsNull(() => person.Address.City.Country.Name);
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" IS NULL", result.Sql);
+            Assert.Equal("\"person\".\"AddressCityCountryName\" IS NULL", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -95,6 +107,18 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
+        public void Expression_ForeignKey()
+        {
+            Person2 person = null;
+            IOperator op = sql.Op(() => person.Department.Guid == null);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentGuid\" IS NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Expression_Nested()
         {
             Person person = null;
@@ -103,6 +127,18 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"AddressStreet\" IS NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Nested_Deep()
+        {
+            Person2 person = null;
+            IOperator op = sql.Op(() => person.Address.City.Country.Name == null);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressCityCountryName\" IS NULL", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -119,6 +155,18 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
+        public void Expression_Method_ForeignKey()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.IsNull(person.Department.Id));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentId\" IS NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Expression_Method_Nested()
         {
             Person person = null;
@@ -131,14 +179,14 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Expression_Method_ForeignKey()
+        public void Expression_Method_Nested_Deep()
         {
-            Person person = null;
-            IOperator op = sql.Op(() => SqlExp.IsNull(person.Department.Id));
+            Person2 person = null;
+            IOperator op = sql.Op(() => SqlExp.IsNull(person.Address.City.Country.Name));
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" IS NULL", result.Sql);
+            Assert.Equal("\"person\".\"AddressCityCountryName\" IS NULL", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

@@ -11,23 +11,53 @@ namespace Suilder.Test.Builder.Operators
 {
     public class NotTest : BuilderBaseTest
     {
-        [Fact]
-        public void Builder_Object()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Object(object value)
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.Not(person["Id"].Eq(1));
+            IOperator op = sql.Not(person["Id"].Eq(value));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("NOT \"person\".\"Id\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Builder_Object_Enumerable<T>(T[] value)
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Not(person["Image"].Eq(value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"Image\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
             }, result.Parameters);
         }
 
         [Fact]
-        public void Builder_Object_Right_Null()
+        public void Builder_Object_Column()
+        {
+            IAlias person = sql.Alias("person");
+            IAlias dept = sql.Alias("dept");
+            IOperator op = sql.Not(person["DepartmentId"].Eq(dept["Id"]));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"DepartmentId\" = \"dept\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Builder_Object_Null()
         {
             IOperator op = sql.Not(null);
 
@@ -37,8 +67,24 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Builder_Expression(int value)
+        {
+            Person person = null;
+            IOperator op = sql.Not(() => person.Id == value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"Id\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
         [Fact]
-        public void Builder_Expression()
+        public void Builder_Expression_Inline_Value()
         {
             Person person = null;
             IOperator op = sql.Not(() => person.Id == 1);
@@ -52,53 +98,117 @@ namespace Suilder.Test.Builder.Operators
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Builder_Expression_Nested()
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Builder_Expression_ForeignKey(int value)
         {
             Person person = null;
-            IOperator op = sql.Not(() => person.Address.Street == "SomeName");
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("NOT \"person\".\"AddressStreet\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = "SomeName"
-            }, result.Parameters);
-        }
-
-        [Fact]
-        public void Builder_Expression_ForeignKey()
-        {
-            Person person = null;
-            IOperator op = sql.Not(() => person.Department.Id == 1);
+            IOperator op = sql.Not(() => person.Department.Id == value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("NOT \"person\".\"DepartmentId\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Builder_Expression_Nested(string value)
+        {
+            Person person = null;
+            IOperator op = sql.Not(() => person.Address.Street == value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"AddressStreet\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Builder_Expression_Nested_Deep(string value)
+        {
+            Person2 person = null;
+            IOperator op = sql.Not(() => person.Address.City.Country.Name == value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"AddressCityCountryName\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataByteArray))]
+        public void Builder_Expression_Enumerable(byte[] value)
+        {
+            Person person = null;
+            IOperator op = sql.Not(() => person.Image == value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"Image\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
             }, result.Parameters);
         }
 
         [Fact]
-        public void Extension_Object()
+        public void Builder_Expression_Column()
+        {
+            Person person = null;
+            Department dept = null;
+            IOperator op = sql.Not(() => person.Department.Id == dept.Id);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"DepartmentId\" = \"dept\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Extension_Object(object value)
         {
             IAlias person = sql.Alias("person");
-            IOperator op = person["Id"].Eq(1).Not();
+            IOperator op = person["Id"].Eq(value).Not();
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("NOT \"person\".\"Id\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression(int value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => !(person.Id == value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"Id\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
             }, result.Parameters);
         }
 
         [Fact]
-        public void Expression()
+        public void Expression_Inline_Value()
         {
             Person person = null;
             IOperator op = sql.Op(() => !(person.Id == 1));
@@ -112,38 +222,116 @@ namespace Suilder.Test.Builder.Operators
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Expression_Nested()
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_ForeignKey(int value)
         {
             Person person = null;
-            IOperator op = sql.Op(() => !(person.Address.Street == "SomeName"));
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("NOT \"person\".\"AddressStreet\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = "SomeName"
-            }, result.Parameters);
-        }
-
-        [Fact]
-        public void Expression_ForeignKey()
-        {
-            Person person = null;
-            IOperator op = sql.Op(() => !(person.Department.Id == 1));
+            IOperator op = sql.Op(() => !(person.Department.Id == value));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("NOT \"person\".\"DepartmentId\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Expression_Nested(string value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => !(person.Address.Street == value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"AddressStreet\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Expression_Nested_Deep(string value)
+        {
+            Person2 person = null;
+            IOperator op = sql.Op(() => !(person.Address.City.Country.Name == value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"AddressCityCountryName\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataByteArray))]
+        public void Expression_Enumerable(byte[] value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => !(person.Image == value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"Image\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
             }, result.Parameters);
         }
 
         [Fact]
-        public void Expression_Method()
+        public void Expression_Enumerable_Inline()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => !(person.Image == new byte[] { 1, 2, 3 }));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"Image\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new byte[] { 1, 2, 3 }
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Column()
+        {
+            Person person = null;
+            Department dept = null;
+            IOperator op = sql.Op(() => !(person.Department.Id == dept.Id));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"DepartmentId\" = \"dept\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_Method(int value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.Not(person.Id == value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"Id\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_Inline_Value()
         {
             Person person = null;
             IOperator op = sql.Op(() => SqlExp.Not(person.Id == 1));
@@ -157,34 +345,80 @@ namespace Suilder.Test.Builder.Operators
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Expression_Method_Nested()
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_Method_ForeignKey(int value)
         {
             Person person = null;
-            IOperator op = sql.Op(() => SqlExp.Not(person.Address.Street == "SomeName"));
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("NOT \"person\".\"AddressStreet\" = @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = "SomeName"
-            }, result.Parameters);
-        }
-
-        [Fact]
-        public void Expression_Method_ForeignKey()
-        {
-            Person person = null;
-            IOperator op = sql.Op(() => SqlExp.Not(person.Department.Id == 1));
+            IOperator op = sql.Op(() => SqlExp.Not(person.Department.Id == value));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("NOT \"person\".\"DepartmentId\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1
+                ["@p0"] = value
             }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Expression_Method_Nested(string value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.Not(person.Address.Street == value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"AddressStreet\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Expression_Method_Nested_Deep(string value)
+        {
+            Person2 person = null;
+            IOperator op = sql.Op(() => SqlExp.Not(person.Address.City.Country.Name == value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"AddressCityCountryName\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_Bool_Property()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.Not(person.Active));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_Column()
+        {
+            Person person = null;
+            Department dept = null;
+            IOperator op = sql.Op(() => SqlExp.Not(person.Department.Id == dept.Id));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"person\".\"DepartmentId\" = \"dept\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]

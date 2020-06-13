@@ -11,34 +11,49 @@ namespace Suilder.Test.Builder.Operators
 {
     public class NotLikeTest : BuilderBaseTest
     {
-        [Fact]
-        public void Builder_Object()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Object(object value)
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.NotLike(person["Name"], "%SomeName%");
+            IOperator op = sql.NotLike(person["Name"], value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "%SomeName%"
+                ["@p0"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Builder_Object_Enumerable()
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Builder_Object_Enumerable<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.NotLike(person["Image"], new byte[] { 1, 2, 3 });
+            IOperator op = sql.NotLike(person["Image"], value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Image\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = new byte[] { 1, 2, 3 }
+                ["@p0"] = value
             }, result.Parameters);
+        }
+
+        [Fact]
+        public void Builder_Object_Column()
+        {
+            IAlias person = sql.Alias("person");
+            IAlias dept = sql.Alias("dept");
+            IOperator op = sql.NotLike(person["DepartmentGuid"], dept["Guid"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentGuid\" NOT LIKE \"dept\".\"Guid\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -54,63 +69,108 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Builder_Expression()
+        public void Builder_Object_Left_Null()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotLike((object)null, person["Name"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NULL NOT LIKE \"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Expression(object value)
         {
             Person person = null;
-            IOperator op = sql.NotLike(() => person.Name, "%SomeName%");
+            IOperator op = sql.NotLike(() => person.Name, value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "%SomeName%"
+                ["@p0"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Builder_Expression_Nested()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Expression_ForeignKey(object value)
+        {
+            Person2 person = null;
+            IOperator op = sql.NotLike(() => person.Department.Guid, value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentGuid\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Expression_Nested(object value)
         {
             Person person = null;
-            IOperator op = sql.NotLike(() => person.Address.Street, "%SomeName%");
+            IOperator op = sql.NotLike(() => person.Address.Street, value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"AddressStreet\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "%SomeName%"
+                ["@p0"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Builder_Expression_ForeignKey()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Expression_Nested_Deep(object value)
         {
-            Person person = null;
-            IOperator op = sql.NotLike(() => person.Department.Id, "%1%");
+            Person2 person = null;
+            IOperator op = sql.NotLike(() => person.Address.City.Country.Name, value);
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" NOT LIKE @p0", result.Sql);
+            Assert.Equal("\"person\".\"AddressCityCountryName\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "%1%"
+                ["@p0"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Builder_Expression_Enumerable()
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Builder_Expression_Enumerable<T>(T[] value)
         {
             Person person = null;
-            IOperator op = sql.NotLike(() => person.Image, new byte[] { 1, 2, 3 });
+            IOperator op = sql.NotLike(() => person.Image, value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Image\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = new byte[] { 1, 2, 3 }
+                ["@p0"] = value
             }, result.Parameters);
+        }
+
+        [Fact]
+        public void Builder_Expression_Column()
+        {
+            Person2 person = null;
+            IAlias dept = sql.Alias("dept");
+            IOperator op = sql.NotLike(() => person.Department.Guid, dept["Guid"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentGuid\" NOT LIKE \"dept\".\"Guid\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -125,36 +185,101 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
-        [Fact]
-        public void Builder_Two_Expressions()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Two_Expressions(object value)
         {
             Person person = null;
-            Department dept = null;
-            IOperator op = sql.NotLike(() => person.Name, () => dept.Name);
+            IOperator op = sql.NotLike(() => person.Name, () => value);
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" NOT LIKE \"dept\".\"Name\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
-        [Fact]
-        public void Builder_Two_Expressions_Right_Enumerable()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Two_Expressions_ForeignKey(object value)
+        {
+            Person2 person = null;
+            IOperator op = sql.NotLike(() => person.Department.Guid, () => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentGuid\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Two_Expressions_Nested(object value)
         {
             Person person = null;
-            IOperator op = sql.NotLike(() => person.Image, () => new byte[] { 1, 2, 3 });
+            IOperator op = sql.NotLike(() => person.Address.Street, () => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressStreet\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Two_Expressions_Nested_Deep(object value)
+        {
+            Person2 person = null;
+            IOperator op = sql.NotLike(() => person.Address.City.Country.Name, () => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressCityCountryName\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Builder_Two_Expressions_Enumerable<T>(T[] value)
+        {
+            Person person = null;
+            IOperator op = sql.NotLike(() => person.Image, () => value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Image\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = new byte[] { 1, 2, 3 }
+                ["@p0"] = value
             }, result.Parameters);
         }
 
         [Fact]
-        public void Builder_Two_Expressions_Right_Null()
+        public void Builder_Two_Expressions_Column()
+        {
+            Person2 person = null;
+            Department2 dept = null;
+            IOperator op = sql.NotLike(() => person.Department.Guid, () => dept.Guid);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentGuid\" NOT LIKE \"dept\".\"Guid\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Builder_Two_Expressions_Right_Value_Null()
         {
             Person person = null;
             IOperator op = sql.NotLike(() => person.Name, () => null);
@@ -165,33 +290,35 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
-        [Fact]
-        public void Extension_Object()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Extension_Object(object value)
         {
             IAlias person = sql.Alias("person");
-            IOperator op = person["Name"].NotLike("%SomeName%");
+            IOperator op = person["Name"].NotLike(value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "%SomeName%"
+                ["@p0"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Extension_Object_Enumerable()
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Extension_Object_Enumerable<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
-            IOperator op = person["Image"].NotLike(new byte[] { 1, 2, 3 });
+            IOperator op = person["Image"].NotLike(value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Image\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = new byte[] { 1, 2, 3 }
+                ["@p0"] = value
             }, result.Parameters);
         }
 
@@ -207,32 +334,49 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
-        [Fact]
-        public void Extension_Expression()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Extension_Expression(object value)
         {
             IAlias person = sql.Alias("person");
-            Department dept = null;
-            IOperator op = person["Name"].NotLike(() => dept.Name);
+            IOperator op = person["Name"].NotLike(() => value);
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" NOT LIKE \"dept\".\"Name\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
         }
 
-        [Fact]
-        public void Extension_Expression_Enumerable()
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Extension_Expression_Enumerable<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
-            IOperator op = person["Image"].NotLike(() => new byte[] { 1, 2, 3 });
+            IOperator op = person["Image"].NotLike(() => value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Image\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = new byte[] { 1, 2, 3 }
+                ["@p0"] = value
             }, result.Parameters);
+        }
+
+        [Fact]
+        public void Extension_Expression_Column()
+        {
+            IAlias person = sql.Alias("person");
+            Department2 dept = null;
+            IOperator op = person["DepartmentGuid"].NotLike(() => dept.Guid);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentGuid\" NOT LIKE \"dept\".\"Guid\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -247,83 +391,195 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
-        [Fact]
-        public void Expression()
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Expression(string value)
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Name.NotLike("%SomeName%"));
+            IOperator op = sql.Op(() => person.Name.NotLike(value));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "%SomeName%"
+                ["@p0"] = value
             }, result.Parameters);
         }
 
         [Fact]
-        public void Expression_Nested()
+        public void Expression_Inline_Value()
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Address.Street.NotLike("%SomeName%"));
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("\"person\".\"AddressStreet\" NOT LIKE @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = "%SomeName%"
-            }, result.Parameters);
-        }
-
-        [Fact]
-        public void Expression_Method()
-        {
-            Person person = null;
-            IOperator op = sql.Op(() => SqlExp.NotLike(person.Name, "%SomeName%"));
+            IOperator op = sql.Op(() => person.Name.NotLike("abcd"));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "%SomeName%"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Expression_Method_Nested()
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Expression_ForeignKey(string value)
+        {
+            Person2 person = null;
+            IOperator op = sql.Op(() => person.Department.Guid.NotLike(value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentGuid\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Expression_Nested(string value)
         {
             Person person = null;
-            IOperator op = sql.Op(() => SqlExp.NotLike(person.Address.Street, "%SomeName%"));
+            IOperator op = sql.Op(() => person.Address.Street.NotLike(value));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"AddressStreet\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "%SomeName%"
+                ["@p0"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Expression_Method_ForeignKey()
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Expression_Nested_Deep(string value)
         {
-            Person person = null;
-            IOperator op = sql.Op(() => SqlExp.NotLike(person.Department.Id, "%1%"));
+            Person2 person = null;
+            IOperator op = sql.Op(() => person.Address.City.Country.Name.NotLike(value));
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" NOT LIKE @p0", result.Sql);
+            Assert.Equal("\"person\".\"AddressCityCountryName\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "%1%"
+                ["@p0"] = value
             }, result.Parameters);
         }
 
         [Fact]
-        public void Expression_Method_Enumerable()
+        public void Expression_Column()
+        {
+            Person2 person = null;
+            Department2 dept = null;
+            IOperator op = sql.Op(() => person.Department.Guid.NotLike(dept.Guid));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentGuid\" NOT LIKE \"dept\".\"Guid\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Expression_Method(object value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.NotLike(person.Name, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_Inline_Value()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.NotLike(person.Name, "abcd"));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "abcd"
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Expression_Method_ForeignKey(object value)
+        {
+            Person2 person = null;
+            IOperator op = sql.Op(() => SqlExp.NotLike(person.Department.Guid, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentGuid\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Expression_Method_Nested(object value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.NotLike(person.Address.Street, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressStreet\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Expression_Method_Nested_Deep(object value)
+        {
+            Person2 person = null;
+            IOperator op = sql.Op(() => SqlExp.NotLike(person.Address.City.Country.Name, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressCityCountryName\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Expression_Method_Enumerable<T>(T[] value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.NotLike(person.Image, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Image\" NOT LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_Enumerable_Inline_Value()
         {
             Person person = null;
             IOperator op = sql.Op(() => SqlExp.NotLike(person.Image, new byte[] { 1, 2, 3 }));
@@ -335,6 +591,19 @@ namespace Suilder.Test.Builder.Operators
             {
                 ["@p0"] = new byte[] { 1, 2, 3 }
             }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_Column()
+        {
+            Person2 person = null;
+            Department2 dept = null;
+            IOperator op = sql.Op(() => SqlExp.NotLike(person.Department.Guid, dept.Guid));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentGuid\" NOT LIKE \"dept\".\"Guid\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -368,12 +637,33 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
+        public void Subquery()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotLike(person["Name"], sql.RawQuery("Subquery"));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" NOT LIKE (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void To_String()
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.NotLike(person["Name"], "%SomeName%");
 
             Assert.Equal("person.Name NOT LIKE \"%SomeName%\"", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_Enumerable()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotLike(person["Name"], new byte[] { 1, 2, 3 });
+
+            Assert.Equal("person.Name NOT LIKE [1, 2, 3]", op.ToString());
         }
     }
 }

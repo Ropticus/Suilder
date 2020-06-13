@@ -333,6 +333,7 @@ namespace Suilder.Test.Engines.SQLServer.Functions
                 ["@p0"] = ","
             }, result.Parameters);
         }
+
         [Fact]
         public void Substring()
         {

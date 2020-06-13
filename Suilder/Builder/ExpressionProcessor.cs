@@ -129,15 +129,14 @@ namespace Suilder.Builder
                 {
                     List<string> list = new List<string>
                     {
-                        memberExp.Member.Name,
-                        lastExp.Member.Name
+                        memberExp.Member.Name
                     };
 
-                    while (lastExp.Expression is MemberExpression nextExp)
+                    do
                     {
                         list.Add(lastExp.Member.Name);
-                        lastExp = nextExp;
-                    }
+                        lastExp = lastExp.Expression as MemberExpression;
+                    } while (lastExp != null);
 
                     list.Reverse();
                     return SqlBuilder.Instance.Col<T>(tableName, string.Join(".", list));
@@ -252,6 +251,8 @@ namespace Suilder.Builder
                     return Compile((NewExpression)expression);
                 case ExpressionType.NewArrayInit:
                     return Compile((NewArrayExpression)expression);
+                case ExpressionType.ArrayIndex:
+                    return Compile((BinaryExpression)expression);
                 case ExpressionType.Call:
                     return ParseMethod((MethodCallExpression)expression);
                 case ExpressionType.Add:
@@ -520,6 +521,8 @@ namespace Suilder.Builder
                     return Compile((NewExpression)expression);
                 case ExpressionType.NewArrayInit:
                     return Compile((NewArrayExpression)expression);
+                case ExpressionType.ArrayIndex:
+                    return Compile((BinaryExpression)expression);
                 case ExpressionType.Call:
                     return Compile((MethodCallExpression)expression);
             }
@@ -536,17 +539,15 @@ namespace Suilder.Builder
         {
             object value = expression.Expression != null ? Compile(expression.Expression) : null;
 
-            switch (expression.Member.MemberType)
+            if (expression.Member is FieldInfo fieldInfo)
             {
-                case MemberTypes.Field:
-                    FieldInfo fieldInfo = (FieldInfo)expression.Member;
-                    return fieldInfo.GetValue(value);
-                case MemberTypes.Property:
-                    PropertyInfo propertyInfo = (PropertyInfo)expression.Member;
-                    return propertyInfo.GetValue(value);
+                return fieldInfo.GetValue(value);
             }
-
-            return Expression.Lambda(expression).Compile().DynamicInvoke();
+            else
+            {
+                PropertyInfo propertyInfo = (PropertyInfo)expression.Member;
+                return propertyInfo.GetValue(value);
+            }
         }
 
         /// <summary>
@@ -587,6 +588,24 @@ namespace Suilder.Builder
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// Compile an expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The result of the expression.</returns>
+        public static object Compile(BinaryExpression expression)
+        {
+            switch (expression.NodeType)
+            {
+                case ExpressionType.ArrayIndex:
+                    Array array = (Array)Compile(expression.Left);
+                    int index = (int)Compile(expression.Right);
+                    return array.GetValue(index);
+            }
+
+            return Expression.Lambda(expression).Compile().DynamicInvoke();
         }
 
         /// <summary>

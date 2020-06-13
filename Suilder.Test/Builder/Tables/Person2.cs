@@ -3,9 +3,11 @@ using Suilder.Reflection;
 
 namespace Suilder.Test.Builder.Tables
 {
-    public class Person
+    [Table("Person")]
+    public class Person2
     {
-        public int Id { get; set; }
+        [PrimaryKey]
+        public string Guid { get; set; }
 
         public bool Active { get; set; }
 
@@ -15,7 +17,7 @@ namespace Suilder.Test.Builder.Tables
 
         public string FullName => $"{Name} {SurName}".TrimEnd();
 
-        public Address Address { get; set; }
+        public Address2 Address { get; set; }
 
         public decimal Salary { get; set; }
 
@@ -23,9 +25,9 @@ namespace Suilder.Test.Builder.Tables
         public DateTime Created { get; set; }
 
         [ForeignKey]
-        public int DepartmentId { get; set; }
+        public string DepartmentGuid { get; set; }
 
-        public Department Department { get; set; }
+        public Department2 Department { get; set; }
 
         public byte[] Image { get; set; }
 

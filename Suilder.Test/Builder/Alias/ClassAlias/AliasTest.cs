@@ -5,9 +5,9 @@ using Suilder.Core;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder.Alias
+namespace Suilder.Test.Builder.Alias.ClassAlias
 {
-    public class ClassAliasTest : BuilderBaseTest
+    public class AliasTest : BuilderBaseTest
     {
         [Fact]
         public void Expression()

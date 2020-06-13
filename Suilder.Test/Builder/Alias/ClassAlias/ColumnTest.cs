@@ -6,10 +6,24 @@ using Suilder.Exceptions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder.Alias
+namespace Suilder.Test.Builder.Alias.ClassAlias
 {
-    public class ClassAliasColumnTest : BuilderBaseTest
+    public class ColumnTest : BuilderBaseTest
     {
+        [Fact]
+        public void Expression_All()
+        {
+            Person person = null;
+            IColumn column = sql.Col(() => person);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
+        }
+
         [Fact]
         public void Expression_Column()
         {
@@ -19,17 +33,6 @@ namespace Suilder.Test.Builder.Alias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\"", result.Sql);
-        }
-
-        [Fact]
-        public void Expression_Column_Nested()
-        {
-            Person person = null;
-            IColumn column = sql.Col(() => person.Address.Street);
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
         }
 
         [Fact]
@@ -44,17 +47,25 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Expression_All_Columns()
+        public void Expression_Column_Nested()
         {
             Person person = null;
-            IColumn column = sql.Col(() => person);
+            IColumn column = sql.Col(() => person.Address.Street);
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
-                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
-                result.Sql);
+            Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
+        }
+
+        [Fact]
+        public void Expression_Column_Nested_Deep()
+        {
+            Person2 person = null;
+            IColumn column = sql.Col(() => person.Address.City.Country.Name);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"AddressCityCountryName\"", result.Sql);
         }
 
         [Fact]
@@ -137,6 +148,24 @@ namespace Suilder.Test.Builder.Alias
             IColumn column = sql.Col(() => person.Id);
 
             Assert.Equal("person.Id", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Nested()
+        {
+            Person person = null;
+            IColumn column = sql.Col(() => person.Address.Street);
+
+            Assert.Equal("person.Address.Street", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Nested_Deep()
+        {
+            Person2 person = null;
+            IColumn column = sql.Col(() => person.Address.City.Country.Name);
+
+            Assert.Equal("person.Address.City.Country.Name", column.ToString());
         }
     }
 }

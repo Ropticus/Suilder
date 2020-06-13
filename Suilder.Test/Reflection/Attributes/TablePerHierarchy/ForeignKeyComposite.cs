@@ -29,6 +29,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
             Assert.Equal(new string[] { "Id" }, employeeInfo.PrimaryKeys);
             Assert.Equal(new string[] { "Id" }, deptInfo.PrimaryKeys);
         }
+
         [Fact]
         public void Foreign_Keys()
         {

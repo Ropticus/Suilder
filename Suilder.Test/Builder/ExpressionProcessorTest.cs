@@ -10,6 +10,51 @@ namespace Suilder.Test.Builder
     public class ExpressionProcessorTest : BuilderBaseTest
     {
         [Fact]
+        public void Compile_Constant()
+        {
+            Expression<Func<object>> expression = () => 1;
+            Assert.Equal(1, ExpressionProcessor.Compile(expression.Body));
+        }
+
+        [Fact]
+        public void Compile_Member()
+        {
+            int value = 1;
+            Expression<Func<object>> expression = () => value;
+            Assert.Equal(value, ExpressionProcessor.Compile(expression.Body));
+        }
+
+        [Fact]
+        public void Compile_New()
+        {
+            Expression<Func<object>> expression = () => new DateTime();
+            Assert.Equal(new DateTime(), ExpressionProcessor.Compile(expression.Body));
+        }
+
+        [Fact]
+        public void Compile_New_Array()
+        {
+            Expression<Func<object>> expression = () => new byte[] { 1, 2, 3 };
+            Assert.Equal(new byte[] { 1, 2, 3 }, ExpressionProcessor.Compile(expression.Body));
+        }
+
+        [Fact]
+        public void Compile_Dynamic_Invoke()
+        {
+            string value1 = null, value2 = "abcd";
+            Expression<Func<object>> expression = () => value1 ?? value2;
+            Assert.Equal("abcd", ExpressionProcessor.Compile(expression.Body));
+        }
+
+        [Fact]
+        public void Compile_Binary()
+        {
+            string value1 = "abcd", value2 = "efgh";
+            Expression<Func<object>> expression = () => value1 + value2;
+            Assert.Equal(value1 + value2, ExpressionProcessor.Compile((BinaryExpression)expression.Body));
+        }
+
+        [Fact]
         public void Invalid_ParseValue()
         {
             Person person = null;

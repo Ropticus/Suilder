@@ -36,13 +36,6 @@ namespace Suilder.Performance.Builder
 
         [Benchmark]
         [BenchmarkCategory("Alias")]
-        public IColumn Column_Typed()
-        {
-            return person.Col(x => x.Id);
-        }
-
-        [Benchmark]
-        [BenchmarkCategory("Alias")]
         public IColumn Column_Typed_All()
         {
             return person.Col(x => x);
@@ -50,10 +43,9 @@ namespace Suilder.Performance.Builder
 
         [Benchmark]
         [BenchmarkCategory("Alias")]
-        public IColumn Column_Object()
+        public IColumn Column_Typed()
         {
-            Person person = null;
-            return sql.Col(() => person.Id);
+            return person.Col(x => x.Id);
         }
 
         [Benchmark]
@@ -62,6 +54,14 @@ namespace Suilder.Performance.Builder
         {
             Person person = null;
             return sql.Col(() => person);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Alias")]
+        public IColumn Column_Object()
+        {
+            Person person = null;
+            return sql.Col(() => person.Id);
         }
 
         [Benchmark]
@@ -78,6 +78,14 @@ namespace Suilder.Performance.Builder
         {
             byte[] value = new byte[] { 1, 2, 3 };
             return sql.Val(() => value);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "Array")]
+        public object Local_Value_Array_Index()
+        {
+            int[] value = new int[] { 1, 2, 3 };
+            return sql.Val(() => value[1]);
         }
 
         [Benchmark]

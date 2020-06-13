@@ -5,22 +5,22 @@ using Suilder.Core;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder.Alias
+namespace Suilder.Test.Builder.Alias.ClassAlias
 {
-    public class ClassAliasScopeTest : BuilderBaseTest
+    public class AliasScopeTest : BuilderBaseTest
     {
-        private static Person person = null;
+        public Person personField;
 
-        private static Person Person { get; set; }
+        public Person PersonProperty { get; set; }
 
-        private Person personNonStatic = null;
+        public static Person personFieldStatic;
 
-        private Person PersonNonStatic { get; set; }
+        public static Person PersonPropertyStatic { get; set; }
 
         [Fact]
-        public void Class_Scope_Static_Field()
+        public void Field()
         {
-            IAlias alias = sql.Alias(() => person);
+            IAlias alias = sql.Alias(() => personField);
 
             QueryResult result = engine.Compile(alias);
 
@@ -28,9 +28,9 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Class_Scope_Static_Property()
+        public void Property()
         {
-            IAlias alias = sql.Alias(() => Person);
+            IAlias alias = sql.Alias(() => PersonProperty);
 
             QueryResult result = engine.Compile(alias);
 
@@ -38,9 +38,9 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Class_Scope_Field()
+        public void Field_Static()
         {
-            IAlias alias = sql.Alias(() => personNonStatic);
+            IAlias alias = sql.Alias(() => personFieldStatic);
 
             QueryResult result = engine.Compile(alias);
 
@@ -48,9 +48,9 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Class_Scope_Property()
+        public void Property_Static()
         {
-            IAlias alias = sql.Alias(() => PersonNonStatic);
+            IAlias alias = sql.Alias(() => PersonPropertyStatic);
 
             QueryResult result = engine.Compile(alias);
 
@@ -58,50 +58,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Class_Scope_Static_Field_Object_Overload()
-        {
-            Expression<Func<object>> expression = () => person;
-            IAlias alias = sql.Alias(expression);
-
-            QueryResult result = engine.Compile(alias);
-
-            Assert.Equal("\"Person\"", result.Sql);
-        }
-
-        [Fact]
-        public void Class_Scope_Static_Property_Object_Overload()
-        {
-            Expression<Func<object>> expression = () => Person;
-            IAlias alias = sql.Alias(expression);
-
-            QueryResult result = engine.Compile(alias);
-
-            Assert.Equal("\"Person\"", result.Sql);
-        }
-
-        [Fact]
-        public void Class_Scope_Field_Object_Overload()
-        {
-            Expression<Func<object>> expression = () => personNonStatic;
-            IAlias alias = sql.Alias(expression);
-
-            QueryResult result = engine.Compile(alias);
-
-            Assert.Equal("\"Person\"", result.Sql);
-        }
-
-        [Fact]
-        public void Class_Scope_Property_Object_Overload()
-        {
-            Expression<Func<object>> expression = () => PersonNonStatic;
-            IAlias alias = sql.Alias(expression);
-
-            QueryResult result = engine.Compile(alias);
-
-            Assert.Equal("\"Person\"", result.Sql);
-        }
-        [Fact]
-        public void Nested_Static_Field()
+        public void Nested_Field_Static()
         {
             IAlias alias = sql.Alias(() => Tables.person);
 
@@ -111,7 +68,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Nested_Static_Property()
+        public void Nested_Property_Static()
         {
             IAlias alias = sql.Alias(() => Tables.Person);
 
@@ -121,25 +78,51 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Invalid_Nested_Field()
+        public void Field_Object_Overload()
         {
-            TablesNonStatic tables = null;
+            Expression<Func<object>> expression = () => personField;
+            IAlias alias = sql.Alias(expression);
 
-            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(() => tables.person));
-            Assert.Equal("Invalid expression.", ex.Message);
+            QueryResult result = engine.Compile(alias);
+
+            Assert.Equal("\"Person\"", result.Sql);
         }
 
         [Fact]
-        public void Invalid_Nested_Property()
+        public void Property_Object_Overload()
         {
-            TablesNonStatic tables = null;
+            Expression<Func<object>> expression = () => PersonProperty;
+            IAlias alias = sql.Alias(expression);
 
-            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(() => tables.Person));
-            Assert.Equal("Invalid expression.", ex.Message);
+            QueryResult result = engine.Compile(alias);
+
+            Assert.Equal("\"Person\"", result.Sql);
         }
 
         [Fact]
-        public void Nested_Static_Field_Object_Overload()
+        public void Field_Static_Object_Overload()
+        {
+            Expression<Func<object>> expression = () => personFieldStatic;
+            IAlias alias = sql.Alias(expression);
+
+            QueryResult result = engine.Compile(alias);
+
+            Assert.Equal("\"Person\"", result.Sql);
+        }
+
+        [Fact]
+        public void Property_Static_Object_Overload()
+        {
+            Expression<Func<object>> expression = () => PersonPropertyStatic;
+            IAlias alias = sql.Alias(expression);
+
+            QueryResult result = engine.Compile(alias);
+
+            Assert.Equal("\"Person\"", result.Sql);
+        }
+
+        [Fact]
+        public void Nested_Field_Static_Object_Overload()
         {
             Expression<Func<object>> expression = () => Tables.person;
             IAlias alias = sql.Alias(expression);
@@ -150,7 +133,7 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Nested_Static_Property_Object_Overload()
+        public void Nested_Property_Static_Object_Overload()
         {
             Expression<Func<object>> expression = () => Tables.Person;
             IAlias alias = sql.Alias(expression);
@@ -161,9 +144,27 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
+        public void Invalid_Nested_Field()
+        {
+            TablesError tables = null;
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(() => tables.person));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Nested_Property()
+        {
+            TablesError tables = null;
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(() => tables.Person));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
         public void Invalid_Nested_Field_Object_Overload()
         {
-            TablesNonStatic tables = null;
+            TablesError tables = null;
             Expression<Func<object>> expression = () => tables.person;
 
             Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(expression));
@@ -173,7 +174,7 @@ namespace Suilder.Test.Builder.Alias
         [Fact]
         public void Invalid_Nested_Property_Object_Overload()
         {
-            TablesNonStatic tables = null;
+            TablesError tables = null;
             Expression<Func<object>> expression = () => tables.Person;
 
             Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(expression));
@@ -182,14 +183,14 @@ namespace Suilder.Test.Builder.Alias
 
         protected static class Tables
         {
-            public static Person person = null;
+            public static Person person;
 
             public static Person Person { get; set; }
         }
 
-        protected class TablesNonStatic
+        protected class TablesError
         {
-            public Person person = null;
+            public Person person;
 
             public Person Person { get; set; }
         }

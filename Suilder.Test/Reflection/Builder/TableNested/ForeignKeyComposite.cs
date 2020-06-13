@@ -29,6 +29,7 @@ namespace Suilder.Test.Reflection.Builder.TableNested
             Assert.Equal(new string[] { "Id" }, personInfo.PrimaryKeys);
             Assert.Equal(new string[] { "Id" }, deptInfo.PrimaryKeys);
         }
+
         [Fact]
         public void Foreign_Keys()
         {

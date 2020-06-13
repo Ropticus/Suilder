@@ -5,10 +5,38 @@ using Suilder.Exceptions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder.Alias
+namespace Suilder.Test.Builder.Alias.TypedAlias
 {
-    public class TypedAliasColumnTest : BuilderBaseTest
+    public class ColumnTest : BuilderBaseTest
     {
+        [Fact]
+        public void All_Property()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.All;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
+        }
+
+        [Fact]
+        public void Indexer_String_All()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person["*"];
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
+        }
+
         [Fact]
         public void Indexer_String_Column()
         {
@@ -18,17 +46,6 @@ namespace Suilder.Test.Builder.Alias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\"", result.Sql);
-        }
-
-        [Fact]
-        public void Indexer_String_Column_Nested()
-        {
-            IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person["Address.Street"];
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
         }
 
         [Fact]
@@ -43,35 +60,10 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Indexer_String_All_Columns()
+        public void Indexer_String_Column_Nested()
         {
             IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person["*"];
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
-                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
-                result.Sql);
-        }
-
-        [Fact]
-        public void Col_String_Column()
-        {
-            IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person.Col("Id");
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"person\".\"Id\"", result.Sql);
-        }
-
-        [Fact]
-        public void Col_String_Column_Nested()
-        {
-            IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person.Col("Address.Street");
+            IColumn column = person["Address.Street"];
 
             QueryResult result = engine.Compile(column);
 
@@ -79,21 +71,32 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Col_String_Column_ForeignKey()
+        public void Indexer_String_Column_Nested_Deep()
         {
-            IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person.Col("Department.Id");
+            IAlias<Person2> person = sql.Alias<Person2>();
+            IColumn column = person["Address.City.Country.Name"];
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"person\".\"DepartmentId\"", result.Sql);
+            Assert.Equal("\"person2\".\"AddressCityCountryName\"", result.Sql);
         }
 
         [Fact]
-        public void Col_String_All_Columns()
+        public void Indexer_String_Column_With_Translation()
         {
             IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person.Col("*");
+            IColumn column = person["Created"];
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"DateCreated\"", result.Sql);
+        }
+
+        [Fact]
+        public void Indexer_Expression_All()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x];
 
             QueryResult result = engine.Compile(column);
 
@@ -115,17 +118,6 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Indexer_Expression_Column_Nested()
-        {
-            IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person[x => x.Address.Street];
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
-        }
-
-        [Fact]
         public void Indexer_Expression_Column_ForeignKey()
         {
             IAlias<Person> person = sql.Alias<Person>();
@@ -137,10 +129,112 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Indexer_Expression_All_Columns()
+        public void Indexer_Expression_Column_Nested()
         {
             IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person[x => x];
+            IColumn column = person[x => x.Address.Street];
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
+        }
+
+        [Fact]
+        public void Indexer_Expression_Column_Nested_Deep()
+        {
+            IAlias<Person2> person = sql.Alias<Person2>();
+            IColumn column = person[x => x.Address.City.Country.Name];
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person2\".\"AddressCityCountryName\"", result.Sql);
+        }
+
+        [Fact]
+        public void Indexer_Expression_Column_With_Translation()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Created];
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"DateCreated\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_All()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.Col("*");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_Column()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.Col("Id");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_Column_ForeignKey()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.Col("Department.Id");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"DepartmentId\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_Column_Nested()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.Col("Address.Street");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_Column_Nested_Deep()
+        {
+            IAlias<Person2> person = sql.Alias<Person2>();
+            IColumn column = person.Col("Address.City.Country.Name");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person2\".\"AddressCityCountryName\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_Column_With_Translation()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.Col("Created");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"DateCreated\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_Expression_All()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.Col(x => x);
 
             QueryResult result = engine.Compile(column);
 
@@ -162,17 +256,6 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Col_Expression_Column_Nested()
-        {
-            IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person.Col(x => x.Address.Street);
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
-        }
-
-        [Fact]
         public void Col_Expression_Column_ForeignKey()
         {
             IAlias<Person> person = sql.Alias<Person>();
@@ -184,53 +267,62 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Col_Expression_All_Columns()
+        public void Col_Expression_Column_Nested()
         {
             IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person.Col(x => x);
+            IColumn column = person.Col(x => x.Address.Street);
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
-                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
-                result.Sql);
+            Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
         }
 
         [Fact]
-        public void All_Property()
+        public void Col_Expression_Column_Nested_Deep()
+        {
+            IAlias<Person2> person = sql.Alias<Person2>();
+            IColumn column = person.Col(x => x.Address.City.Country.Name);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person2\".\"AddressCityCountryName\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_Expression_Column_With_Translation()
         {
             IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.Col(x => x.Created);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"DateCreated\"", result.Sql);
+        }
+
+        [Fact]
+        public void All_Property_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
             IColumn column = person.All;
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
-                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
-                result.Sql);
+            Assert.Equal("\"per\".\"Id\", \"per\".\"Active\", \"per\".\"Name\", \"per\".\"SurName\", "
+                + "\"per\".\"AddressStreet\", \"per\".\"AddressNumber\", \"per\".\"AddressCity\", "
+                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\"", result.Sql);
         }
 
         [Fact]
-        public void String_Column_With_Translation()
+        public void Indexer_String_All_With_Alias_Name()
         {
-            IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person["Created"];
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person["*"];
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"person\".\"DateCreated\"", result.Sql);
-        }
-
-        [Fact]
-        public void Expression_Column_With_Translation()
-        {
-            IAlias<Person> person = sql.Alias<Person>();
-            IColumn column = person[x => x.Created];
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"person\".\"DateCreated\"", result.Sql);
+            Assert.Equal("\"per\".\"Id\", \"per\".\"Active\", \"per\".\"Name\", \"per\".\"SurName\", "
+                + "\"per\".\"AddressStreet\", \"per\".\"AddressNumber\", \"per\".\"AddressCity\", "
+                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\"", result.Sql);
         }
 
         [Fact]
@@ -245,17 +337,6 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Indexer_String_Column_Nested_With_Alias_Name()
-        {
-            IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person["Address.Street"];
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"per\".\"AddressStreet\"", result.Sql);
-        }
-
-        [Fact]
         public void Indexer_String_Column_ForeignKey_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
@@ -267,34 +348,10 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Indexer_String_All_Columns_With_Alias_Name()
+        public void Indexer_String_Column_Nested_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person["*"];
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"per\".\"Id\", \"per\".\"Active\", \"per\".\"Name\", \"per\".\"SurName\", "
-                + "\"per\".\"AddressStreet\", \"per\".\"AddressNumber\", \"per\".\"AddressCity\", "
-                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\"", result.Sql);
-        }
-
-        [Fact]
-        public void Col_String_Column_With_Alias_Name()
-        {
-            IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person.Col("Id");
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"per\".\"Id\"", result.Sql);
-        }
-
-        [Fact]
-        public void Col_String_Column_Nested_With_Alias_Name()
-        {
-            IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person.Col("Address.Street");
+            IColumn column = person["Address.Street"];
 
             QueryResult result = engine.Compile(column);
 
@@ -302,21 +359,32 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Col_String_Column_ForeignKey_With_Alias_Name()
+        public void Indexer_String_Column_Nested_Deep_With_Alias_Name()
         {
-            IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person.Col("Department.Id");
+            IAlias<Person2> person = sql.Alias<Person2>("per");
+            IColumn column = person["Address.City.Country.Name"];
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"per\".\"DepartmentId\"", result.Sql);
+            Assert.Equal("\"per\".\"AddressCityCountryName\"", result.Sql);
         }
 
         [Fact]
-        public void Col_String_All_Columns_With_Alias_Name()
+        public void Indexer_String_Column_With_Translation_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person.Col("*");
+            IColumn column = person["Created"];
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"DateCreated\"", result.Sql);
+        }
+
+        [Fact]
+        public void Indexer_Expression_All_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x];
 
             QueryResult result = engine.Compile(column);
 
@@ -337,17 +405,6 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Indexer_Expression_Column_Nested_With_Alias_Name()
-        {
-            IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person[x => x.Address.Street];
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"per\".\"AddressStreet\"", result.Sql);
-        }
-
-        [Fact]
         public void Indexer_Expression_Column_ForeignKey_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
@@ -359,10 +416,111 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Indexer_Expression_All_Columns_With_Alias_Name()
+        public void Indexer_Expression_Column_Nested_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person[x => x];
+            IColumn column = person[x => x.Address.Street];
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"AddressStreet\"", result.Sql);
+        }
+
+        [Fact]
+        public void Indexer_Expression_Column_Nested_Deep_With_Alias_Name()
+        {
+            IAlias<Person2> person = sql.Alias<Person2>("per");
+            IColumn column = person[x => x.Address.City.Country.Name];
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"AddressCityCountryName\"", result.Sql);
+        }
+
+        [Fact]
+        public void Indexer_Expression_Column_With_Translation_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Created];
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"DateCreated\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_All_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person.Col("*");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"Id\", \"per\".\"Active\", \"per\".\"Name\", \"per\".\"SurName\", "
+                + "\"per\".\"AddressStreet\", \"per\".\"AddressNumber\", \"per\".\"AddressCity\", "
+                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_Column_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person.Col("Id");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"Id\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_Column_ForeignKey_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person.Col("Department.Id");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"DepartmentId\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_Column_Nested_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person.Col("Address.Street");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"AddressStreet\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_Column_Nested_Deep_With_Alias_Name()
+        {
+            IAlias<Person2> person = sql.Alias<Person2>("per");
+            IColumn column = person.Col("Address.City.Country.Name");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"AddressCityCountryName\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_String_Column_With_Translation_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person.Col("Created");
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"DateCreated\"", result.Sql);
+        }
+
+        [Fact]
+        public void Col_Expression_All_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person.Col(x => x);
 
             QueryResult result = engine.Compile(column);
 
@@ -383,17 +541,6 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Col_Expression_Column_Nested_With_Alias_Name()
-        {
-            IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person.Col(x => x.Address.Street);
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"per\".\"AddressStreet\"", result.Sql);
-        }
-
-        [Fact]
         public void Col_Expression_Column_ForeignKey_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
@@ -405,47 +552,32 @@ namespace Suilder.Test.Builder.Alias
         }
 
         [Fact]
-        public void Col_Expression_All_Columns_With_Alias_Name()
+        public void Col_Expression_Column_Nested_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person.Col(x => x);
+            IColumn column = person.Col(x => x.Address.Street);
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"per\".\"Id\", \"per\".\"Active\", \"per\".\"Name\", \"per\".\"SurName\", "
-                + "\"per\".\"AddressStreet\", \"per\".\"AddressNumber\", \"per\".\"AddressCity\", "
-                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\"", result.Sql);
+            Assert.Equal("\"per\".\"AddressStreet\"", result.Sql);
         }
 
         [Fact]
-        public void All_Property_With_Alias_Name()
+        public void Col_Expression_Column_Nested_Deep_With_Alias_Name()
         {
-            IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person.All;
+            IAlias<Person2> person = sql.Alias<Person2>("per");
+            IColumn column = person.Col(x => x.Address.City.Country.Name);
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"per\".\"Id\", \"per\".\"Active\", \"per\".\"Name\", \"per\".\"SurName\", "
-                + "\"per\".\"AddressStreet\", \"per\".\"AddressNumber\", \"per\".\"AddressCity\", "
-                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\"", result.Sql);
+            Assert.Equal("\"per\".\"AddressCityCountryName\"", result.Sql);
         }
 
         [Fact]
-        public void String_Column_With_Translation_With_Alias_Name()
+        public void Col_Expression_Column_With_Translation_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person["Created"];
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"per\".\"DateCreated\"", result.Sql);
-        }
-
-        [Fact]
-        public void Expression_Column_With_Translation_With_Alias_Name()
-        {
-            IAlias<Person> person = sql.Alias<Person>("per");
-            IColumn column = person[x => x.Created];
+            IColumn column = person.Col(x => x.Created);
 
             QueryResult result = engine.Compile(column);
 
@@ -511,6 +643,15 @@ namespace Suilder.Test.Builder.Alias
             IColumn column = person[x => x.Id];
 
             Assert.Equal("person.Id", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Id];
+
+            Assert.Equal("per.Id", column.ToString());
         }
     }
 }

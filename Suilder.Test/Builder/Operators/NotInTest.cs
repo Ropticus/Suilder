@@ -11,51 +11,51 @@ namespace Suilder.Test.Builder.Operators
 {
     public class NotInTest : BuilderBaseTest
     {
-        [Fact]
-        public void Builder_Object()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Object(object value)
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.NotIn(person["Id"], 1);
+            IOperator op = sql.NotIn(person["Id"], value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" NOT IN @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1
+                ["@p0"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Builder_Object_String()
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Builder_Object_Enumerable<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.NotIn(person["Name"], "SomeValue");
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("\"person\".\"Name\" NOT IN @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = "SomeValue"
-            }, result.Parameters);
-        }
-
-        [Fact]
-        public void Builder_Object_Enumerable()
-        {
-            IAlias person = sql.Alias("person");
-            IOperator op = sql.NotIn(person["Id"], new int[] { 1, 2, 3 });
+            IOperator op = sql.NotIn(person["Id"], value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" NOT IN (@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1,
-                ["@p1"] = 2,
-                ["@p2"] = 3
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
             }, result.Parameters);
+        }
+
+        [Fact]
+        public void Builder_Object_Column()
+        {
+            IAlias person = sql.Alias("person");
+            IAlias dept = sql.Alias("dept");
+            IOperator op = sql.NotIn(person["DepartmentId"], dept["Id"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentId\" NOT IN \"dept\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -71,65 +71,110 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Builder_Expression()
+        public void Builder_Object_Left_Null()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotIn((object)null, person["Name"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NULL NOT IN \"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Expression(object value)
         {
             Person person = null;
-            IOperator op = sql.NotIn(() => person.Id, 1);
+            IOperator op = sql.NotIn(() => person.Id, value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" NOT IN @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1
+                ["@p0"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Builder_Expression_Nested()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Expression_ForeignKey(object value)
         {
             Person person = null;
-            IOperator op = sql.NotIn(() => person.Address.Street, "SomeName");
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("\"person\".\"AddressStreet\" NOT IN @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = "SomeName"
-            }, result.Parameters);
-        }
-
-        [Fact]
-        public void Builder_Expression_ForeignKey()
-        {
-            Person person = null;
-            IOperator op = sql.NotIn(() => person.Department.Id, 1);
+            IOperator op = sql.NotIn(() => person.Department.Id, value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"DepartmentId\" NOT IN @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1
+                ["@p0"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Builder_Expression_Enumerable()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Expression_Nested(object value)
         {
             Person person = null;
-            IOperator op = sql.NotIn(() => person.Id, new int[] { 1, 2, 3 });
+            IOperator op = sql.NotIn(() => person.Address.Street, value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressStreet\" NOT IN @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Expression_Nested_Deep(object value)
+        {
+            Person2 person = null;
+            IOperator op = sql.NotIn(() => person.Address.City.Country.Name, value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressCityCountryName\" NOT IN @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Builder_Expression_Enumerable<T>(T[] value)
+        {
+            Person person = null;
+            IOperator op = sql.NotIn(() => person.Id, value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" NOT IN (@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1,
-                ["@p1"] = 2,
-                ["@p2"] = 3
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
             }, result.Parameters);
+        }
+
+        [Fact]
+        public void Builder_Expression_Column()
+        {
+            Person person = null;
+            IAlias dept = sql.Alias("dept");
+            IOperator op = sql.NotIn(() => person.Department.Id, dept["Id"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentId\" NOT IN \"dept\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -144,8 +189,90 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Two_Expressions(object value)
+        {
+            Person person = null;
+            IOperator op = sql.NotIn(() => person.Id, () => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" NOT IN @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Two_Expressions_ForeignKey(object value)
+        {
+            Person person = null;
+            IOperator op = sql.NotIn(() => person.Department.Id, () => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentId\" NOT IN @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Two_Expressions_Nested(object value)
+        {
+            Person person = null;
+            IOperator op = sql.NotIn(() => person.Address.Street, () => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressStreet\" NOT IN @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Builder_Two_Expressions_Nested_Deep(object value)
+        {
+            Person2 person = null;
+            IOperator op = sql.NotIn(() => person.Address.City.Country.Name, () => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressCityCountryName\" NOT IN @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Builder_Two_Expressions_Enumerable<T>(T[] value)
+        {
+            Person person = null;
+            IOperator op = sql.NotIn(() => person.Id, () => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" NOT IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
         [Fact]
-        public void Builder_Two_Expressions()
+        public void Builder_Two_Expressions_Column()
         {
             Person person = null;
             Department dept = null;
@@ -155,23 +282,6 @@ namespace Suilder.Test.Builder.Operators
 
             Assert.Equal("\"person\".\"DepartmentId\" NOT IN \"dept\".\"Id\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
-        public void Builder_Two_Expressions_Right_Enumerable()
-        {
-            Person person = null;
-            IOperator op = sql.NotIn(() => person.Id, () => new int[] { 1, 2, 3 });
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("\"person\".\"Id\" NOT IN (@p0, @p1, @p2)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = 1,
-                ["@p1"] = 2,
-                ["@p2"] = 3
-            }, result.Parameters);
         }
 
         [Fact]
@@ -186,35 +296,37 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
-        [Fact]
-        public void Extension_Object()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Extension_Object(object value)
         {
             IAlias person = sql.Alias("person");
-            IOperator op = person["Id"].NotIn(1);
+            IOperator op = person["Id"].NotIn(value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" NOT IN @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1
+                ["@p0"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Extension_Object_Enumerable()
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Extension_Object_Enumerable<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
-            IOperator op = person["Id"].NotIn(new int[] { 1, 2, 3 });
+            IOperator op = person["Id"].NotIn(value);
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" NOT IN (@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1,
-                ["@p1"] = 2,
-                ["@p2"] = 3
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
             }, result.Parameters);
         }
 
@@ -230,8 +342,42 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Extension_Expression(object value)
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = person["Id"].NotIn(() => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" NOT IN @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Extension_Expression_Enumerable<T>(T[] value)
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = person["Id"].NotIn(() => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" NOT IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
         [Fact]
-        public void Extension_Expression()
+        public void Extension_Expression_Column()
         {
             IAlias person = sql.Alias("person");
             Department dept = null;
@@ -241,23 +387,6 @@ namespace Suilder.Test.Builder.Operators
 
             Assert.Equal("\"person\".\"DepartmentId\" NOT IN \"dept\".\"Id\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
-        public void Extension_Expression_Enumerable()
-        {
-            IAlias person = sql.Alias("person");
-            IOperator op = person["Id"].NotIn(() => new int[] { 1, 2, 3 });
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("\"person\".\"Id\" NOT IN (@p0, @p1, @p2)", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = 1,
-                ["@p1"] = 2,
-                ["@p2"] = 3
-            }, result.Parameters);
         }
 
         [Fact]
@@ -272,8 +401,26 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
+        [Theory]
+        [MemberData(nameof(DataIntArray))]
+        public void Expression_Enumerable(int[] value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id.NotIn(value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" NOT IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
         [Fact]
-        public void Expression_Enumerable()
+        public void Expression_Enumerable_Inline_Value()
         {
             Person person = null;
             IOperator op = sql.Op(() => person.Id.NotIn(new int[] { 1, 2, 3 }));
@@ -289,8 +436,78 @@ namespace Suilder.Test.Builder.Operators
             }, result.Parameters);
         }
 
+        [Theory]
+        [MemberData(nameof(DataIntArray))]
+        public void Expression_Enumerable_ForeignKey(int[] value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Department.Id.NotIn(value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentId\" NOT IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataStringArray))]
+        public void Expression_Enumerable_Nested(string[] value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Address.Street.NotIn(value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressStreet\" NOT IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataStringArray))]
+        public void Expression_Enumerable_Nested_Deep(string[] value)
+        {
+            Person2 person = null;
+            IOperator op = sql.Op(() => person.Address.City.Country.Name.NotIn(value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressCityCountryName\" NOT IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Expression_Method(object value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.NotIn(person.Id, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" NOT IN @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
         [Fact]
-        public void Expression_Method()
+        public void Expression_Method_Inline_Value()
         {
             Person person = null;
             IOperator op = sql.Op(() => SqlExp.NotIn(person.Id, 1));
@@ -304,38 +521,74 @@ namespace Suilder.Test.Builder.Operators
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Expression_Method_Nested()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Expression_Method_ForeignKey(object value)
         {
             Person person = null;
-            IOperator op = sql.Op(() => SqlExp.NotIn(person.Address.Street, "SomeName"));
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("\"person\".\"AddressStreet\" NOT IN @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = "SomeName"
-            }, result.Parameters);
-        }
-
-        [Fact]
-        public void Expression_Method_ForeignKey()
-        {
-            Person person = null;
-            IOperator op = sql.Op(() => SqlExp.NotIn(person.Department.Id, 1));
+            IOperator op = sql.Op(() => SqlExp.NotIn(person.Department.Id, value));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"DepartmentId\" NOT IN @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 1
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Expression_Method_Nested(object value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.NotIn(person.Address.Street, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressStreet\" NOT IN @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Expression_Method_Nested_Deep(object value)
+        {
+            Person2 person = null;
+            IOperator op = sql.Op(() => SqlExp.NotIn(person.Address.City.Country.Name, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"AddressCityCountryName\" NOT IN @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataArray))]
+        public void Expression_Method_Enumerable<T>(T[] value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.NotIn(person.Id, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" NOT IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
             }, result.Parameters);
         }
 
         [Fact]
-        public void Expression_Method_Enumerable()
+        public void Expression_Method_Enumerable_Inline_Value()
         {
             Person person = null;
             IOperator op = sql.Op(() => SqlExp.NotIn(person.Id, new int[] { 1, 2, 3 }));
@@ -349,6 +602,19 @@ namespace Suilder.Test.Builder.Operators
                 ["@p1"] = 2,
                 ["@p2"] = 3
             }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_Column()
+        {
+            Person person = null;
+            Department dept = null;
+            IOperator op = sql.Op(() => SqlExp.NotIn(person.Department.Id, dept.Id));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"DepartmentId\" NOT IN \"dept\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]

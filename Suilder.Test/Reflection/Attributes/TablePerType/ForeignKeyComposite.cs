@@ -27,6 +27,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
             Assert.Equal(new string[] { "Id" }, employeeInfo.PrimaryKeys);
             Assert.Equal(new string[] { "Id" }, deptInfo.PrimaryKeys);
         }
+
         [Fact]
         public void Foreign_Keys()
         {

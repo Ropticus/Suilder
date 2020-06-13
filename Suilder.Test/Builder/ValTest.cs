@@ -11,6 +11,21 @@ namespace Suilder.Test.Builder
     public class ValTest : BuilderBaseTest
     {
         [Fact]
+        public void Column_All()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => person);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
+                result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Column()
         {
             Person person = null;
@@ -19,18 +34,6 @@ namespace Suilder.Test.Builder
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
-        public void Column_Nested()
-        {
-            Person person = null;
-            IColumn column = (IColumn)sql.Val(() => person.Address.Street);
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -47,17 +50,26 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void Column_All()
+        public void Column_Nested()
         {
             Person person = null;
-            IColumn column = (IColumn)sql.Val(() => person);
+            IColumn column = (IColumn)sql.Val(() => person.Address.Street);
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
-                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
-                result.Sql);
+            Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Column_Nested_Deep()
+        {
+            Person2 person = null;
+            IColumn column = (IColumn)sql.Val(() => person.Address.City.Country.Name);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"AddressCityCountryName\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -80,6 +92,27 @@ namespace Suilder.Test.Builder
         {
             byte[] value = new byte[] { 1, 2, 3 };
             Assert.Equal(value, sql.Val(() => value));
+        }
+
+        [Fact]
+        public void Local_Value_Array_Index()
+        {
+            int[] value = new int[] { 1, 2, 3 };
+            Assert.Equal(value[1], sql.Val(() => value[1]));
+        }
+
+        [Fact]
+        public void Local_Value_Array_Nested_Index()
+        {
+            int[][] value = new int[][] { new int[] { 1, 2, 3 }, new int[] { 4, 5, 6 } };
+            Assert.Equal(value[1][2], sql.Val(() => value[1][2]));
+        }
+
+        [Fact]
+        public void Local_Value_Array_Multi_Index()
+        {
+            int[,] value = new int[,] { { 1, 2, 3 }, { 4, 5, 6 } };
+            Assert.Equal(value[1, 2], sql.Val(() => value[1, 2]));
         }
 
         [Fact]
