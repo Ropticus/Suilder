@@ -11,28 +11,31 @@ namespace Suilder.Test.Engines
 {
     public class EngineTest
     {
+        protected IEngine engine = new Engine();
+
         [Fact]
         public void Engine_Name()
         {
-            IEngine engine = new Engine();
-
             Assert.Null(engine.Options.Name);
         }
 
         [Fact]
         public void Escape_Characters()
         {
-            IEngine engine = new Engine();
-
             Assert.Equal('\"', engine.Options.EscapeStart);
             Assert.Equal('\"', engine.Options.EscapeEnd);
         }
 
         [Fact]
+        public void Parameters()
+        {
+            Assert.Equal("@p", engine.Options.ParameterPrefix);
+            Assert.True(engine.Options.ParameterIndex);
+        }
+
+        [Fact]
         public void Escape_Name()
         {
-            IEngine engine = new Engine();
-
             Assert.Equal("\"Id\"", engine.EscapeName("Id"));
             Assert.Equal("\"person\".\"Id\"", engine.EscapeName("person.Id"));
             Assert.Equal("\"dbo\".\"person\".\"Id\"", engine.EscapeName("dbo.person.Id"));
@@ -41,7 +44,6 @@ namespace Suilder.Test.Engines
         [Fact]
         public void Escape_Name_UpperCase()
         {
-            IEngine engine = new Engine();
             engine.Options.UpperCaseNames = true;
 
             Assert.Equal("\"ID\"", engine.EscapeName("Id"));
@@ -52,7 +54,6 @@ namespace Suilder.Test.Engines
         [Fact]
         public void Escape_Name_LowerCase()
         {
-            IEngine engine = new Engine();
             engine.Options.LowerCaseNames = true;
 
             Assert.Equal("\"id\"", engine.EscapeName("Id"));
@@ -63,8 +64,6 @@ namespace Suilder.Test.Engines
         [Fact]
         public void Escape_Name_With_Quotes()
         {
-            IEngine engine = new Engine();
-
             Assert.Equal("\"Id\"", engine.EscapeName("\"Id\""));
             Assert.Equal("\"person\".\"Id\"", engine.EscapeName("\"person\".\"Id\""));
             Assert.Equal("\"dbo\".\"person\".\"Id\"", engine.EscapeName("\"dbo\".\"person\".\"Id\""));
@@ -74,7 +73,6 @@ namespace Suilder.Test.Engines
         [Fact]
         public void Add_Function()
         {
-            IEngine engine = new Engine();
             engine.AddFunction("CONCAT");
 
             Assert.True(engine.ContainsFunction("CONCAT"));
@@ -83,7 +81,6 @@ namespace Suilder.Test.Engines
         [Fact]
         public void Remove_Function()
         {
-            IEngine engine = new Engine();
             engine.AddFunction("CONCAT");
             engine.RemoveFunction("CONCAT");
 
@@ -93,7 +90,6 @@ namespace Suilder.Test.Engines
         [Fact]
         public void Clear_Functions()
         {
-            IEngine engine = new Engine();
             engine.AddFunction("CONCAT");
             engine.AddFunction("SUBSTRING");
             engine.ClearFunctions();
@@ -105,7 +101,6 @@ namespace Suilder.Test.Engines
         [Fact]
         public void Get_Function()
         {
-            IEngine engine = new Engine();
             engine.AddFunction("CONCAT");
 
             IFunctionData funcData = engine.GetFunction("CONCAT");

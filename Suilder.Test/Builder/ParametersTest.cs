@@ -55,7 +55,6 @@ namespace Suilder.Test.Builder
         [Fact]
         public void Parameter_Prefix_Custom()
         {
-            IEngine engine = new Engine();
             engine.Options.ParameterPrefix = ":i";
 
             IRawSql raw = sql.Raw("{0}", 1);
@@ -67,6 +66,37 @@ namespace Suilder.Test.Builder
             {
                 [":i0"] = 1
             }, result.Parameters);
+        }
+
+        [Fact]
+        public void Parameters()
+        {
+            IRawSql raw = sql.Raw("{0}, {1}, {2}, {3}, {4}", 1, 2, null, 4, 5);
+
+            QueryResult result = engine.Compile(raw);
+
+            Assert.Equal("@p0, @p1, NULL, @p2, @p3", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2,
+                ["@p2"] = 4,
+                ["@p3"] = 5
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Parameters_List()
+        {
+            engine.Options.ParameterPrefix = "?";
+            engine.Options.ParameterIndex = false;
+
+            IRawSql raw = sql.Raw("{0}, {1}, {2}, {3}, {4}", 1, 2, null, 4, 5);
+
+            QueryResult result = engine.Compile(raw);
+
+            Assert.Equal("?, ?, NULL, ?, ?", result.Sql);
+            Assert.Equal(new List<object> { 1, 2, 4, 5 }, result.ParametersList);
         }
     }
 }

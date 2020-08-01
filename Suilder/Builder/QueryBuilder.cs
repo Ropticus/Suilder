@@ -12,10 +12,16 @@ namespace Suilder.Builder
     public class QueryBuilder
     {
         /// <summary>
-        /// The parameters of the query.
+        /// The named parameters of the query.
         /// </summary>
-        /// <value>The parameters of the query.</value>
+        /// <value>The named parameters of the query.</value>
         protected IDictionary<string, object> Parameters { get; set; }
+
+        /// <summary>
+        /// The positional parameters of the query.
+        /// </summary>
+        /// <value>The positional parameters of the query.</value>
+        protected IList<object> ParametersList { get; set; }
 
         /// <summary>
         /// The string builder with the SQL result.
@@ -36,7 +42,11 @@ namespace Suilder.Builder
         public QueryBuilder(IEngine engine)
         {
             Engine = engine;
-            Parameters = new Dictionary<string, object>();
+
+            if (Engine.Options.ParameterIndex)
+                Parameters = new Dictionary<string, object>();
+            else
+                ParametersList = new List<object>();
         }
 
         /// <summary>
@@ -117,11 +127,16 @@ namespace Suilder.Builder
             {
                 Builder.Append("NULL");
             }
+            else if (Parameters != null)
+            {
+                string key = Engine.Options.ParameterPrefix + Parameters.Keys.Count;
+                Builder.Append(key);
+                Parameters[key] = value;
+            }
             else
             {
-                string key = Engine.Options.ParameterPrefix + (Parameters.Keys.Count);
-                Parameters[key] = value;
-                Builder.Append(key);
+                Builder.Append(Engine.Options.ParameterPrefix);
+                ParametersList.Add(value);
             }
 
             return this;
@@ -144,7 +159,10 @@ namespace Suilder.Builder
         /// <returns>The compiled query</returns>
         public QueryResult ToQueryResult()
         {
-            return new QueryResult(Builder.ToString(), Parameters);
+            if (Parameters != null)
+                return new QueryResult(Builder.ToString(), Parameters);
+            else
+                return new QueryResult(Builder.ToString(), ParametersList);
         }
     }
 }

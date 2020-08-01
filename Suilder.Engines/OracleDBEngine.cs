@@ -34,6 +34,7 @@ namespace Suilder.Engines
             options.EscapeStart = '"';
             options.EscapeEnd = '"';
             options.UpperCaseNames = true;
+            options.ParameterPrefix = ":p";
 
             options.WithRecursive = false;
             options.TopSupported = false;

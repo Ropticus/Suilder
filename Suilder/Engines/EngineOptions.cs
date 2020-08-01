@@ -55,33 +55,33 @@ namespace Suilder.Engines
         public bool WithRecursive { get; set; }
 
         /// <summary>
-        /// If the engine support "top".
+        /// If the engine supports "top".
         /// </summary>
-        /// <value>If the engine support "top".</value>
+        /// <value>If the engine supports "top".</value>
         public bool TopSupported { get; set; } = true;
 
         /// <summary>
-        /// If <see langword="true"/>, add the top values as parameters.
+        /// If <see langword="true"/>, adds the top values as parameters.
         /// </summary>
-        /// <value>If <see langword="true"/>, add the top values as parameters.</value>
+        /// <value>If <see langword="true"/>, adds the top values as parameters.</value>
         public bool TopAsParameters { get; set; } = true;
 
         /// <summary>
-        /// If the engine support "distinct on".
+        /// If the engine supports "distinct on".
         /// </summary>
-        /// <value>If the engine support "distinct on".</value>
+        /// <value>If the engine supports "distinct on".</value>
         public bool DistinctOnSupported { get; set; } = true;
 
         /// <summary>
-        /// If the engine support "right join".
+        /// If the engine supports "right join".
         /// </summary>
-        /// <value>If the engine support "right join".</value>
+        /// <value>If the engine supports "right join".</value>
         public bool RightJoinSupported { get; set; } = true;
 
         /// <summary>
-        /// If the engine support "full join".
+        /// If the engine supports "full join".
         /// </summary>
-        /// <value>If the engine support "full join".</value>
+        /// <value>If the engine supports "full join".</value>
         public bool FullJoinSupported { get; set; } = true;
 
         /// <summary>
@@ -91,9 +91,9 @@ namespace Suilder.Engines
         public OffsetStyle OffsetStyle { get; set; } = OffsetStyle.Offset;
 
         /// <summary>
-        /// If <see langword="true"/>, add the offset values as parameters.
+        /// If <see langword="true"/>, adds the offset values as parameters.
         /// </summary>
-        /// <value>If <see langword="true"/>, add the offset values as parameters.</value>
+        /// <value>If <see langword="true"/>, adds the offset values as parameters.</value>
         public bool OffsetAsParameters { get; set; } = true;
 
         /// <summary>
@@ -128,6 +128,12 @@ namespace Suilder.Engines
         /// </summary>
         /// <value>The prefix of the parameters.</value>
         public string ParameterPrefix { get; set; } = "@p";
+
+        /// <summary>
+        /// If <see langword="true"/>, adds the index after the parameter name.
+        /// </summary>
+        /// <value>If <see langword="true"/>, adds the index after the parameter name.</value>
+        public bool ParameterIndex { get; set; } = true;
 
         /// <summary>
         /// If only allow registered functions.

@@ -194,10 +194,10 @@ namespace Suilder.Test.Engines.OracleDB.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("LTRIM(\"PERSON\".\"NAME\", @p0)", result.Sql);
+            Assert.Equal("LTRIM(\"PERSON\".\"NAME\", :p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = ","
+                [":p0"] = ","
             }, result.Parameters);
         }
 
@@ -244,10 +244,10 @@ namespace Suilder.Test.Engines.OracleDB.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("NULLIF(\"PERSON\".\"NAME\", @p0)", result.Sql);
+            Assert.Equal("NULLIF(\"PERSON\".\"NAME\", :p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "empty"
+                [":p0"] = "empty"
             }, result.Parameters);
         }
 
@@ -259,11 +259,11 @@ namespace Suilder.Test.Engines.OracleDB.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("REPLACE(\"PERSON\".\"NAME\", @p0, @p1)", result.Sql);
+            Assert.Equal("REPLACE(\"PERSON\".\"NAME\", :p0, :p1)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "a",
-                ["@p1"] = "b"
+                [":p0"] = "a",
+                [":p1"] = "b"
             }, result.Parameters);
         }
 
@@ -287,10 +287,10 @@ namespace Suilder.Test.Engines.OracleDB.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("ROUND(\"PERSON\".\"SALARY\", @p0)", result.Sql);
+            Assert.Equal("ROUND(\"PERSON\".\"SALARY\", :p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 2m
+                [":p0"] = 2m
             }, result.Parameters);
         }
 
@@ -314,10 +314,10 @@ namespace Suilder.Test.Engines.OracleDB.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("RTRIM(\"PERSON\".\"NAME\", @p0)", result.Sql);
+            Assert.Equal("RTRIM(\"PERSON\".\"NAME\", :p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = ","
+                [":p0"] = ","
             }, result.Parameters);
         }
 
@@ -329,11 +329,11 @@ namespace Suilder.Test.Engines.OracleDB.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("SUBSTR(\"PERSON\".\"NAME\", @p0, @p1)", result.Sql);
+            Assert.Equal("SUBSTR(\"PERSON\".\"NAME\", :p0, :p1)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = 2,
-                ["@p1"] = 4
+                [":p0"] = 2,
+                [":p1"] = 4
             }, result.Parameters);
         }
 
@@ -381,10 +381,10 @@ namespace Suilder.Test.Engines.OracleDB.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("TRIM(@p0 FROM \"PERSON\".\"NAME\")", result.Sql);
+            Assert.Equal("TRIM(:p0 FROM \"PERSON\".\"NAME\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = ","
+                [":p0"] = ","
             }, result.Parameters);
         }
     }

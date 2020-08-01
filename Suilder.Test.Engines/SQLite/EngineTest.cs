@@ -5,21 +5,26 @@ namespace Suilder.Test.Engines.SQLite
 {
     public class EngineTest
     {
+        protected IEngine engine = new SQLiteEngine();
+
         [Fact]
         public void Engine_Name()
         {
-            IEngine engine = new SQLiteEngine();
-
             Assert.Equal(EngineName.SQLite, engine.Options.Name);
         }
 
         [Fact]
         public void Escape_Characters()
         {
-            IEngine engine = new SQLiteEngine();
-
             Assert.Equal('\"', engine.Options.EscapeStart);
             Assert.Equal('\"', engine.Options.EscapeEnd);
+        }
+
+        [Fact]
+        public void Parameters()
+        {
+            Assert.Equal("@p", engine.Options.ParameterPrefix);
+            Assert.True(engine.Options.ParameterIndex);
         }
     }
 }
