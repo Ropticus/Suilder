@@ -114,11 +114,12 @@ namespace Suilder.Test.Builder.ArithOperators
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Expression()
+        [Theory]
+        [InlineData(200)]
+        public void Expression(decimal value)
         {
             Person person = null;
-            IOperator op = (IOperator)sql.Val(() => person.Salary % 100 % 200);
+            IOperator op = (IOperator)sql.Val(() => person.Salary % 100 % value);
 
             QueryResult result = engine.Compile(op);
 

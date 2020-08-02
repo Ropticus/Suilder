@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Suilder.Core;
+using Suilder.Functions;
 
 namespace Suilder.Builder
 {
@@ -265,6 +266,8 @@ namespace Suilder.Builder
                 case ExpressionType.Or:
                 case ExpressionType.ExclusiveOr:
                     return ParseBitOperator((BinaryExpression)expression);
+                case ExpressionType.Coalesce:
+                    return ParseFunctionOperator((BinaryExpression)expression);
                 default:
                     throw new ArgumentException("Invalid expression.");
             }
@@ -503,6 +506,22 @@ namespace Suilder.Builder
         }
 
         /// <summary>
+        /// Compile a binary expression to an <see cref="IFunction"/>.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The function operator.</returns>
+        public static IFunction ParseFunctionOperator(BinaryExpression expression)
+        {
+            switch (expression.NodeType)
+            {
+                case ExpressionType.Coalesce:
+                    return SqlFn.Coalesce(ParseValue(expression.Left), ParseValue(expression.Right));
+                default:
+                    throw new ArgumentException("Invalid expression.");
+            }
+        }
+
+        /// <summary>
         /// Compile an expression.
         /// </summary>
         /// <param name="expression">The expression.</param>
@@ -512,7 +531,7 @@ namespace Suilder.Builder
             switch (expression.NodeType)
             {
                 case ExpressionType.Convert:
-                    return Compile(((UnaryExpression)expression).Operand);
+                    return Compile((UnaryExpression)expression);
                 case ExpressionType.Constant:
                     return ((ConstantExpression)expression).Value;
                 case ExpressionType.MemberAccess:
@@ -521,13 +540,32 @@ namespace Suilder.Builder
                     return Compile((NewExpression)expression);
                 case ExpressionType.NewArrayInit:
                     return Compile((NewArrayExpression)expression);
-                case ExpressionType.ArrayIndex:
-                    return Compile((BinaryExpression)expression);
                 case ExpressionType.Call:
                     return Compile((MethodCallExpression)expression);
             }
 
+            if (expression is BinaryExpression binaryExpression)
+                return Compile(binaryExpression);
+
             return Expression.Lambda(expression).Compile().DynamicInvoke();
+        }
+
+        /// <summary>
+        /// Compile an expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The result of the expression.</returns>
+        public static object Compile(UnaryExpression expression)
+        {
+            object value = Compile(expression.Operand);
+
+            if (expression.Method != null)
+                return expression.Method.Invoke(null, new object[] { value });
+
+            if (expression.Type != typeof(object))
+                return Convert.ChangeType(value, expression.Type);
+
+            return value;
         }
 
         /// <summary>
@@ -597,6 +635,9 @@ namespace Suilder.Builder
         /// <returns>The result of the expression.</returns>
         public static object Compile(BinaryExpression expression)
         {
+            if (expression.Method != null)
+                return expression.Method.Invoke(null, new object[] { Compile(expression.Left), Compile(expression.Right) });
+
             switch (expression.NodeType)
             {
                 case ExpressionType.ArrayIndex:

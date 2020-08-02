@@ -41,36 +41,28 @@ namespace Suilder.Test.Builder
         [Fact]
         public void Compile_Dynamic_Invoke()
         {
-            string value1 = null, value2 = "abcd";
-            Expression<Func<object>> expression = () => value1 ?? value2;
+            Person person = new Person();
+            Expression<Func<object>> expression = () => person.Id > 0 ? person.Name : "abcd";
+
             Assert.Equal("abcd", ExpressionProcessor.Compile(expression.Body));
         }
 
         [Fact]
-        public void Compile_Binary()
+        public void Compile_BinaryExpression_Dynamic_Invoke()
         {
-            string value1 = "abcd", value2 = "efgh";
-            Expression<Func<object>> expression = () => value1 + value2;
-            Assert.Equal(value1 + value2, ExpressionProcessor.Compile((BinaryExpression)expression.Body));
+            Person person = new Person() { Id = 1 };
+            Expression<Func<int>> expression = () => person.Id << 2;
+
+            Assert.Equal(person.Id << 2, ExpressionProcessor.Compile((BinaryExpression)expression.Body));
         }
 
         [Fact]
         public void Invalid_ParseValue()
         {
             Person person = null;
-            Expression<Func<object>> expression = () => person.Name ?? "SomeName";
+            Expression<Func<object>> expression = () => person.Id > 0 ? person.Name : "abcd";
 
             Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.ParseValue(expression.Body));
-            Assert.Equal("Invalid expression.", ex.Message);
-        }
-
-        [Fact]
-        public void Invalid_ParseBoolOperator_Type()
-        {
-            Person person = null;
-            Expression<Func<object>> expression = () => person.Salary + 100;
-
-            Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.ParseBoolOperator(expression.Body));
             Assert.Equal("Invalid expression.", ex.Message);
         }
 
@@ -88,7 +80,7 @@ namespace Suilder.Test.Builder
         public void Invalid_ParseBoolOperator_BinaryExpression()
         {
             Person person = null;
-            Expression<Func<object>> expression = () => person.Name ?? "SomeName";
+            Expression<Func<object>> expression = () => person.Name ?? "abcd";
 
             Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.ParseBoolOperator(
                 (BinaryExpression)expression.Body));
@@ -99,7 +91,7 @@ namespace Suilder.Test.Builder
         public void Invalid_ParseLogicalOperator_BinaryExpression()
         {
             Person person = null;
-            Expression<Func<object>> expression = () => person.Name ?? "SomeName";
+            Expression<Func<object>> expression = () => person.Name ?? "abcd";
 
             Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.ParseLogicalOperator(
                 (BinaryExpression)expression.Body));
@@ -110,7 +102,7 @@ namespace Suilder.Test.Builder
         public void Invalid_ParseArithmeticOperator_BinaryExpression()
         {
             Person person = null;
-            Expression<Func<object>> expression = () => person.Name ?? "SomeName";
+            Expression<Func<object>> expression = () => person.Name ?? "abcd";
 
             Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.ParseArithmeticOperator(
                 (BinaryExpression)expression.Body));
@@ -121,9 +113,20 @@ namespace Suilder.Test.Builder
         public void Invalid_ParseBitOperator_BinaryExpression()
         {
             Person person = null;
-            Expression<Func<object>> expression = () => person.Name ?? "SomeName";
+            Expression<Func<object>> expression = () => person.Name ?? "abcd";
 
             Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.ParseBitOperator(
+                (BinaryExpression)expression.Body));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_ParseFunction_BinaryExpression()
+        {
+            Person person = null;
+            Expression<Func<object>> expression = () => person.Name + "abcd";
+
+            Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.ParseFunctionOperator(
                 (BinaryExpression)expression.Body));
             Assert.Equal("Invalid expression.", ex.Message);
         }

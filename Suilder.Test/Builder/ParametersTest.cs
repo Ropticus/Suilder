@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
-using Suilder.Engines;
 using Xunit;
 
 namespace Suilder.Test.Builder
@@ -83,6 +81,7 @@ namespace Suilder.Test.Builder
                 ["@p2"] = 4,
                 ["@p3"] = 5
             }, result.Parameters);
+            Assert.Null(result.ParametersList);
         }
 
         [Fact]
@@ -97,6 +96,7 @@ namespace Suilder.Test.Builder
 
             Assert.Equal("?, ?, NULL, ?, ?", result.Sql);
             Assert.Equal(new List<object> { 1, 2, 4, 5 }, result.ParametersList);
+            Assert.Null(result.Parameters);
         }
     }
 }

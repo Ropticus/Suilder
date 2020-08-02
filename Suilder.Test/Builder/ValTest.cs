@@ -216,6 +216,30 @@ namespace Suilder.Test.Builder
             Assert.Equal(value.MethodArgs(1, 2), sql.Val(() => value.MethodArgs(1, 2)));
         }
 
+        [Theory]
+        [InlineData(1, 2)]
+        public void Method_Value_Args_Convert_Implicit(short a, short b)
+        {
+            TestValue value = new TestValue();
+            Assert.Equal(value.MethodArgs(a, b), sql.Val(() => value.MethodArgs(a, b)));
+        }
+
+        [Theory]
+        [InlineData(1, 2)]
+        public void Method_Value_Args_Convert_Implicit_Operator(int a, int b)
+        {
+            TestValue value = new TestValue();
+            Assert.Equal(value.MethodArgsConvert(a, b), sql.Val(() => value.MethodArgsConvert(a, b)));
+        }
+
+        [Theory]
+        [InlineData(1f, 2f)]
+        public void Method_Value_Args_Convert_Explicit(float a, float b)
+        {
+            TestValue value = new TestValue();
+            Assert.Equal(value.MethodArgs((int)a, (int)b), sql.Val(() => value.MethodArgs((int)a, (int)b)));
+        }
+
         [Fact]
         public void Static_Method_Value()
         {
@@ -226,6 +250,28 @@ namespace Suilder.Test.Builder
         public void Static_Method_Value_Args()
         {
             Assert.Equal(TestValue.MethodArgsStatic(1, 2), sql.Val(() => TestValue.MethodArgsStatic(1, 2)));
+        }
+
+        [Theory]
+        [InlineData(1, 2)]
+        public void Static_Method_Value_Args_Convert_Implicit(short a, short b)
+        {
+            Assert.Equal(TestValue.MethodArgsStatic(a, b), sql.Val(() => TestValue.MethodArgsStatic(a, b)));
+        }
+
+        [Theory]
+        [InlineData(1, 2)]
+        public void Static_Method_Value_Args_Convert_Implicit_Operator(int a, int b)
+        {
+            Assert.Equal(TestValue.MethodArgsConvertStatic(a, b), sql.Val(() => TestValue.MethodArgsConvertStatic(a, b)));
+        }
+
+        [Theory]
+        [InlineData(1f, 2f)]
+        public void Static_Method_Value_Args_Convert_Explicit(float a, float b)
+        {
+            Assert.Equal(TestValue.MethodArgsStatic((int)a, (int)b),
+                sql.Val(() => TestValue.MethodArgsStatic((int)a, (int)b)));
         }
 
         [Fact]
@@ -240,6 +286,94 @@ namespace Suilder.Test.Builder
         {
             TestValue value = new TestValue() { Nested = new TestNestedValue() };
             Assert.Equal(value.Nested.MethodArgs(1, 2), sql.Val(() => value.Nested.MethodArgs(1, 2)));
+        }
+
+        [Theory]
+        [InlineData(200)]
+        public void Add_Value(decimal value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary + 100m + value, sql.Val(() => SqlExp.Val(person.Salary + 100m + value)));
+        }
+
+        [Theory]
+        [InlineData(200)]
+        public void Add_Value_Convert(int value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary + 100 + value, sql.Val(() => SqlExp.Val(person.Salary + 100 + value)));
+        }
+
+        [Theory]
+        [InlineData(200)]
+        public void Subtract_Value(decimal value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary - 100m - value, sql.Val(() => SqlExp.Val(person.Salary - 100m - value)));
+        }
+
+        [Theory]
+        [InlineData(200)]
+        public void Subtract_Value_Convert(int value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary - 100 - value, sql.Val(() => SqlExp.Val(person.Salary - 100 - value)));
+        }
+
+        [Theory]
+        [InlineData(200)]
+        public void Multiply_Value(decimal value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary * 100m * value, sql.Val(() => SqlExp.Val(person.Salary * 100m * value)));
+        }
+
+        [Theory]
+        [InlineData(200)]
+        public void Multiply_Value_Convert(int value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary * 100 * value, sql.Val(() => SqlExp.Val(person.Salary * 100 * value)));
+        }
+
+        [Theory]
+        [InlineData(200)]
+        public void Divide_Value(decimal value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary / 100m / value, sql.Val(() => SqlExp.Val(person.Salary / 100m / value)));
+        }
+
+        [Theory]
+        [InlineData(200)]
+        public void Divide_Value_Convert(int value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary / 100 / value, sql.Val(() => SqlExp.Val(person.Salary / 100 / value)));
+        }
+
+        [Theory]
+        [InlineData(200)]
+        public void Modulo_Value(decimal value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary % 100m % value, sql.Val(() => SqlExp.Val(person.Salary % 100m % value)));
+        }
+
+        [Theory]
+        [InlineData(200)]
+        public void Modulo_Value_Convert(int value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary % 100 % value, sql.Val(() => SqlExp.Val(person.Salary % 100 % value)));
+        }
+
+        [Theory]
+        [InlineData("abcd")]
+        public void Coalesce_Value(string value)
+        {
+            Person person = new Person() { Name = null };
+            Assert.Equal(value, sql.Val(() => SqlExp.Val(person.Name ?? value)));
         }
 
         public class TestValue
@@ -258,9 +392,13 @@ namespace Suilder.Test.Builder
 
             public int MethodArgs(int a, int b) => a + b;
 
+            public decimal MethodArgsConvert(decimal a, decimal b) => a + b;
+
             public static int MethodStatic() => fieldStatic * PropertyStatic;
 
             public static int MethodArgsStatic(int a, int b) => a * b;
+
+            public static decimal MethodArgsConvertStatic(decimal a, decimal b) => a * b;
         }
 
         public class TestNestedValue
