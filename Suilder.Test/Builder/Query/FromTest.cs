@@ -126,17 +126,6 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Options()
-        {
-            Person person = null;
-            IQuery query = sql.Query.From(() => person).Options(sql.Raw("WITH (NO LOCK)"));
-
-            QueryResult result = engine.Compile(query);
-
-            Assert.Equal("FROM \"Person\" AS \"person\" WITH (NO LOCK)", result.Sql);
-        }
-
-        [Fact]
         public void From_Value()
         {
             IAlias person = sql.Alias("person");
@@ -178,6 +167,17 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM DUAL", result.Sql);
+        }
+
+        [Fact]
+        public void Options()
+        {
+            Person person = null;
+            IQuery query = sql.Query.From(() => person).Options(sql.Raw("WITH (NO LOCK)"));
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("FROM \"Person\" AS \"person\" WITH (NO LOCK)", result.Sql);
         }
     }
 }

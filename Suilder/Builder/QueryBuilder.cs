@@ -107,9 +107,7 @@ namespace Suilder.Builder
         /// <returns>The query builder.</returns>
         public QueryBuilder WriteValue(object value)
         {
-            IQueryFragment queryFragment = value as IQueryFragment;
-
-            if (queryFragment != null)
+            if (value is IQueryFragment queryFragment)
                 WriteFragment(queryFragment);
             else
                 AddParameter(value);

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using Suilder.Builder;
 using Suilder.Engines;
+using Suilder.Reflection.Builder;
 
 namespace Suilder.Core
 {
@@ -82,7 +83,12 @@ namespace Suilder.Core
         /// <param name="engine">The engine.</param>
         public virtual void Compile(QueryBuilder queryBuilder, IEngine engine)
         {
-            queryBuilder.WriteName(engine.GetInfo(Type).TableName);
+            ITableInfo tableInfo = engine.GetInfo(Type);
+
+            if (!string.IsNullOrEmpty(tableInfo.Schema))
+                queryBuilder.WriteName(tableInfo.Schema).Write(".");
+
+            queryBuilder.WriteName(tableInfo.TableName);
         }
 
         /// <summary>

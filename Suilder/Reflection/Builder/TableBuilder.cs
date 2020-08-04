@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Suilder.Builder;
+using Suilder.Exceptions;
 using Suilder.Reflection.Builder.Processors;
 
 namespace Suilder.Reflection.Builder
@@ -86,6 +87,19 @@ namespace Suilder.Reflection.Builder
             CheckInitialized();
 
             ConfigData.InheritColumnsDefault = func;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets a function to get the default schema.
+        /// </summary>
+        /// <param name="func">The function.</param>
+        /// <returns>The table builder.</returns>
+        public ITableBuilder DefaultSchema(Func<Type, string> func)
+        {
+            CheckInitialized();
+
+            ConfigData.SchemaDefault = func;
             return this;
         }
 
@@ -322,6 +336,9 @@ namespace Suilder.Reflection.Builder
             foreach (TableInfo tableInfo in resultData.ResultTypes.Select(x => x.Value)
                 .Where(x => ConfigData.GetConfig(x.Type).IsTable == true))
             {
+                // Validate configuration
+                Validate(tableInfo);
+
                 // Register in ExpressionProcessor
                 ExpressionProcessor.AddTable(tableInfo.Type);
 
@@ -331,6 +348,25 @@ namespace Suilder.Reflection.Builder
 
             ConfigData = null;
             return Tables;
+        }
+
+        /// <summary>
+        /// Validates the table info.
+        /// </summary>
+        /// <param name="tableInfo">The table info.</param>
+        protected virtual void Validate(TableInfo tableInfo)
+        {
+            if (string.IsNullOrEmpty(tableInfo.TableName))
+                throw new InvalidConfigurationException($"Empty table name for type \"{tableInfo.Type}\".");
+
+            foreach (var item in tableInfo.ColumnNamesDic)
+            {
+                if (string.IsNullOrEmpty(item.Value))
+                {
+                    throw new InvalidConfigurationException($"Empty column name for property \"{item.Key}\" of the type "
+                        + $"\"{tableInfo.Type}\".");
+                }
+            }
         }
 
         /// <summary>

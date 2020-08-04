@@ -81,9 +81,7 @@ namespace Suilder.Builder
         /// <returns>The string builder.</returns>
         public ToStringBuilder WriteValue(object value)
         {
-            IQueryFragment queryFragment = value as IQueryFragment;
-
-            if (queryFragment != null)
+            if (value is IQueryFragment queryFragment)
                 WriteFragment(queryFragment);
             else
                 WriteParameter(value);
@@ -97,7 +95,7 @@ namespace Suilder.Builder
         /// <returns>The string builder.</returns>
         public ToStringBuilder WriteParameter(object value)
         {
-            if (!(value is String) && value is IEnumerable list)
+            if (!(value is string) && value is IEnumerable list)
             {
                 Builder.Append("[");
                 string separator = ", ";
@@ -122,9 +120,9 @@ namespace Suilder.Builder
             {
                 Builder.Append("NULL");
             }
-            else if (value is String)
+            else if (value is string valueString)
             {
-                Builder.Append("\"" + value + "\"");
+                Builder.Append("\"" + valueString + "\"");
             }
             else if (value is bool valueBool)
             {

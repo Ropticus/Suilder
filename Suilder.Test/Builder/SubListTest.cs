@@ -125,7 +125,6 @@ namespace Suilder.Test.Builder
         [Fact]
         public void SubQuery()
         {
-            IAlias person = sql.Alias("person");
             ISubList list = sql.SubList.Add(1, 2, 3);
 
             QueryResult result = engine.Compile(sql.Raw("{0}", list));

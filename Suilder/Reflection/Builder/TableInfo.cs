@@ -27,6 +27,12 @@ namespace Suilder.Reflection.Builder
         public Type Type { get; private set; }
 
         /// <summary>
+        /// The schema name.
+        /// </summary>
+        /// <value>The schema name.</value>
+        public string Schema { get; set; }
+
+        /// <summary>
         /// The table name.
         /// </summary>
         /// <value>The table name.</value>
@@ -119,7 +125,7 @@ namespace Suilder.Reflection.Builder
         public TValue GetTableMetadata<TValue>(string key)
         {
             object value = GetTableMetadata(key);
-            return value == null ? default(TValue) : (TValue)value;
+            return value == null ? default : (TValue)value;
         }
 
         /// <summary>
@@ -175,7 +181,7 @@ namespace Suilder.Reflection.Builder
         public virtual TValue GetMetadata<TValue>(string memberName, string key)
         {
             object value = GetMetadata(memberName, key);
-            return value == null ? default(TValue) : (TValue)value;
+            return value == null ? default : (TValue)value;
         }
 
         /// <summary>
@@ -248,7 +254,7 @@ namespace Suilder.Reflection.Builder
         public TValue GetMetadata<TValue>(Expression<Func<T, object>> expression, string key)
         {
             object value = GetMetadata(expression, key);
-            return value == null ? default(TValue) : (TValue)value;
+            return value == null ? default : (TValue)value;
         }
 
         /// <summary>

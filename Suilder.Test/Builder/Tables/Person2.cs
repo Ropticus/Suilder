@@ -3,7 +3,7 @@ using Suilder.Reflection;
 
 namespace Suilder.Test.Builder.Tables
 {
-    [Table("Person")]
+    [Table("Person", Schema = "dbo")]
     public class Person2
     {
         [PrimaryKey]

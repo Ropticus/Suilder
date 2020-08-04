@@ -6,7 +6,7 @@ using Suilder.Extensions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder
+namespace Suilder.Test.Builder.FromJoin
 {
     public class JoinTest : BuilderBaseTest
     {
@@ -495,6 +495,45 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void Join_Without_As()
+        {
+            engine.Options.TableAs = false;
+
+            IAlias person = sql.Alias("person", "per");
+            IJoin join = sql.Join(person, JoinType.Left);
+
+            QueryResult result = engine.Compile(join);
+
+            Assert.Equal("LEFT JOIN \"person\" \"per\"", result.Sql);
+        }
+
+        [Fact]
+        public void AliasOrTableName_Property_Table_Name()
+        {
+            IAlias person = sql.Alias("person");
+            IJoin join = sql.Join(person);
+
+            Assert.Equal("person", join.AliasOrTableName);
+        }
+
+        [Fact]
+        public void AliasOrTableName_Property_Alias_Name()
+        {
+            IAlias person = sql.Alias("person", "per");
+            IJoin join = sql.Join(person);
+
+            Assert.Equal("per", join.AliasOrTableName);
+        }
+
+        [Fact]
+        public void AliasOrTableName_Property_Null()
+        {
+            IJoin from = (IJoin)sql.Left;
+
+            Assert.Null(from.AliasOrTableName);
+        }
+
+        [Fact]
         public void Options()
         {
             Person person = null;
@@ -507,19 +546,6 @@ namespace Suilder.Test.Builder
 
             Assert.Equal("INNER JOIN \"Dept\" AS \"dept\" USE INDEX (myIndex) "
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
-        }
-
-        [Fact]
-        public void Join_Without_As()
-        {
-            engine.Options.TableAs = false;
-
-            IAlias person = sql.Alias("person", "per");
-            IJoin join = sql.Join(person, JoinType.Left);
-
-            QueryResult result = engine.Compile(join);
-
-            Assert.Equal("LEFT JOIN \"person\" \"per\"", result.Sql);
         }
 
         [Fact]
@@ -547,33 +573,6 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void AliasOrTableName_Property_Alias_Table_Name()
-        {
-            IAlias person = sql.Alias("person");
-            IJoin join = sql.Join(person);
-
-            Assert.Equal("person", join.AliasOrTableName);
-        }
-
-        [Fact]
-        public void AliasOrTableName_Property_Alias_Alias_Name()
-        {
-            IAlias person = sql.Alias("person", "per");
-            IJoin join = sql.Join(person);
-
-            Assert.Equal("per", join.AliasOrTableName);
-        }
-
-        [Fact]
-        public void AliasOrTableName_Property_Null()
-        {
-            IAlias person = sql.Alias("person");
-            IJoin from = (IJoin)sql.Left;
-
-            Assert.Null(from.AliasOrTableName);
-        }
-
-        [Fact]
         public void To_String()
         {
             IAlias person = sql.Alias("person");
@@ -589,6 +588,24 @@ namespace Suilder.Test.Builder
             IJoin join = sql.Left.Join(person);
 
             Assert.Equal("LEFT JOIN person AS per", join.ToString());
+        }
+
+        [Fact]
+        public void To_String_Typed_Alias()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IJoin join = sql.Left.Join(person);
+
+            Assert.Equal("LEFT JOIN Person AS person", join.ToString());
+        }
+
+        [Fact]
+        public void To_String_Typed_Alias_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IJoin join = sql.Left.Join(person);
+
+            Assert.Equal("LEFT JOIN Person AS per", join.ToString());
         }
 
         [Fact]

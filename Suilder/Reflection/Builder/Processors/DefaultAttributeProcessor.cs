@@ -56,6 +56,9 @@ namespace Suilder.Reflection.Builder.Processors
             if (!tableConfig.InheritColumns.HasValue && tableAttr.InheritColumnsHasValue)
                 tableConfig.InheritColumns = tableAttr.InheritColumns;
 
+            if (string.IsNullOrEmpty(tableConfig.Schema))
+                tableConfig.Schema = tableAttr.Schema;
+
             if (string.IsNullOrEmpty(tableConfig.TableName))
                 tableConfig.TableName = tableAttr.Name;
         }

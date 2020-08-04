@@ -33,6 +33,13 @@ namespace Suilder.Reflection.Builder
         IEntityBuilder InheritColumns(bool inherit);
 
         /// <summary>
+        /// Sets the schema of the table.
+        /// </summary>
+        /// <param name="schema">The schema name.</param>
+        /// <returns>The entity builder.</returns>
+        IEntityBuilder Schema(string schema);
+
+        /// <summary>
         /// Sets the name of the table.
         /// </summary>
         /// <param name="tableName">The table name.</param>
@@ -156,6 +163,13 @@ namespace Suilder.Reflection.Builder
         /// <param name="inherit">If the type must inherit the columns of the base type.</param>
         /// <returns>The entity builder.</returns>
         new IEntityBuilder<TTable> InheritColumns(bool inherit);
+
+        /// <summary>
+        /// Sets the schema of the table.
+        /// </summary>
+        /// <param name="schema">The schema name.</param>
+        /// <returns>The entity builder.</returns>
+        new IEntityBuilder<TTable> Schema(string schema);
 
         /// <summary>
         /// Sets the name of the table.

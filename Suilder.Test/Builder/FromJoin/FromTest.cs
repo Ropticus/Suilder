@@ -4,7 +4,7 @@ using Suilder.Core;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder
+namespace Suilder.Test.Builder.FromJoin
 {
     public class FromTest : BuilderBaseTest
     {
@@ -184,17 +184,6 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void Options()
-        {
-            Person person = null;
-            IFrom from = sql.From(() => person).Options(sql.Raw("WITH (NO LOCK)"));
-
-            QueryResult result = engine.Compile(from);
-
-            Assert.Equal("FROM \"Person\" AS \"person\" WITH (NO LOCK)", result.Sql);
-        }
-
-        [Fact]
         public void From_Without_As()
         {
             engine.Options.TableAs = false;
@@ -208,7 +197,7 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void AliasOrTableName_Property_Alias_Table_Name()
+        public void AliasOrTableName_Property_Table_Name()
         {
             IAlias person = sql.Alias("person");
             IFrom from = sql.From(person);
@@ -217,7 +206,7 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void AliasOrTableName_Property_Alias_Alias_Name()
+        public void AliasOrTableName_Property_Alias_Name()
         {
             IAlias person = sql.Alias("person", "per");
             IFrom from = sql.From(person);
@@ -244,33 +233,14 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void From_Dummy_Empty()
+        public void Options()
         {
-            IRawSql from = sql.FromDummy;
+            Person person = null;
+            IFrom from = sql.From(() => person).Options(sql.Raw("WITH (NO LOCK)"));
 
             QueryResult result = engine.Compile(from);
 
-            Assert.Equal("", result.Sql);
-        }
-
-        [Fact]
-        public void From_Dummy_Value()
-        {
-            engine.Options.FromDummyName = "DUAL";
-
-            IRawSql from = sql.FromDummy;
-
-            QueryResult result = engine.Compile(from);
-
-            Assert.Equal("FROM DUAL", result.Sql);
-        }
-
-        [Fact]
-        public void From_Dummy_To_String()
-        {
-            IRawSql from = sql.FromDummy;
-
-            Assert.Equal("FROM dummy_table", from.ToString());
+            Assert.Equal("FROM \"Person\" AS \"person\" WITH (NO LOCK)", result.Sql);
         }
 
         [Fact]
@@ -289,6 +259,24 @@ namespace Suilder.Test.Builder
             IFrom from = sql.From(person);
 
             Assert.Equal("FROM person AS per", from.ToString());
+        }
+
+        [Fact]
+        public void To_String_Typed_Alias()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IFrom from = sql.From(person);
+
+            Assert.Equal("FROM Person AS person", from.ToString());
+        }
+
+        [Fact]
+        public void To_String_Typed_Alias_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IFrom from = sql.From(person);
+
+            Assert.Equal("FROM Person AS per", from.ToString());
         }
 
         [Fact]

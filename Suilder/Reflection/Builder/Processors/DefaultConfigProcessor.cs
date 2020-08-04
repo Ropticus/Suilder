@@ -90,15 +90,20 @@ namespace Suilder.Reflection.Builder.Processors
         {
             if (tableConfig.InheritTable == true)
             {
+                tableInfo.Schema = parentInfo.Schema;
                 tableInfo.TableName = parentInfo.TableName;
-            }
-            else if (!string.IsNullOrEmpty(tableConfig.TableName))
-            {
-                tableInfo.TableName = tableConfig.TableName;
             }
             else
             {
-                tableInfo.TableName = ConfigData.TableNameDefault(tableConfig.Type);
+                if (!string.IsNullOrEmpty(tableConfig.Schema))
+                    tableInfo.Schema = tableConfig.Schema;
+                else
+                    tableInfo.Schema = ConfigData.SchemaDefault(tableConfig.Type);
+
+                if (!string.IsNullOrEmpty(tableConfig.TableName))
+                    tableInfo.TableName = tableConfig.TableName;
+                else
+                    tableInfo.TableName = ConfigData.TableNameDefault(tableConfig.Type);
             }
         }
 

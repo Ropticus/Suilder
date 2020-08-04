@@ -34,6 +34,12 @@ namespace Suilder.Reflection.Builder
         public Func<Type, bool> InheritColumnsDefault { get; set; } = type => type.BaseType.IsAbstract;
 
         /// <summary>
+        /// Delegate to get the default schema.
+        /// </summary>
+        /// <value>Delegate to get the default schema.</value>
+        public Func<Type, string> SchemaDefault { get; set; } = type => null;
+
+        /// <summary>
         /// Delegate to get the default table name.
         /// </summary>
         /// <value>Delegate to get the default table name.</value>

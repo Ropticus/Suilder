@@ -7,6 +7,12 @@ namespace Suilder.Reflection
     public sealed class TableAttribute : System.Attribute
     {
         /// <summary>
+        /// The schema name.
+        /// </summary>
+        /// <value>The schema name.</value>
+        public string Schema { get; set; }
+
+        /// <summary>
         /// The table name.
         /// </summary>
         /// <value>The table name.</value>

@@ -19,6 +19,18 @@ namespace Suilder.Test.Reflection.Builder.TablePerType
         }
 
         [Fact]
+        public void Schema_Name()
+        {
+            ITableInfo personInfo = tableBuilder.GetConfig<Person>();
+            ITableInfo employeeInfo = tableBuilder.GetConfig<Employee>();
+            ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
+
+            Assert.Null(personInfo.Schema);
+            Assert.Null(employeeInfo.Schema);
+            Assert.Null(deptInfo.Schema);
+        }
+
+        [Fact]
         public void Table_Name()
         {
             ITableInfo personInfo = tableBuilder.GetConfig<Person>();

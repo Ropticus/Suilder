@@ -437,21 +437,6 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Options()
-        {
-            Person person = null;
-            Department dept = null;
-            IQuery query = sql.Query.Join(() => dept)
-                .On(() => dept.Id == person.Department.Id)
-                .Options(sql.Raw("USE INDEX (myIndex)"));
-
-            QueryResult result = engine.Compile(query);
-
-            Assert.Equal("INNER JOIN \"Dept\" AS \"dept\" USE INDEX (myIndex) "
-                + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
-        }
-
-        [Fact]
         public void Join_Value()
         {
             IAlias person = sql.Alias("person");
@@ -471,6 +456,21 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("INNER JOIN \"person\"", result.Sql);
+        }
+
+        [Fact]
+        public void Options()
+        {
+            Person person = null;
+            Department dept = null;
+            IQuery query = sql.Query.Join(() => dept)
+                .On(() => dept.Id == person.Department.Id)
+                .Options(sql.Raw("USE INDEX (myIndex)"));
+
+            QueryResult result = engine.Compile(query);
+
+            Assert.Equal("INNER JOIN \"Dept\" AS \"dept\" USE INDEX (myIndex) "
+                + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
         }
     }
 }

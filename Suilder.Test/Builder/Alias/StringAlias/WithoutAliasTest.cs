@@ -1,6 +1,5 @@
 using Suilder.Builder;
 using Suilder.Core;
-using Suilder.Test.Builder.Tables;
 using Xunit;
 
 namespace Suilder.Test.Builder.Alias.StringAlias
@@ -28,16 +27,6 @@ namespace Suilder.Test.Builder.Alias.StringAlias
         }
 
         [Fact]
-        public void Col_With_Schema_One_Param()
-        {
-            IColumn column = sql.Col("dbo.person.Id");
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"dbo\".\"person\".\"Id\"", result.Sql);
-        }
-
-        [Fact]
         public void Col_All_Two_Params()
         {
             IColumn column = sql.Col("person", "*");
@@ -55,16 +44,6 @@ namespace Suilder.Test.Builder.Alias.StringAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\"", result.Sql);
-        }
-
-        [Fact]
-        public void Col_With_Schema_Two_Params()
-        {
-            IColumn column = sql.Col("dbo.person", "Id");
-
-            QueryResult result = engine.Compile(column);
-
-            Assert.Equal("\"dbo\".\"person\".\"Id\"", result.Sql);
         }
 
         [Fact]
@@ -93,11 +72,11 @@ namespace Suilder.Test.Builder.Alias.StringAlias
             engine.Options.EscapeStart = '[';
             engine.Options.EscapeEnd = ']';
 
-            IColumn column = sql.Col("dbo.person.Id");
+            IColumn column = sql.Col("person.Id");
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("[dbo].[person].[Id]", result.Sql);
+            Assert.Equal("[person].[Id]", result.Sql);
         }
     }
 }

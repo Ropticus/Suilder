@@ -13,6 +13,7 @@ namespace Suilder.Test.Reflection.Builder
             tableBuilder.AddProcessor(new DefaultMetadataProcessor());
 
             tableBuilder.Add<Person>()
+                .Schema("schema_Person")
                 .TableName("prefix_Person")
                 .AddTableMetadata("Key1", "Val1_Person")
                 .AddTableMetadata("Key2", "Val2_Person")
@@ -53,6 +54,7 @@ namespace Suilder.Test.Reflection.Builder
                 .RemoveMetadata(x => x.Department.Id, "DepartmentId2");
 
             tableBuilder.Add<Department>()
+                .Schema("schema_Department")
                 .TableName("prefix_Department")
                 .AddTableMetadata("Key1", "Val1_Department")
                 .AddTableMetadata("Key2", "Val2_Department")
@@ -75,6 +77,16 @@ namespace Suilder.Test.Reflection.Builder
                 .AddMetadata(x => x.Boss.Id, "BossId1", "BossId1_Department")
                 .AddMetadata(x => x.Boss.Id, "BossId2", "BossId2_Department")
                 .RemoveMetadata(x => x.Boss.Id, "BossId2");
+        }
+
+        [Fact]
+        public void Schema_Name()
+        {
+            ITableInfo personInfo = tableBuilder.GetConfig<Person>();
+            ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
+
+            Assert.Equal("schema_Person", personInfo.Schema);
+            Assert.Equal("schema_Department", deptInfo.Schema);
         }
 
         [Fact]

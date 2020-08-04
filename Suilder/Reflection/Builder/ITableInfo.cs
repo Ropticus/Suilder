@@ -17,6 +17,12 @@ namespace Suilder.Reflection.Builder
         Type Type { get; }
 
         /// <summary>
+        /// The schema name.
+        /// </summary>
+        /// <value>The schema name.</value>
+        string Schema { get; }
+
+        /// <summary>
         /// The table name.
         /// </summary>
         /// <value>The table name.</value>

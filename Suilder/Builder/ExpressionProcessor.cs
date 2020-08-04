@@ -17,13 +17,13 @@ namespace Suilder.Builder
         /// <summary>
         /// Contains the types registered as a table.
         /// </summary>
-        private static ISet<string> Tables = new HashSet<string>();
+        private static ISet<string> Tables { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// The registered functions.
         /// </summary>
         /// <returns>The registered functions.</returns>
-        private static IDictionary<string, Func<MethodCallExpression, object>> Functions
+        private static IDictionary<string, Func<MethodCallExpression, object>> Functions { get; set; }
             = new ConcurrentDictionary<string, Func<MethodCallExpression, object>>();
 
         /// <summary>
@@ -119,9 +119,7 @@ namespace Suilder.Builder
         public static IColumn ParseColumn<T>(string tableName, Expression expression)
         {
             if (expression.NodeType == ExpressionType.Convert)
-            {
                 return ParseColumn<T>(tableName, ((UnaryExpression)expression).Operand);
-            }
 
             if (expression is MemberExpression memberExp)
             {
@@ -171,15 +169,12 @@ namespace Suilder.Builder
         public static IColumn ParseColumn(Expression expression)
         {
             if (expression.NodeType == ExpressionType.Convert)
-            {
                 return ParseColumn(((UnaryExpression)expression).Operand);
-            }
 
-            MemberExpression memberExp = expression as MemberExpression;
-            if (memberExp == null)
-                throw new ArgumentException("Invalid expression.");
+            if (expression is MemberExpression memberExp)
+                return ParseColumn(memberExp);
 
-            return ParseColumn(memberExp);
+            throw new ArgumentException("Invalid expression.");
         }
 
         /// <summary>
@@ -310,8 +305,7 @@ namespace Suilder.Builder
         /// <returns>The operator.</returns>
         public static IOperator ParseBoolOperator(Expression expression)
         {
-            BinaryExpression binaryExp = expression as BinaryExpression;
-            if (binaryExp != null)
+            if (expression is BinaryExpression binaryExp)
                 return ParseBoolOperator(binaryExp);
 
             switch (expression.NodeType)
@@ -325,8 +319,7 @@ namespace Suilder.Builder
                 case ExpressionType.Not:
                     {
                         UnaryExpression unaryExp = (UnaryExpression)expression;
-                        MemberExpression memberExp = unaryExp.Operand as MemberExpression;
-                        if (memberExp != null && memberExp.Type == typeof(bool))
+                        if (unaryExp.Operand is MemberExpression memberExp && memberExp.Type == typeof(bool))
                             return SqlBuilder.Instance.Eq(ParseValue(memberExp), false);
                         else
                             return SqlBuilder.Instance.Not(ParseBoolOperator(unaryExp.Operand));
@@ -383,7 +376,6 @@ namespace Suilder.Builder
         /// <returns>The logical operator.</returns>
         public static ILogicalOperator ParseLogicalOperator(BinaryExpression expression)
         {
-            ILogicalOperator logicalOperator = null;
             Func<ILogicalOperator> opDel = null;
 
             switch (expression.NodeType)
@@ -402,6 +394,7 @@ namespace Suilder.Builder
                     throw new ArgumentException("Invalid expression.");
             }
 
+            ILogicalOperator logicalOperator;
             if (opDel != null)
             {
                 logicalOperator = opDel();
@@ -422,7 +415,6 @@ namespace Suilder.Builder
         /// <returns>The arithmetic operator.</returns>
         public static IArithOperator ParseArithmeticOperator(BinaryExpression expression)
         {
-            IArithOperator arithOperator = null;
             Func<IArithOperator> opDel = null;
 
             switch (expression.NodeType)
@@ -451,6 +443,7 @@ namespace Suilder.Builder
                     throw new ArgumentException("Invalid expression.");
             }
 
+            IArithOperator arithOperator;
             if (opDel != null)
             {
                 arithOperator = opDel();
@@ -471,7 +464,6 @@ namespace Suilder.Builder
         /// <returns>The bitwise operator.</returns>
         public static IBitOperator ParseBitOperator(BinaryExpression expression)
         {
-            IBitOperator bitOperator = null;
             Func<IBitOperator> opDel = null;
 
             switch (expression.NodeType)
@@ -492,6 +484,7 @@ namespace Suilder.Builder
                     throw new ArgumentException("Invalid expression.");
             }
 
+            IBitOperator bitOperator;
             if (opDel != null)
             {
                 bitOperator = opDel();
@@ -756,19 +749,12 @@ namespace Suilder.Builder
         public static IList<MemberInfo> GetProperties(Expression expression)
         {
             if (expression.NodeType == ExpressionType.Convert)
-            {
                 return GetProperties(((UnaryExpression)expression).Operand);
-            }
 
-            MemberExpression memberExp = expression as MemberExpression;
-            if (memberExp == null)
-            {
-                throw new ArgumentException("Invalid expression.");
-            }
-            else
-            {
+            if (expression is MemberExpression memberExp)
                 return GetMemberInfoList(memberExp);
-            }
+
+            throw new ArgumentException("Invalid expression.");
         }
 
         /// <summary>

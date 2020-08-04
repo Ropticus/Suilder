@@ -12,7 +12,6 @@ namespace Suilder.Test.Builder.Operators
         [Fact]
         public void Builder_Object()
         {
-            IAlias person = sql.Alias("person");
             IOperator op = sql.Any(sql.RawQuery("Subquery"));
 
             QueryResult result = engine.Compile(op);
@@ -42,7 +41,6 @@ namespace Suilder.Test.Builder.Operators
         [Fact]
         public void To_String()
         {
-            IAlias person = sql.Alias("person");
             IOperator op = sql.Any(sql.RawQuery("Subquery"));
 
             Assert.Equal("ANY (Subquery)", op.ToString());

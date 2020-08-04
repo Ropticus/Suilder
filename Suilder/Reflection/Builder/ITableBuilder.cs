@@ -30,6 +30,13 @@ namespace Suilder.Reflection.Builder
         ITableBuilder DefaultInheritColumns(Func<Type, bool> func);
 
         /// <summary>
+        /// Sets a function to get the default schema name.
+        /// </summary>
+        /// <param name="func">The function.</param>
+        /// <returns>The table builder.</returns>
+        ITableBuilder DefaultSchema(Func<Type, string> func);
+
+        /// <summary>
         /// Sets a function to get the default table name.
         /// </summary>
         /// <param name="func">The function.</param>

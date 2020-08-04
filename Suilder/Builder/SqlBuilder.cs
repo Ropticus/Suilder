@@ -1331,7 +1331,7 @@ namespace Suilder.Builder
         public virtual string ToLikeStart(string value)
         {
             if (value.Length == 0 || value[value.Length - 1] != '%')
-                value = value + "%";
+                value += "%";
             return value;
         }
 
@@ -1357,7 +1357,7 @@ namespace Suilder.Builder
             if (value.Length == 0 || value[0] != '%')
                 value = "%" + value;
             if (value[value.Length - 1] != '%')
-                value = value + "%";
+                value += "%";
             return value;
         }
     }

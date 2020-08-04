@@ -84,5 +84,27 @@ namespace Suilder.Test.Reflection.Builder
             Assert.Equal($"Foreign key property not specified for property \"Department\" of the type "
                 + $"\"{typeof(Employee)}\", and the type \"{typeof(Department)}\" have multiple primary keys.", ex.Message);
         }
+
+        [Fact]
+        public void Table_Name_Empty()
+        {
+            tableBuilder.DefaultTableName(x => "");
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Empty table name for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Column_Name_Empty()
+        {
+            tableBuilder.Add<Person>()
+                .ColumnName(x => x.Name, "");
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Empty column name for property \"{nameof(Person.Name)}\" of the type \"{typeof(Person)}\".",
+                ex.Message);
+        }
     }
 }

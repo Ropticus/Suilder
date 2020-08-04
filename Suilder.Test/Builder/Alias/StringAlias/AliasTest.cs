@@ -27,16 +27,6 @@ namespace Suilder.Test.Builder.Alias.StringAlias
         }
 
         [Fact]
-        public void Alias_With_Schema()
-        {
-            IAlias alias = sql.Alias("dbo.person");
-
-            QueryResult result = engine.Compile(alias);
-
-            Assert.Equal("\"dbo\".\"person\"", result.Sql);
-        }
-
-        [Fact]
         public void AliasOrTableName_Property()
         {
             IAlias alias = sql.Alias("person");

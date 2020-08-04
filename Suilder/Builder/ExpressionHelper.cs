@@ -43,8 +43,7 @@ namespace Suilder.Builder
             if (expression.Arguments.Count > 0)
             {
                 // Last parameter is params argument
-                NewArrayExpression expParams = expression.Arguments[expression.Arguments.Count - 1] as NewArrayExpression;
-                if (expParams != null)
+                if (expression.Arguments[expression.Arguments.Count - 1] is NewArrayExpression expParams)
                 {
                     foreach (var arg in expParams.Expressions)
                     {
@@ -73,8 +72,7 @@ namespace Suilder.Builder
 
             if (expression.Arguments.Count > 1)
             {
-                NewArrayExpression expParams = expression.Arguments[1] as NewArrayExpression;
-                if (expParams != null)
+                if (expression.Arguments[1] is NewArrayExpression expParams)
                 {
                     foreach (var arg in expParams.Expressions)
                     {

@@ -25,6 +25,7 @@ namespace Suilder.Test.Reflection.Builder
             TableConfig employeeConfig = configData.GetConfigOrDefault(typeof(Employee));
 
             Assert.Equal(personConfig, configData.GetParentConfig(typeof(Employee)));
+            Assert.Equal(employeeConfig, configData.GetConfig(typeof(Employee)));
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Suilder.Test.Reflection.Attributes
             tableBuilder.Add<Person>()
                 .InheritTable(false)
                 .InheritColumns(true)
+                .Schema("schema")
                 .TableName("Person")
                 .PrimaryKey(x => x.Id)
                 .ColumnName(x => x.Id, "Id");
@@ -25,6 +26,18 @@ namespace Suilder.Test.Reflection.Attributes
             tableBuilder.Add<Department>()
                 .InheritTable(false)
                 .InheritColumns(true);
+        }
+
+        [Fact]
+        public void Schema_Name()
+        {
+            ITableInfo personInfo = tableBuilder.GetConfig<Person>();
+            ITableInfo employeeInfo = tableBuilder.GetConfig<Employee>();
+            ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
+
+            Assert.Equal("schema", personInfo.Schema);
+            Assert.Null(employeeInfo.Schema);
+            Assert.Null(deptInfo.Schema);
         }
 
         [Fact]
@@ -165,7 +178,7 @@ namespace Suilder.Test.Reflection.Attributes
             public byte[] Image { get; set; }
         }
 
-        [Table(InheritTable = true, InheritColumns = false, Name = "prefix_Person")]
+        [Table("prefix_Person", Schema = "schema_Person", InheritTable = true, InheritColumns = false)]
         public class Person : BaseConfig
         {
             public virtual string SurName { get; set; }

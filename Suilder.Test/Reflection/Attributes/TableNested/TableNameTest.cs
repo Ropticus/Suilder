@@ -15,6 +15,16 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
         }
 
         [Fact]
+        public void Schema_Name()
+        {
+            ITableInfo personInfo = tableBuilder.GetConfig<Person>();
+            ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
+
+            Assert.Null(personInfo.Schema);
+            Assert.Null(deptInfo.Schema);
+        }
+
+        [Fact]
         public void Table_Name()
         {
             ITableInfo personInfo = tableBuilder.GetConfig<Person>();
