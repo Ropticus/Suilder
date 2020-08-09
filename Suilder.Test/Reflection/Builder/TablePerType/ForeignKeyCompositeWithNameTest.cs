@@ -56,7 +56,7 @@ namespace Suilder.Test.Reflection.Builder.TablePerType
                 personInfo.Columns);
             Assert.Equal(new string[] { "Id", "Salary", "DepartmentId", "Department.Id", "Department.Guid", "Image" },
                 employeeInfo.Columns);
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id", "Boss.Guid" }, deptInfo.Columns);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id", "Boss.Guid", "Tags" }, deptInfo.Columns);
         }
 
         [Fact]
@@ -92,7 +92,8 @@ namespace Suilder.Test.Reflection.Builder.TablePerType
                 ["Guid"] = "Guid",
                 ["Name"] = "Name",
                 ["Boss.Id"] = "BossId2",
-                ["Boss.Guid"] = "BossGuid2"
+                ["Boss.Guid"] = "BossGuid2",
+                ["Tags"] = "Tags"
             }, deptInfo.ColumnNamesDic);
         }
 
@@ -107,7 +108,7 @@ namespace Suilder.Test.Reflection.Builder.TablePerType
                 personInfo.ColumnNames);
             Assert.Equal(new string[] { "Id", "Salary", "DepartmentId2", "DepartmentGuid2", "Image" },
                 employeeInfo.ColumnNames);
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "BossId2", "BossGuid2" }, deptInfo.ColumnNames);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "BossId2", "BossGuid2", "Tags" }, deptInfo.ColumnNames);
         }
     }
 }

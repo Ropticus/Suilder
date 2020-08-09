@@ -21,7 +21,8 @@ namespace Suilder.Test.Reflection.Builder.TablePerType
                 .Ignore(x => x.Image);
 
             tableBuilder.Add<Department>()
-                .Ignore(x => x.Boss);
+                .Ignore(x => x.Boss)
+                .Ignore(x => x.Tags);
         }
 
         [Fact]

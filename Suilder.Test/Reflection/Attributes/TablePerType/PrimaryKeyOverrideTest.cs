@@ -50,7 +50,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
             Assert.Equal(new string[] { "Guid", "Id", "Name", "SurName", "Address.Street", "Address.City" },
                 personInfo.Columns);
             Assert.Equal(new string[] { "Id", "Salary", "DepartmentId", "Department.Guid", "Image" }, employeeInfo.Columns);
-            Assert.Equal(new string[] { "Guid", "Id", "Name", "Boss.Id" }, deptInfo.Columns);
+            Assert.Equal(new string[] { "Guid", "Id", "Name", "Boss.Id", "Tags" }, deptInfo.Columns);
         }
 
         [Fact]
@@ -84,7 +84,8 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
                 ["Guid"] = "Guid",
                 ["Id"] = "Id",
                 ["Name"] = "Name",
-                ["Boss.Id"] = "BossId"
+                ["Boss.Id"] = "BossId",
+                ["Tags"] = "Tags"
             }, deptInfo.ColumnNamesDic);
         }
 
@@ -99,7 +100,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
                 personInfo.ColumnNames);
             Assert.Equal(new string[] { "Id", "Salary", "DepartmentId", "DepartmentGuid", "Image" },
                 employeeInfo.ColumnNames);
-            Assert.Equal(new string[] { "Guid", "Id", "Name", "BossId" }, deptInfo.ColumnNames);
+            Assert.Equal(new string[] { "Guid", "Id", "Name", "BossId", "Tags" }, deptInfo.ColumnNames);
         }
 
         [Nested]
@@ -127,6 +128,8 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
             public Employee Boss { get; set; }
 
             public List<Employee> Employees { get; set; }
+
+            public List<string> Tags { get; set; }
         }
 
         public class Employee : Person

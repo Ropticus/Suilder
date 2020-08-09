@@ -102,6 +102,20 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void Local_Value_List()
+        {
+            List<int> value = new List<int> { 1, 2, 3 };
+            Assert.Equal(value, sql.Val(() => value));
+        }
+
+        [Fact]
+        public void Local_Value_List_Index()
+        {
+            List<int> value = new List<int> { 1, 2, 3 };
+            Assert.Equal(value[1], sql.Val(() => value[1]));
+        }
+
+        [Fact]
         public void Local_Value_Array_Nested_Index()
         {
             int[][] value = new int[][] { new int[] { 1, 2, 3 }, new int[] { 4, 5, 6 } };
@@ -113,6 +127,20 @@ namespace Suilder.Test.Builder
         {
             int[,] value = new int[,] { { 1, 2, 3 }, { 4, 5, 6 } };
             Assert.Equal(value[1, 2], sql.Val(() => value[1, 2]));
+        }
+
+        [Fact]
+        public void Local_Value_Dic()
+        {
+            Dictionary<string, int> value = new Dictionary<string, int> { { "a", 1 }, { "b", 2 }, { "c", 3 } };
+            Assert.Equal(value, sql.Val(() => value));
+        }
+
+        [Fact]
+        public void Local_Value_Dic_Index()
+        {
+            Dictionary<string, int> value = new Dictionary<string, int> { { "a", 1 }, { "b", 2 }, { "c", 3 } };
+            Assert.Equal(value["b"], sql.Val(() => value["b"]));
         }
 
         [Fact]
@@ -131,6 +159,19 @@ namespace Suilder.Test.Builder
         public void Inline_Value_Array()
         {
             Assert.Equal(new byte[] { 1, 2, 3 }, sql.Val(() => new byte[] { 1, 2, 3 }));
+        }
+
+        [Fact]
+        public void Inline_Value_List()
+        {
+            Assert.Equal(new List<int> { 1, 2, 3 }, sql.Val(() => new List<int> { 1, 2, 3 }));
+        }
+
+        [Fact]
+        public void Inline_Value_Dic()
+        {
+            Assert.Equal(new Dictionary<string, int> { { "a", 1 }, { "b", 2 }, { "c", 3 } },
+                sql.Val(() => new Dictionary<string, int> { { "a", 1 }, { "b", 2 }, { "c", 3 } }));
         }
 
         [Fact]

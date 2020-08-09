@@ -54,6 +54,8 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
             public Person Boss { get; set; }
 
             public List<Person> Employees { get; set; }
+
+            public List<string> Tags { get; set; }
         }
 
         [Table(Schema = "schema_Person")]

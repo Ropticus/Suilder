@@ -29,7 +29,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Builder_Object_Enumerable<T>(T[] value)
+        public void Builder_Object_Array<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.Ge(person["Image"], value);
@@ -37,6 +37,22 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Image\" >= @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Builder_Object_List<T>(List<T> value)
+        {
+            IAlias dept = sql.Alias("dept");
+            IOperator op = sql.Ge(dept["Tags"], value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Tags\" >= @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -146,7 +162,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Builder_Expression_Enumerable<T>(T[] value)
+        public void Builder_Expression_Array<T>(T[] value)
         {
             Person person = null;
             IOperator op = sql.Ge(() => person.Image, value);
@@ -154,6 +170,22 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Image\" >= @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Builder_Expression_List<T>(List<T> value)
+        {
+            Department dept = null;
+            IOperator op = sql.Ge(() => dept.Tags, value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Tags\" >= @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -251,7 +283,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Builder_Two_Expressions_Enumerable<T>(T[] value)
+        public void Builder_Two_Expressions_Array<T>(T[] value)
         {
             Person person = null;
             IOperator op = sql.Ge(() => person.Image, () => value);
@@ -259,6 +291,22 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Image\" >= @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Builder_Two_Expressions_List<T>(List<T> value)
+        {
+            Department dept = null;
+            IOperator op = sql.Ge(() => dept.Tags, () => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Tags\" >= @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -308,7 +356,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Extension_Object_Enumerable<T>(T[] value)
+        public void Extension_Object_Array<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
             IOperator op = person["Image"].Ge(value);
@@ -316,6 +364,22 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Image\" >= @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Extension_Object_List<T>(List<T> value)
+        {
+            IAlias dept = sql.Alias("dept");
+            IOperator op = dept["Tags"].Ge(value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Tags\" >= @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -352,7 +416,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Extension_Expression_Enumerable<T>(T[] value)
+        public void Extension_Expression_Array<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
             IOperator op = person["Image"].Ge(() => value);
@@ -360,6 +424,22 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Image\" >= @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Extension_Expression_List<T>(List<T> value)
+        {
+            IAlias dept = sql.Alias("dept");
+            IOperator op = dept["Tags"].Ge(() => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Tags\" >= @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -564,7 +644,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Expression_Method_Enumerable<T>(T[] value)
+        public void Expression_Method_Array<T>(T[] value)
         {
             Person person = null;
             IOperator op = sql.Op(() => SqlExp.Ge(person.Image, value));
@@ -579,7 +659,7 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Expression_Method_Enumerable_Inline_Value()
+        public void Expression_Method_Array_Inline_Value()
         {
             Person person = null;
             IOperator op = sql.Op(() => SqlExp.Ge(person.Image, new byte[] { 1, 2, 3 }));
@@ -590,6 +670,37 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = new byte[] { 1, 2, 3 }
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Expression_Method_List<T>(List<T> value)
+        {
+            Department dept = null;
+            IOperator op = sql.Op(() => SqlExp.Ge(dept.Tags, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Tags\" >= @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_List_Inline_Value()
+        {
+            Department dept = null;
+            IOperator op = sql.Op(() => SqlExp.Ge(dept.Tags, new List<string> { "abcd", "efgh", "ijkl" }));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Tags\" >= @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new List<string> { "abcd", "efgh", "ijkl" }
             }, result.Parameters);
         }
 
@@ -649,12 +760,21 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void To_String_Enumerable()
+        public void To_String_Array()
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.Ge(person["Id"], new byte[] { 1, 2, 3 });
+            IOperator op = sql.Ge(person["Image"], new byte[] { 1, 2, 3 });
 
-            Assert.Equal("person.Id >= [1, 2, 3]", op.ToString());
+            Assert.Equal("person.Image >= [1, 2, 3]", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_List()
+        {
+            IAlias dept = sql.Alias("dept");
+            IOperator op = sql.Ge(dept["Tags"], new List<string> { "abcd", "efgh", "ijkl" });
+
+            Assert.Equal("dept.Tags >= [\"abcd\", \"efgh\", \"ijkl\"]", op.ToString());
         }
     }
 }

@@ -18,7 +18,8 @@ namespace Suilder.Test.Reflection.Builder.NoInherit
 
             tableBuilder.Add<Department>()
                 .Ignore(x => x.Guid)
-                .Ignore(x => x.Boss.Id);
+                .Ignore(x => x.Boss.Id)
+                .Ignore(x => x.Tags);
         }
 
         [Fact]

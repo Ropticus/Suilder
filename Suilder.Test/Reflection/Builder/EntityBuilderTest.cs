@@ -127,7 +127,7 @@ namespace Suilder.Test.Reflection.Builder
 
             Assert.Equal(new string[] { "Guid", "Id", "Name", "Address.Street", "Address.City", "DepartmentId",
                 "Department.Id", "Image" }, personInfo.Columns);
-            Assert.Equal(new string[] { "Guid", "Id", "Name", "Boss.Id" }, deptInfo.Columns);
+            Assert.Equal(new string[] { "Guid", "Id", "Name", "Boss.Id", "Tags" }, deptInfo.Columns);
         }
 
         [Fact]
@@ -153,7 +153,8 @@ namespace Suilder.Test.Reflection.Builder
                 ["Guid"] = "Guid3",
                 ["Id"] = "Id3",
                 ["Name"] = "Name3",
-                ["Boss.Id"] = "BossId3"
+                ["Boss.Id"] = "BossId3",
+                ["Tags"] = "Tags"
             }, deptInfo.ColumnNamesDic);
         }
 
@@ -165,7 +166,7 @@ namespace Suilder.Test.Reflection.Builder
 
             Assert.Equal(new string[] { "Guid2", "Id2", "Name2", "Street2", "Address2City", "DepartmentId2", "Image" },
                 personInfo.ColumnNames);
-            Assert.Equal(new string[] { "Guid3", "Id3", "Name3", "BossId3" }, deptInfo.ColumnNames);
+            Assert.Equal(new string[] { "Guid3", "Id3", "Name3", "BossId3", "Tags" }, deptInfo.ColumnNames);
         }
 
         [Fact]

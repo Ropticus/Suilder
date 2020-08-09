@@ -97,6 +97,9 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
             public Person Boss { get; set; }
 
             public List<Person> Employees { get; set; }
+
+            [Ignore]
+            public List<string> Tags { get; set; }
         }
 
         public class Person

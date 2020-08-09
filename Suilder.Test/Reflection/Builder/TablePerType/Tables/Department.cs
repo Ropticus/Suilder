@@ -7,5 +7,7 @@ namespace Suilder.Test.Reflection.Builder.TablePerType.Tables
         public virtual Employee Boss { get; set; }
 
         public virtual List<Employee> Employees { get; set; }
+
+        public List<string> Tags { get; set; }
     }
 }

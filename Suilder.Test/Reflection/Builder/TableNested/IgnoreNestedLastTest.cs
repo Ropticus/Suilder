@@ -21,7 +21,8 @@ namespace Suilder.Test.Reflection.Builder.TableNested
             tableBuilder.AddNested<Employee>();
 
             tableBuilder.Add<Department>()
-                .Ignore(x => x.Boss.Id);
+                .Ignore(x => x.Boss.Id)
+                .Ignore(x => x.Tags);
         }
 
         [Fact]

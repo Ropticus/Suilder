@@ -42,7 +42,7 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Address.Street", "Address.City", "DepartmentId",
                 "Department.Id", "Image" }, personInfo.Columns);
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id" }, deptInfo.Columns);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id", "Tags" }, deptInfo.Columns);
         }
 
         [Fact]
@@ -69,7 +69,8 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
                 ["Id"] = "Id3",
                 ["Guid"] = "Guid",
                 ["Name"] = "Name3",
-                ["Boss.Id"] = "BossId3"
+                ["Boss.Id"] = "BossId3",
+                ["Tags"] = "Tags3"
             }, deptInfo.ColumnNamesDic);
         }
 
@@ -81,7 +82,7 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
 
             Assert.Equal(new string[] { "Id2", "Guid", "Name2", "SurName", "Street2", "AddressCity", "DepartmentId2",
                 "Image2" }, personInfo.ColumnNames);
-            Assert.Equal(new string[] { "Id3", "Guid", "Name3", "BossId3" }, deptInfo.ColumnNames);
+            Assert.Equal(new string[] { "Id3", "Guid", "Name3", "BossId3", "Tags3" }, deptInfo.ColumnNames);
         }
 
         [Nested]
@@ -107,6 +108,9 @@ namespace Suilder.Test.Reflection.Attributes.NoInherit
             public Person Boss { get; set; }
 
             public List<Person> Employees { get; set; }
+
+            [Column("Tags3")]
+            public List<string> Tags { get; set; }
         }
 
         public class Person

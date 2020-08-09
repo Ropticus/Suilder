@@ -7,5 +7,7 @@ namespace Suilder.Test.Reflection.Builder.TableNested.Tables
         public Person Boss { get; set; }
 
         public List<Person> Employees { get; set; }
+
+        public List<string> Tags { get; set; }
     }
 }

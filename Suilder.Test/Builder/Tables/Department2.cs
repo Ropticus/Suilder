@@ -16,5 +16,7 @@ namespace Suilder.Test.Builder.Tables
         public Person2 Boss { get; set; }
 
         public List<Person2> Employees { get; set; }
+
+        public List<string> Tags { get; set; }
     }
 }

@@ -54,7 +54,7 @@ namespace Suilder.Test.Reflection.Builder.NoInherit
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Address.Street", "Address.City", "DepartmentId",
                 "Department.Id", "Image" }, personInfo.Columns);
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id" }, deptInfo.Columns);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id", "Tags" }, deptInfo.Columns);
         }
 
         [Fact]
@@ -81,7 +81,8 @@ namespace Suilder.Test.Reflection.Builder.NoInherit
                 ["Id"] = "Id",
                 ["Guid"] = "Guid",
                 ["Name"] = "Name",
-                ["Boss.Id"] = "BossId"
+                ["Boss.Id"] = "BossId",
+                ["Tags"] = "Tags"
             }, deptInfo.ColumnNamesDic);
         }
 
@@ -93,7 +94,7 @@ namespace Suilder.Test.Reflection.Builder.NoInherit
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "AddressStreet", "AddressCity", "DepartmentId",
                 "Image" }, personInfo.ColumnNames);
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "BossId" }, deptInfo.ColumnNames);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "BossId", "Tags" }, deptInfo.ColumnNames);
         }
     }
 }

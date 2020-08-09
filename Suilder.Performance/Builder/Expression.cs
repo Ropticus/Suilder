@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using BenchmarkDotNet.Attributes;
 using Suilder.Core;
@@ -73,7 +74,7 @@ namespace Suilder.Performance.Builder
         }
 
         [Benchmark]
-        [BenchmarkCategory("Value", "Array")]
+        [BenchmarkCategory("Value", "Enumerable")]
         public object Local_Value_Array()
         {
             byte[] value = new byte[] { 1, 2, 3 };
@@ -81,11 +82,43 @@ namespace Suilder.Performance.Builder
         }
 
         [Benchmark]
-        [BenchmarkCategory("Value", "Array")]
+        [BenchmarkCategory("Value", "Enumerable")]
         public object Local_Value_Array_Index()
         {
             int[] value = new int[] { 1, 2, 3 };
             return sql.Val(() => value[1]);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "Enumerable")]
+        public object Local_Value_List()
+        {
+            List<int> value = new List<int> { 1, 2, 3 };
+            return sql.Val(() => value);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "Enumerable")]
+        public object Local_Value_List_Index()
+        {
+            List<int> value = new List<int> { 1, 2, 3 };
+            return sql.Val(() => value[1]);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "Enumerable")]
+        public object Local_Value_Dic()
+        {
+            Dictionary<string, int> value = new Dictionary<string, int> { { "a", 1 }, { "b", 2 }, { "c", 3 } };
+            return sql.Val(() => value);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "Enumerable")]
+        public object Local_Value_Dic_Index()
+        {
+            Dictionary<string, int> value = new Dictionary<string, int> { { "a", 1 }, { "b", 2 }, { "c", 3 } };
+            return sql.Val(() => value["b"]);
         }
 
         [Benchmark]
@@ -96,10 +129,24 @@ namespace Suilder.Performance.Builder
         }
 
         [Benchmark]
-        [BenchmarkCategory("Value", "Array")]
+        [BenchmarkCategory("Value", "Enumerable")]
         public object Inline_Value_Array()
         {
             return sql.Val(() => new byte[] { 1, 2, 3 });
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "Enumerable")]
+        public object Inline_Value_List()
+        {
+            return sql.Val(() => new List<int> { 1, 2, 3 });
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "Enumerable")]
+        public object Inline_Value_Dic()
+        {
+            return sql.Val(() => new Dictionary<string, int> { { "a", 1 }, { "b", 2 }, { "c", 3 } });
         }
 
         [Benchmark]

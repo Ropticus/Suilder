@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Suilder.Builder;
@@ -36,6 +37,13 @@ namespace Suilder.Test.Builder
         {
             Expression<Func<object>> expression = () => new byte[] { 1, 2, 3 };
             Assert.Equal(new byte[] { 1, 2, 3 }, ExpressionProcessor.Compile(expression.Body));
+        }
+
+        [Fact]
+        public void Compile_New_List()
+        {
+            Expression<Func<object>> expression = () => new List<int> { 1, 2, 3 };
+            Assert.Equal(new List<int> { 1, 2, 3 }, ExpressionProcessor.Compile(expression.Body));
         }
 
         [Fact]

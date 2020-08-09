@@ -129,9 +129,11 @@ namespace Suilder.Reflection.Builder.Processors
             if (!propertyData.Info.CanRead || !propertyData.Info.CanWrite)
                 return true;
 
-            // Ignore lists
-            if (typeof(IEnumerable).IsAssignableFrom(propertyData.Info.PropertyType)
-                && propertyData.Info.PropertyType != typeof(string) && !propertyData.Info.PropertyType.IsArray)
+            Type propertyType = propertyData.Info.PropertyType;
+
+            // Ignore lists of tables
+            if (propertyType.IsGenericType && typeof(IEnumerable).IsAssignableFrom(propertyType)
+                && propertyType.GenericTypeArguments.Any(x => ConfigData.GetConfig(x) != null))
             {
                 return true;
             }

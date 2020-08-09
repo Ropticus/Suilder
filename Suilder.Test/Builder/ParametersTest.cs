@@ -37,6 +37,21 @@ namespace Suilder.Test.Builder
             }, result.Parameters);
         }
 
+        [Theory]
+        [MemberData(nameof(DataListAll))]
+        public void List_Value<T>(List<T> value)
+        {
+            IRawSql raw = sql.Raw("{0}", value);
+
+            QueryResult result = engine.Compile(raw);
+
+            Assert.Equal("@p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
         [Fact]
         public void Null_Value()
         {

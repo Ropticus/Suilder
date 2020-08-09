@@ -98,6 +98,9 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             public virtual Person Boss { get; set; }
 
             public virtual List<Person> Employees { get; set; }
+
+            [Ignore]
+            public List<string> Tags { get; set; }
         }
 
         [Nested]

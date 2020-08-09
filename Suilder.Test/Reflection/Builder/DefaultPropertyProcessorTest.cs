@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Suilder.Exceptions;
 using Suilder.Reflection;
 using Suilder.Reflection.Builder;
+using Suilder.Test.Reflection.Builder.TablePerType.Tables;
 using Xunit;
 
 namespace Suilder.Test.Reflection.Builder
@@ -12,11 +13,13 @@ namespace Suilder.Test.Reflection.Builder
         [Fact]
         public void Properties_Columns()
         {
+            tableBuilder.Add<Person>();
             tableBuilder.Add<PropertyTest>();
 
             ITableInfo propertyInfo = tableBuilder.GetConfig<PropertyTest>();
 
-            Assert.Equal(new string[] { "PropertyPublicGetSet", "Array" }, propertyInfo.Columns);
+            Assert.Equal(new string[] { "PropertyPublicGetSet", "Array", "List", "Dic", "CustomStruct", "CustomClass",
+                "CustomList" }, propertyInfo.Columns);
         }
 
         [Fact]
@@ -41,7 +44,6 @@ namespace Suilder.Test.Reflection.Builder
             Assert.Equal($"The type \"{typeof(Recursive.Person)}\" has nested types with circular references "
                 + $"that must be removed or ignored: \"Employee.Address1.Employee\".", ex.Message);
         }
-
 
         private class PropertyTest
         {
@@ -70,6 +72,30 @@ namespace Suilder.Test.Reflection.Builder
             public byte[] Array { get; set; }
 
             public IList<string> List { get; set; }
+
+            public IList<Person> TableList { get; set; }
+
+            public IDictionary<int, string> Dic { get; set; }
+
+            public CustomStruct CustomStruct { get; set; }
+
+            public CustomClass CustomClass { get; set; }
+
+            public CustomList CustomList { get; set; }
+        }
+
+        private struct CustomStruct
+        {
+            public string Data { get; set; }
+        }
+
+        private struct CustomClass
+        {
+            public string Data { get; set; }
+        }
+
+        private class CustomList : List<int>
+        {
         }
 
         private class Recursive

@@ -69,6 +69,20 @@ namespace Suilder.Test
             }
         }
 
+        public static IEnumerable<object[]> DataList
+        {
+            get
+            {
+                return new List<object[]>
+                {
+                    new object[] { new List<byte> { 1, 2, 3 } },
+                    new object[] { new List<int> { 4, 5, 6 } },
+                    new object[] { new List<char> { 'a', 'b', 'c' } },
+                    new object[] { new List<string> { "abcd", "efgh", "ijkl" } }
+                };
+            }
+        }
+
         public static IEnumerable<object[]> DataInt
         {
             get
@@ -146,6 +160,19 @@ namespace Suilder.Test
             }
         }
 
+        public static IEnumerable<object[]> DataStringList
+        {
+            get
+            {
+                return new List<object[]>
+                {
+                    new object[] { new List<string> { "ab", "cd", "ef" } },
+                    new object[] { new List<string> { "gh", "ij", "kl" } },
+                    new object[] { new List<string> { "mn", "op", "qr" } }
+                };
+            }
+        }
+
         public static IEnumerable<object[]> DataObjectAll
         {
             get
@@ -191,6 +218,29 @@ namespace Suilder.Test
                     new object[] { new decimal[] { 1.5m, 2.5m, 3.5m } },
                     new object[] { new char[] { 'a', 'b', 'c' } },
                     new object[] { new string[] { "abcd", "efgh", "ijkl" } }
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> DataListAll
+        {
+            get
+            {
+                return new List<object[]>
+                {
+                    new object[] { new List<bool> { true, false, true } },
+                    new object[] { new List<byte> { 1, 2, 3 } },
+                    new object[] { new List<sbyte> { 1, 2, 3 } },
+                    new object[] { new List<short> { 1, 2, 3 } },
+                    new object[] { new List<ushort> { 1, 2, 3 } },
+                    new object[] { new List<int> { 1, 2, 3 } },
+                    new object[] { new List<uint> { 1, 2, 3 } },
+                    new object[] { new List<ulong> { 1, 2, 3 } },
+                    new object[] { new List<float> { 1.5f, 2.5f, 3.5f } },
+                    new object[] { new List<double> { 1.5, 2.5, 3.5 } },
+                    new object[] { new List<decimal> { 1.5m, 2.5m, 3.5m } },
+                    new object[] { new List<char> { 'a', 'b', 'c' } },
+                    new object[] { new List<string> { "abcd", "efgh", "ijkl" } }
                 };
             }
         }

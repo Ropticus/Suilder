@@ -29,7 +29,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Builder_Object_Enumerable<T>(T[] value)
+        public void Builder_Object_Array<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.Not(person["Image"].Eq(value));
@@ -37,6 +37,22 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("NOT \"person\".\"Image\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Builder_Object_List<T>(List<T> value)
+        {
+            IAlias dept = sql.Alias("dept");
+            IOperator op = sql.Not(dept["Tags"].Eq(value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"dept\".\"Tags\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -148,7 +164,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataByteArray))]
-        public void Builder_Expression_Enumerable(byte[] value)
+        public void Builder_Expression_Array(byte[] value)
         {
             Person person = null;
             IOperator op = sql.Not(() => person.Image == value);
@@ -156,6 +172,22 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("NOT \"person\".\"Image\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataStringList))]
+        public void Builder_Expression_List(List<string> value)
+        {
+            Department dept = null;
+            IOperator op = sql.Not(() => dept.Tags == value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"dept\".\"Tags\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -272,7 +304,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataByteArray))]
-        public void Expression_Enumerable(byte[] value)
+        public void Expression_Array(byte[] value)
         {
             Person person = null;
             IOperator op = sql.Op(() => !(person.Image == value));
@@ -287,7 +319,7 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Expression_Enumerable_Inline()
+        public void Expression_Array_Inline()
         {
             Person person = null;
             IOperator op = sql.Op(() => !(person.Image == new byte[] { 1, 2, 3 }));
@@ -298,6 +330,37 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = new byte[] { 1, 2, 3 }
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataStringList))]
+        public void Expression_List(List<string> value)
+        {
+            Department dept = null;
+            IOperator op = sql.Op(() => !(dept.Tags == value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"dept\".\"Tags\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_List_Inline()
+        {
+            Department dept = null;
+            IOperator op = sql.Op(() => !(dept.Tags == new List<string> { "abcd", "efgh", "ijkl" }));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("NOT \"dept\".\"Tags\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new List<string> { "abcd", "efgh", "ijkl" }
             }, result.Parameters);
         }
 

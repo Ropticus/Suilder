@@ -65,6 +65,8 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
             public virtual Employee Boss { get; set; }
 
             public virtual List<Employee> Employees { get; set; }
+
+            public List<string> Tags { get; set; }
         }
 
         [Table("prefix_Employee")]

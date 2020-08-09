@@ -243,12 +243,6 @@ namespace Suilder.Builder
                 case ExpressionType.MemberAccess:
                     MemberExpression memberExp = (MemberExpression)expression;
                     return IsAlias(memberExp) ? ParseColumn(memberExp) : Compile(memberExp);
-                case ExpressionType.New:
-                    return Compile((NewExpression)expression);
-                case ExpressionType.NewArrayInit:
-                    return Compile((NewArrayExpression)expression);
-                case ExpressionType.ArrayIndex:
-                    return Compile((BinaryExpression)expression);
                 case ExpressionType.Call:
                     return ParseMethod((MethodCallExpression)expression);
                 case ExpressionType.Add:
@@ -263,6 +257,14 @@ namespace Suilder.Builder
                     return ParseBitOperator((BinaryExpression)expression);
                 case ExpressionType.Coalesce:
                     return ParseFunctionOperator((BinaryExpression)expression);
+                case ExpressionType.New:
+                    return Compile((NewExpression)expression);
+                case ExpressionType.NewArrayInit:
+                    return Compile((NewArrayExpression)expression);
+                case ExpressionType.ArrayIndex:
+                    return Compile((BinaryExpression)expression);
+                case ExpressionType.ListInit:
+                    return Compile((ListInitExpression)expression);
                 default:
                     throw new ArgumentException("Invalid expression.");
             }
@@ -533,6 +535,8 @@ namespace Suilder.Builder
                     return Compile((NewExpression)expression);
                 case ExpressionType.NewArrayInit:
                     return Compile((NewArrayExpression)expression);
+                case ExpressionType.ListInit:
+                    return Compile((ListInitExpression)expression);
                 case ExpressionType.Call:
                     return Compile((MethodCallExpression)expression);
             }
@@ -616,6 +620,33 @@ namespace Suilder.Builder
             for (int i = 0; i < expression.Expressions.Count; i++)
             {
                 value.SetValue(Compile(expression.Expressions[i]), i);
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// Compile an expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The result of the expression.</returns>
+        public static object Compile(ListInitExpression expression)
+        {
+            object value = Compile(expression.NewExpression);
+
+            foreach (var item in expression.Initializers)
+            {
+                object[] args = null;
+                if (item.Arguments.Count > 0)
+                {
+                    args = new object[item.Arguments.Count];
+                    for (int i = 0; i < item.Arguments.Count; i++)
+                    {
+                        args[i] = Compile(item.Arguments[i]);
+                    }
+                }
+
+                item.AddMethod.Invoke(value, args);
             }
 
             return value;

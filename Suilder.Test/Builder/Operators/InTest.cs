@@ -29,7 +29,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Builder_Object_Enumerable<T>(T[] value)
+        public void Builder_Object_Array<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.In(person["Id"], value);
@@ -37,6 +37,24 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Builder_Object_List<T>(List<T> value)
+        {
+            IAlias dept = sql.Alias("dept");
+            IOperator op = sql.In(dept["Name"], value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Name\" IN (@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value[0],
@@ -148,7 +166,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Builder_Expression_Enumerable<T>(T[] value)
+        public void Builder_Expression_Array<T>(T[] value)
         {
             Person person = null;
             IOperator op = sql.In(() => person.Id, value);
@@ -156,6 +174,24 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Builder_Expression_List<T>(List<T> value)
+        {
+            Department dept = null;
+            IOperator op = sql.In(() => dept.Name, value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Name\" IN (@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value[0],
@@ -255,7 +291,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Builder_Two_Expressions_Enumerable<T>(T[] value)
+        public void Builder_Two_Expressions_Array<T>(T[] value)
         {
             Person person = null;
             IOperator op = sql.In(() => person.Id, () => value);
@@ -263,6 +299,24 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Builder_Two_Expressions_List<T>(List<T> value)
+        {
+            Department dept = null;
+            IOperator op = sql.In(() => dept.Name, () => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Name\" IN (@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value[0],
@@ -314,7 +368,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Extension_Object_Enumerable<T>(T[] value)
+        public void Extension_Object_Array<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
             IOperator op = person["Id"].In(value);
@@ -322,6 +376,24 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Extension_Object_List<T>(List<T> value)
+        {
+            IAlias dept = sql.Alias("dept");
+            IOperator op = dept["Name"].In(value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Name\" IN (@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value[0],
@@ -360,7 +432,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Extension_Expression_Enumerable<T>(T[] value)
+        public void Extension_Expression_Array<T>(T[] value)
         {
             IAlias person = sql.Alias("person");
             IOperator op = person["Id"].In(() => value);
@@ -368,6 +440,24 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Extension_Expression_List<T>(List<T> value)
+        {
+            IAlias dept = sql.Alias("dept");
+            IOperator op = dept["Name"].In(() => value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Name\" IN (@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value[0],
@@ -403,7 +493,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataIntArray))]
-        public void Expression_Enumerable(int[] value)
+        public void Expression_Array(int[] value)
         {
             Person person = null;
             IOperator op = sql.Op(() => person.Id.In(value));
@@ -420,7 +510,7 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Expression_Enumerable_Inline_Value()
+        public void Expression_Array_Inline_Value()
         {
             Person person = null;
             IOperator op = sql.Op(() => person.Id.In(new int[] { 1, 2, 3 }));
@@ -437,8 +527,43 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Theory]
+        [MemberData(nameof(DataStringList))]
+        public void Expression_List(List<string> value)
+        {
+            Department dept = null;
+            IOperator op = sql.Op(() => dept.Name.In(value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Name\" IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_List_Inline_Value()
+        {
+            Department dept = null;
+            IOperator op = sql.Op(() => dept.Name.In(new List<string> { "abcd", "efgh", "ijkl" }));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Name\" IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "abcd",
+                ["@p1"] = "efgh",
+                ["@p2"] = "ijkl"
+            }, result.Parameters);
+        }
+
+        [Theory]
         [MemberData(nameof(DataIntArray))]
-        public void Expression_Enumerable_ForeignKey(int[] value)
+        public void Expression_Array_ForeignKey(int[] value)
         {
             Person person = null;
             IOperator op = sql.Op(() => person.Department.Id.In(value));
@@ -456,7 +581,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataStringArray))]
-        public void Expression_Enumerable_Nested(string[] value)
+        public void Expression_Array_Nested(string[] value)
         {
             Person person = null;
             IOperator op = sql.Op(() => person.Address.Street.In(value));
@@ -474,7 +599,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataStringArray))]
-        public void Expression_Enumerable_Nested_Deep(string[] value)
+        public void Expression_Array_Nested_Deep(string[] value)
         {
             Person2 person = null;
             IOperator op = sql.Op(() => person.Address.City.Country.Name.In(value));
@@ -571,7 +696,7 @@ namespace Suilder.Test.Builder.Operators
 
         [Theory]
         [MemberData(nameof(DataArray))]
-        public void Expression_Method_Enumerable<T>(T[] value)
+        public void Expression_Method_Array<T>(T[] value)
         {
             Person person = null;
             IOperator op = sql.Op(() => SqlExp.In(person.Id, value));
@@ -588,7 +713,7 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Expression_Method_Enumerable_Inline_Value()
+        public void Expression_Method_Array_Inline_Value()
         {
             Person person = null;
             IOperator op = sql.Op(() => SqlExp.In(person.Id, new int[] { 1, 2, 3 }));
@@ -601,6 +726,41 @@ namespace Suilder.Test.Builder.Operators
                 ["@p0"] = 1,
                 ["@p1"] = 2,
                 ["@p2"] = 3
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataList))]
+        public void Expression_Method_List<T>(List<T> value)
+        {
+            Department dept = null;
+            IOperator op = sql.Op(() => SqlExp.In(dept.Name, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Name\" IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_List_Inline_Value()
+        {
+            Department dept = null;
+            IOperator op = sql.Op(() => SqlExp.In(dept.Name, new List<string> { "abcd", "efgh", "ijkl" }));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"dept\".\"Name\" IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "abcd",
+                ["@p1"] = "efgh",
+                ["@p2"] = "ijkl"
             }, result.Parameters);
         }
 
@@ -669,12 +829,21 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void To_String_Enumerable()
+        public void To_String_Array()
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.In(person["Id"], new int[] { 1, 2, 3 });
 
             Assert.Equal("person.Id IN (1, 2, 3)", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_List()
+        {
+            IAlias dept = sql.Alias("dept");
+            IOperator op = sql.In(dept["Name"], new List<string> { "abcd", "efgh", "ijkl" });
+
+            Assert.Equal("dept.Name IN (\"abcd\", \"efgh\", \"ijkl\")", op.ToString());
         }
     }
 }

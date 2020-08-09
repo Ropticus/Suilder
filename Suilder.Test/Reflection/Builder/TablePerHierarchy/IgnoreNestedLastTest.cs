@@ -23,7 +23,8 @@ namespace Suilder.Test.Reflection.Builder.TablePerHierarchy
                 .Ignore(x => x.Image);
 
             tableBuilder.Add<Department>()
-                .Ignore(x => x.Boss.Id);
+                .Ignore(x => x.Boss.Id)
+                .Ignore(x => x.Tags);
         }
 
         [Fact]

@@ -56,7 +56,7 @@ namespace Suilder.Test.Reflection.Builder.TablePerHierarchy
             Assert.Equal(new string[] { "Id", "Name", "SurName", "Address.Street", "Address.City" }, personInfo.Columns);
             Assert.Equal(new string[] { "Id", "SurName", "Salary", "DepartmentId", "Department.Id", "Image" },
                 employeeInfo.Columns);
-            Assert.Equal(new string[] { "Id", "Name", "Boss.Id" }, deptInfo.Columns);
+            Assert.Equal(new string[] { "Id", "Name", "Boss.Id", "Tags" }, deptInfo.Columns);
         }
 
         [Fact]
@@ -89,7 +89,8 @@ namespace Suilder.Test.Reflection.Builder.TablePerHierarchy
             {
                 ["Id"] = "Id",
                 ["Name"] = "Name",
-                ["Boss.Id"] = "BossId"
+                ["Boss.Id"] = "BossId",
+                ["Tags"] = "Tags"
             }, deptInfo.ColumnNamesDic);
         }
 
@@ -103,7 +104,7 @@ namespace Suilder.Test.Reflection.Builder.TablePerHierarchy
             Assert.Equal(new string[] { "Id", "Name", "SurName", "AddressStreet", "AddressCity" },
                 personInfo.ColumnNames);
             Assert.Equal(new string[] { "Id", "SurName", "Salary", "DepartmentId", "Image" }, employeeInfo.ColumnNames);
-            Assert.Equal(new string[] { "Id", "Name", "BossId" }, deptInfo.ColumnNames);
+            Assert.Equal(new string[] { "Id", "Name", "BossId", "Tags" }, deptInfo.ColumnNames);
         }
     }
 }

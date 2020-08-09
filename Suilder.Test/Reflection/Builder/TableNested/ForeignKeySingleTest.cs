@@ -47,7 +47,7 @@ namespace Suilder.Test.Reflection.Builder.TableNested
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Employee.Address.Street", "Employee.Address.City",
                 "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Guid", "Employee.Image" },
                 personInfo.Columns);
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Guid" }, deptInfo.Columns);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Guid", "Tags" }, deptInfo.Columns);
         }
 
         [Fact]
@@ -75,7 +75,8 @@ namespace Suilder.Test.Reflection.Builder.TableNested
                 ["Id"] = "Id",
                 ["Guid"] = "Guid",
                 ["Name"] = "Name",
-                ["Boss.Guid"] = "BossGuid"
+                ["Boss.Guid"] = "BossGuid",
+                ["Tags"] = "Tags"
             }, deptInfo.ColumnNamesDic);
         }
 
@@ -88,7 +89,7 @@ namespace Suilder.Test.Reflection.Builder.TableNested
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "EmployeeAddressStreet", "EmployeeAddressCity",
                 "EmployeeSalary", "EmployeeDepartmentId", "EmployeeDepartmentGuid", "EmployeeImage" },
                 personInfo.ColumnNames);
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "BossGuid" }, deptInfo.ColumnNames);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "BossGuid", "Tags" }, deptInfo.ColumnNames);
         }
     }
 }
