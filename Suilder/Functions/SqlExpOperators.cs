@@ -208,7 +208,7 @@ namespace Suilder.Functions
 
         /// <summary>
         /// Returns the passed value.
-        /// <para>It prevents the value from being compiled into an <see cref="IQueryFragment"/> even if is an alias
+        /// <para>Prevents the value from being compiled into an <see cref="IQueryFragment"/> even if it is an alias
         /// or a registered function.</para>
         /// </summary>
         /// <param name="value">The value.</param>

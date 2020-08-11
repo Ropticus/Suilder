@@ -37,9 +37,9 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = null;
             Person personValue = new Person() { Id = 1 };
-            IOperator func = (IOperator)sql.Op(() => person.Id == SqlExp.Val(personValue.Id));
+            IOperator op = (IOperator)sql.Op(() => person.Id == SqlExp.Val(personValue.Id));
 
-            QueryResult result = engine.Compile(func);
+            QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Id\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
@@ -53,9 +53,9 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = null;
             Person personValue = new Person() { Name = "SomeName" };
-            IOperator func = (IOperator)sql.Op(() => person.Active == SqlExp.Val(personValue.Name.Contains("Name")));
+            IOperator op = (IOperator)sql.Op(() => person.Active == SqlExp.Val(personValue.Name.Contains("Name")));
 
-            QueryResult result = engine.Compile(func);
+            QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
