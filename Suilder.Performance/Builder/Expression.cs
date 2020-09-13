@@ -66,10 +66,94 @@ namespace Suilder.Performance.Builder
         }
 
         [Benchmark]
-        [BenchmarkCategory("Value", "Field")]
-        public object Local_Value()
+        [BenchmarkCategory("Operator")]
+        public object Comparison_Operator()
+        {
+            int id = 1;
+
+            Person person = null;
+            return sql.Op(() => person.Id == id);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Operator")]
+        public object Logical_Operator()
+        {
+            int id = 1;
+            string name = "abcd";
+
+            Person person = null;
+            return sql.Op(() => person.Id == id || person.Name == name);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Operator")]
+        public object Arith_Operator()
+        {
+            decimal value = 100;
+
+            Person person = null;
+            return sql.Val(() => person.Salary + value);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Operator")]
+        public object Bit_Operator()
         {
             int value = 1;
+
+            Person person = null;
+            return sql.Val(() => person.Id & value);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Operator")]
+        public object Coalesce_Operator()
+        {
+            string name = "abcd";
+
+            Person person = null;
+            return sql.Val(() => person.Name ?? name);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Operator")]
+        public object Conditional_Operator()
+        {
+            string name = "abcd";
+
+            Person person = null;
+            return sql.Val(() => person.Name != null ? person.SurName : name);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Method")]
+        public object Method()
+        {
+            return sql.Val(() => SqlExp.Count());
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Method")]
+        public object Method_Args()
+        {
+            Person person = null;
+            return sql.Val(() => SqlExp.Sum(person.Salary));
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "Field")]
+        public object Local_Value_Struct()
+        {
+            int value = 1;
+            return sql.Val(() => value);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "Field")]
+        public object Local_Value_Class()
+        {
+            string value = "abcd";
             return sql.Val(() => value);
         }
 
@@ -229,7 +313,7 @@ namespace Suilder.Performance.Builder
         }
 
         [Benchmark]
-        [BenchmarkCategory("Value", "Method")]
+        [BenchmarkCategory("Value", "MethodValue")]
         public object Method_Value()
         {
             TestValue value = new TestValue();
@@ -237,7 +321,7 @@ namespace Suilder.Performance.Builder
         }
 
         [Benchmark]
-        [BenchmarkCategory("Value", "Method")]
+        [BenchmarkCategory("Value", "MethodValue")]
         public object Method_Value_Args()
         {
             TestValue value = new TestValue();
@@ -245,21 +329,21 @@ namespace Suilder.Performance.Builder
         }
 
         [Benchmark]
-        [BenchmarkCategory("Value", "Method")]
+        [BenchmarkCategory("Value", "MethodValue")]
         public object Static_Method_Value()
         {
             return sql.Val(() => TestValue.MethodStatic());
         }
 
         [Benchmark]
-        [BenchmarkCategory("Value", "Method")]
+        [BenchmarkCategory("Value", "MethodValue")]
         public object Static_Method_Value_Args()
         {
             return sql.Val(() => TestValue.MethodArgsStatic(1, 2));
         }
 
         [Benchmark]
-        [BenchmarkCategory("Value", "Method")]
+        [BenchmarkCategory("Value", "MethodValue")]
         public object Nested_Method_Value()
         {
             TestValue value = new TestValue() { Nested = new TestNestedValue() };
@@ -267,11 +351,67 @@ namespace Suilder.Performance.Builder
         }
 
         [Benchmark]
-        [BenchmarkCategory("Value", "Method")]
+        [BenchmarkCategory("Value", "MethodValue")]
         public object Nested_Method_Value_Args()
         {
             TestValue value = new TestValue() { Nested = new TestNestedValue() };
             return sql.Val(() => value.Nested.MethodArgs(1, 2));
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "OperatorValue")]
+        public object Comparison_Operator_Value()
+        {
+            Person person = new Person() { Id = 1 };
+            return sql.Val(() => SqlExp.Val(person.Id == 1));
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "OperatorValue")]
+        public object Comparison_Operator_Value_Overload()
+        {
+            Person person = new Person() { Salary = 1000 };
+            return sql.Val(() => SqlExp.Val(person.Salary == 1000m));
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "OperatorValue")]
+        public object Arith_Operator_Value()
+        {
+            Person person = new Person() { Id = 1 };
+            return sql.Val(() => SqlExp.Val(person.Id + 2));
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "OperatorValue")]
+        public object Arith_Operator_Value_Overload()
+        {
+            Person person = new Person() { Salary = 1000 };
+            return sql.Val(() => SqlExp.Val(person.Salary + 200m));
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "OperatorValue")]
+        public object Bit_Operator_Value()
+        {
+            Person person = new Person() { Id = 1 };
+            return sql.Val(() => SqlExp.Val(person.Id & 2));
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "OperatorValue")]
+        public object Coalesce_Operator_Value()
+        {
+            Person person = new Person() { Name = null };
+            return sql.Val(() => SqlExp.Val(person.Name ?? "abcd"));
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "OperatorValue")]
+        public object Conditional_Operator_Value()
+        {
+            Person person = new Person() { Name = null, SurName = "efgh" };
+            return sql.Val(() => SqlExp.Val(person.Name != null ? person.SurName : "abcd"));
         }
 
         public class TestValue

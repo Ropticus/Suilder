@@ -5,7 +5,7 @@ using Suilder.Core;
 using Suilder.Exceptions;
 using Xunit;
 
-namespace Suilder.Test.Builder
+namespace Suilder.Test.Builder.Select
 {
     public class TopTest : BuilderBaseTest
     {

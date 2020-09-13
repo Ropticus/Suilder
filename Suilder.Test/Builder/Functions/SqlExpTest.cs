@@ -52,15 +52,15 @@ namespace Suilder.Test.Builder.Functions
         public void Val_Method()
         {
             Person person = null;
-            Person personValue = new Person() { Name = "SomeName" };
-            IOperator op = (IOperator)sql.Op(() => person.Active == SqlExp.Val(personValue.Name.Contains("Name")));
+            Person personValue = new Person() { Name = "abcd" };
+            IOperator op = (IOperator)sql.Op(() => person.Active == SqlExp.Val(personValue.Name.Contains("bc")));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = personValue.Name.Contains("Name")
+                ["@p0"] = personValue.Name.Contains("bc")
             }, result.Parameters);
         }
 

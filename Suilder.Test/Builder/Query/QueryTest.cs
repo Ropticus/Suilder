@@ -416,10 +416,10 @@ namespace Suilder.Test.Builder.Query
             IAlias person = sql.Alias("person");
 
             IQuery query = sql.Query.Update()
-                .Set("person.Name", "SomeName")
+                .Set("person.Name", "abcd")
                 .From(person);
 
-            Assert.Equal("UPDATE SET person.Name = \"SomeName\" FROM person", query.ToString());
+            Assert.Equal("UPDATE SET person.Name = \"abcd\" FROM person", query.ToString());
         }
 
         [Fact]

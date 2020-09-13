@@ -6,7 +6,7 @@ using Suilder.Functions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder
+namespace Suilder.Test.Builder.Expressions
 {
     public class ValTest : BuilderBaseTest
     {
@@ -74,9 +74,16 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void Local_Value()
+        public void Local_Value_Struct()
         {
             int value = 1;
+            Assert.Equal(value, sql.Val(() => value));
+        }
+
+        [Fact]
+        public void Local_Value_Class()
+        {
+            string value = "abcd";
             Assert.Equal(value, sql.Val(() => value));
         }
 
@@ -144,9 +151,15 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
-        public void Inline_Value()
+        public void Inline_Value_Struct()
         {
             Assert.Equal(1, sql.Val(() => 1));
+        }
+
+        [Fact]
+        public void Inline_Value_Class()
+        {
+            Assert.Equal("abcd", sql.Val(() => "abcd"));
         }
 
         [Fact]
@@ -330,91 +343,340 @@ namespace Suilder.Test.Builder
         }
 
         [Theory]
-        [InlineData(200)]
-        public void Add_Value(decimal value)
+        [InlineData(1)]
+        [InlineData(2)]
+        public void Eq_Operator_Value(int value)
         {
-            Person person = new Person() { Salary = 1000 };
-            Assert.Equal(person.Salary + 100m + value, sql.Val(() => SqlExp.Val(person.Salary + 100m + value)));
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id == value, sql.Val(() => SqlExp.Val(person.Id == value)));
         }
 
         [Theory]
-        [InlineData(200)]
-        public void Add_Value_Convert(int value)
+        [InlineData(1000)]
+        [InlineData(2000)]
+        public void Eq_Operator_Value_Overload(decimal value)
         {
             Person person = new Person() { Salary = 1000 };
-            Assert.Equal(person.Salary + 100 + value, sql.Val(() => SqlExp.Val(person.Salary + 100 + value)));
+            Assert.Equal(person.Salary == value, sql.Val(() => SqlExp.Val(person.Salary == value)));
         }
 
         [Theory]
-        [InlineData(200)]
-        public void Subtract_Value(decimal value)
+        [InlineData(1)]
+        [InlineData(2)]
+        public void NotEq_Operator_Value(int value)
         {
-            Person person = new Person() { Salary = 1000 };
-            Assert.Equal(person.Salary - 100m - value, sql.Val(() => SqlExp.Val(person.Salary - 100m - value)));
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id != value, sql.Val(() => SqlExp.Val(person.Id != value)));
         }
 
         [Theory]
-        [InlineData(200)]
-        public void Subtract_Value_Convert(int value)
+        [InlineData(1000)]
+        [InlineData(2000)]
+        public void NotEq_Operator_Value_Overload(decimal value)
         {
             Person person = new Person() { Salary = 1000 };
-            Assert.Equal(person.Salary - 100 - value, sql.Val(() => SqlExp.Val(person.Salary - 100 - value)));
+            Assert.Equal(person.Salary != value, sql.Val(() => SqlExp.Val(person.Salary != value)));
         }
 
         [Theory]
-        [InlineData(200)]
-        public void Multiply_Value(decimal value)
+        [InlineData(1)]
+        [InlineData(2)]
+        public void Lt_Operator_Value(int value)
         {
-            Person person = new Person() { Salary = 1000 };
-            Assert.Equal(person.Salary * 100m * value, sql.Val(() => SqlExp.Val(person.Salary * 100m * value)));
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id < value, sql.Val(() => SqlExp.Val(person.Id < value)));
         }
 
         [Theory]
-        [InlineData(200)]
-        public void Multiply_Value_Convert(int value)
+        [InlineData(1000)]
+        [InlineData(2000)]
+        public void Lt_Operator_Value_Overload(decimal value)
         {
             Person person = new Person() { Salary = 1000 };
-            Assert.Equal(person.Salary * 100 * value, sql.Val(() => SqlExp.Val(person.Salary * 100 * value)));
+            Assert.Equal(person.Salary < value, sql.Val(() => SqlExp.Val(person.Salary < value)));
         }
 
         [Theory]
-        [InlineData(200)]
-        public void Divide_Value(decimal value)
+        [InlineData(1)]
+        [InlineData(2)]
+        public void Le_Operator_Value(int value)
         {
-            Person person = new Person() { Salary = 1000 };
-            Assert.Equal(person.Salary / 100m / value, sql.Val(() => SqlExp.Val(person.Salary / 100m / value)));
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id <= value, sql.Val(() => SqlExp.Val(person.Id <= value)));
         }
 
         [Theory]
-        [InlineData(200)]
-        public void Divide_Value_Convert(int value)
+        [InlineData(1000)]
+        [InlineData(2000)]
+        public void Le_Operator_Value_Overload(decimal value)
         {
             Person person = new Person() { Salary = 1000 };
-            Assert.Equal(person.Salary / 100 / value, sql.Val(() => SqlExp.Val(person.Salary / 100 / value)));
+            Assert.Equal(person.Salary <= value, sql.Val(() => SqlExp.Val(person.Salary <= value)));
         }
 
         [Theory]
-        [InlineData(200)]
-        public void Modulo_Value(decimal value)
+        [InlineData(1)]
+        [InlineData(2)]
+        public void Gt_Operator_Value(int value)
         {
-            Person person = new Person() { Salary = 1000 };
-            Assert.Equal(person.Salary % 100m % value, sql.Val(() => SqlExp.Val(person.Salary % 100m % value)));
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id > value, sql.Val(() => SqlExp.Val(person.Id > value)));
         }
 
         [Theory]
-        [InlineData(200)]
-        public void Modulo_Value_Convert(int value)
+        [InlineData(1000)]
+        [InlineData(2000)]
+        public void Gt_Operator_Value_Overload(decimal value)
         {
             Person person = new Person() { Salary = 1000 };
-            Assert.Equal(person.Salary % 100 % value, sql.Val(() => SqlExp.Val(person.Salary % 100 % value)));
+            Assert.Equal(person.Salary > value, sql.Val(() => SqlExp.Val(person.Salary > value)));
         }
 
         [Theory]
-        [InlineData("abcd")]
-        public void Coalesce_Value(string value)
+        [InlineData(1)]
+        [InlineData(2)]
+        public void Ge_Operator_Value(int value)
         {
-            Person person = new Person() { Name = null };
-            Assert.Equal(value, sql.Val(() => SqlExp.Val(person.Name ?? value)));
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id >= value, sql.Val(() => SqlExp.Val(person.Id >= value)));
+        }
+
+        [Theory]
+        [InlineData(1000)]
+        [InlineData(2000)]
+        public void Ge_Operator_Value_Overload(decimal value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary >= value, sql.Val(() => SqlExp.Val(person.Salary >= value)));
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Not_Operator(bool value)
+        {
+            Person person = new Person() { Active = value };
+            Assert.Equal(!person.Active, sql.Val(() => SqlExp.Val(!person.Active)));
+        }
+
+        [Theory]
+        [InlineData(1, "abcd")]
+        [InlineData(1, "efgh")]
+        [InlineData(2, "abcd")]
+        [InlineData(2, "efgh")]
+        public void And_Operator_Value(int id, string name)
+        {
+            Person person = new Person() { Id = 1, Name = "abcd" };
+            Assert.Equal(person.Id == id & person.Name == name,
+                sql.Val(() => SqlExp.Val(person.Id == id & person.Name == name)));
+        }
+
+        [Theory]
+        [InlineData(1, "abcd")]
+        [InlineData(1, "efgh")]
+        [InlineData(2, "abcd")]
+        [InlineData(2, "efgh")]
+        public void AndAlso_Operator_Value(int id, string name)
+        {
+            Person person = new Person() { Id = 1, Name = "abcd" };
+            Assert.Equal(person.Id == id && person.Name == name,
+                sql.Val(() => SqlExp.Val(person.Id == id && person.Name == name)));
+        }
+
+        [Theory]
+        [InlineData(1, "abcd")]
+        [InlineData(1, "efgh")]
+        [InlineData(2, "abcd")]
+        [InlineData(2, "efgh")]
+        public void Or_Operator_Value(int id, string name)
+        {
+            Person person = new Person() { Id = 1, Name = "abcd" };
+            Assert.Equal(person.Id == id | person.Name == name,
+                sql.Val(() => SqlExp.Val(person.Id == id | person.Name == name)));
+        }
+
+        [Theory]
+        [InlineData(1, "abcd")]
+        [InlineData(1, "efgh")]
+        [InlineData(2, "abcd")]
+        [InlineData(2, "efgh")]
+        public void OrElse_Operator_Value(int id, string name)
+        {
+            Person person = new Person() { Id = 1, Name = "abcd" };
+            Assert.Equal(person.Id == id || person.Name == name,
+                sql.Val(() => SqlExp.Val(person.Id == id || person.Name == name)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Add_Operator_Value(int value)
+        {
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id + value, sql.Val(() => SqlExp.Val(person.Id + value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataDecimal))]
+        public void Add_Operator_Value_Overload(decimal value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary + value, sql.Val(() => SqlExp.Val(person.Salary + value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Add_Operator_Value_Overload_Convert(int value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary + value, sql.Val(() => SqlExp.Val(person.Salary + value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Add_Operator_Value_String(string value)
+        {
+            Person person = new Person() { Name = "abcd" };
+            Assert.Equal(person.Name + value, sql.Val(() => SqlExp.Val(person.Name + value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Subtract_Operator_Value(int value)
+        {
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id - value, sql.Val(() => SqlExp.Val(person.Id - value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataDecimal))]
+        public void Subtract_Operator_Value_Overload(decimal value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary - value, sql.Val(() => SqlExp.Val(person.Salary - value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        [InlineData(2000)]
+        public void Subtract_Operator_Value_Overload_Convert(int value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary - value, sql.Val(() => SqlExp.Val(person.Salary - value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Multiply_Operator_Value(int value)
+        {
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id * value, sql.Val(() => SqlExp.Val(person.Id * value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataDecimal))]
+        public void Multiply_Operator_Value_Overload(decimal value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary * value, sql.Val(() => SqlExp.Val(person.Salary * value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Multiply_Operator_Value_Overload_Convert(int value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary * value, sql.Val(() => SqlExp.Val(person.Salary * value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Divide_Operator_Value(int value)
+        {
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id / value, sql.Val(() => SqlExp.Val(person.Id / value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataDecimal))]
+        public void Divide_Operator_Value_Overload(decimal value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary / value, sql.Val(() => SqlExp.Val(person.Salary / value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Divide_Operator_Value_Overload_Convert(int value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary / value, sql.Val(() => SqlExp.Val(person.Salary / value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Modulo_Operator_Value(int value)
+        {
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id % value, sql.Val(() => SqlExp.Val(person.Id % value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataDecimal))]
+        public void Modulo_Operator_Value_Overload(decimal value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary % value, sql.Val(() => SqlExp.Val(person.Salary % value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Modulo_Operator_Value_Overload_Convert(int value)
+        {
+            Person person = new Person() { Salary = 1000 };
+            Assert.Equal(person.Salary % value, sql.Val(() => SqlExp.Val(person.Salary % value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void BitAnd_Operator_Value(int value)
+        {
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id & value, sql.Val(() => SqlExp.Val(person.Id & value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void BitOr_Operator_Value(int value)
+        {
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id | value, sql.Val(() => SqlExp.Val(person.Id | value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void BitXor_Operator_Value(int value)
+        {
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(person.Id ^ value, sql.Val(() => SqlExp.Val(person.Id ^ value)));
+        }
+
+        [Theory]
+        [InlineData("abcd", "efgh")]
+        [InlineData(null, "efgh")]
+        public void Coalesce_Operator_Value(string name, string value)
+        {
+            Person person = new Person() { Name = name };
+            Assert.Equal(person.Name ?? value, sql.Val(() => SqlExp.Val(person.Name ?? value)));
+        }
+
+        [Theory]
+        [InlineData("abcd", "efgh")]
+        [InlineData(null, "efgh")]
+        public void Conditional_Operator_Value(string name, string value)
+        {
+            Person person = new Person() { Name = name, SurName = name };
+            Assert.Equal(person.Name != null ? person.SurName : value,
+                sql.Val(() => SqlExp.Val(person.Name != null ? person.SurName : value)));
         }
 
         public class TestValue

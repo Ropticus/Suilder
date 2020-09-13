@@ -12,14 +12,14 @@ namespace Suilder.Test.Builder.Functions
         public void Contains()
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Name.Contains("SomeName"));
+            IOperator op = sql.Op(() => person.Name.Contains("abcd"));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "%SomeName%"
+                ["@p0"] = "%abcd%"
             }, result.Parameters);
         }
 
@@ -27,14 +27,14 @@ namespace Suilder.Test.Builder.Functions
         public void StartsWith()
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Name.StartsWith("SomeName"));
+            IOperator op = sql.Op(() => person.Name.StartsWith("abcd"));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName%"
+                ["@p0"] = "abcd%"
             }, result.Parameters);
         }
 
@@ -42,14 +42,14 @@ namespace Suilder.Test.Builder.Functions
         public void EndsWith()
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Name.EndsWith("SomeName"));
+            IOperator op = sql.Op(() => person.Name.EndsWith("abcd"));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "%SomeName"
+                ["@p0"] = "%abcd"
             }, result.Parameters);
         }
     }

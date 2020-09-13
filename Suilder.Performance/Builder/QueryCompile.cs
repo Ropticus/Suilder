@@ -65,6 +65,7 @@ namespace Suilder.Performance.Builder
         public void Expression_Setup()
         {
             int id = 1;
+
             Person person = null;
             query = sql.Query
                 .Select(() => person)

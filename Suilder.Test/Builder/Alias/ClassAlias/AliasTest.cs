@@ -32,23 +32,11 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Expression_Body_Overload()
-        {
-            Person person = null;
-            Expression<Func<Person>> expression = () => person;
-            IAlias alias = sql.Alias<Person>(expression.Body);
-
-            QueryResult result = engine.Compile(alias);
-
-            Assert.Equal("\"Person\"", result.Sql);
-        }
-
-        [Fact]
         public void Expression_Object_Overload()
         {
             Person person = null;
             Expression<Func<object>> expression = () => person;
-            IAlias alias = sql.Alias(expression);
+            IAlias alias = sql.Alias(() => person);
 
             QueryResult result = engine.Compile(alias);
 
@@ -56,7 +44,19 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Expression_Object_Body_Overload()
+        public void Expression_Lambda_Overload()
+        {
+            Person person = null;
+            Expression<Func<object>> expression = () => person;
+            IAlias alias = sql.Alias((LambdaExpression)expression);
+
+            QueryResult result = engine.Compile(alias);
+
+            Assert.Equal("\"Person\"", result.Sql);
+        }
+
+        [Fact]
+        public void Expression_Body_Overload()
         {
             Person person = null;
             Expression<Func<object>> expression = () => person;

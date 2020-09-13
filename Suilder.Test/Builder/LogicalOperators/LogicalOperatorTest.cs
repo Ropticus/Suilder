@@ -13,7 +13,7 @@ namespace Suilder.Test.Builder.LogicalOperators
         public void Or_Parentheses()
         {
             Person person = null;
-            IOperator op = sql.Op(() => (person.Id == 1 || person.Active) && person.Name.Like("%SomeName%"));
+            IOperator op = sql.Op(() => (person.Id == 1 || person.Active) && person.Name.Like("%abcd%"));
 
             QueryResult result = engine.Compile(op);
 
@@ -23,7 +23,7 @@ namespace Suilder.Test.Builder.LogicalOperators
             {
                 ["@p0"] = 1,
                 ["@p1"] = true,
-                ["@p2"] = "%SomeName%"
+                ["@p2"] = "%abcd%"
             }, result.Parameters);
         }
 
@@ -31,7 +31,7 @@ namespace Suilder.Test.Builder.LogicalOperators
         public void And_Parentheses()
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Id == 1 || (person.Active && person.Name.Like("%SomeName%")));
+            IOperator op = sql.Op(() => person.Id == 1 || (person.Active && person.Name.Like("%abcd%")));
 
             QueryResult result = engine.Compile(op);
 
@@ -41,7 +41,7 @@ namespace Suilder.Test.Builder.LogicalOperators
             {
                 ["@p0"] = 1,
                 ["@p1"] = true,
-                ["@p2"] = "%SomeName%"
+                ["@p2"] = "%abcd%"
             }, result.Parameters);
         }
     }

@@ -4,7 +4,7 @@ using Suilder.Builder;
 using Suilder.Core;
 using Xunit;
 
-namespace Suilder.Test.Builder
+namespace Suilder.Test.Builder.Update
 {
     public class UpdateTest : BuilderBaseTest
     {

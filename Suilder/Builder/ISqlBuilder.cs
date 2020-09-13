@@ -60,16 +60,15 @@ namespace Suilder.Builder
         /// Creates an alias with an expression.
         /// </summary>
         /// <param name="expression">The alias.</param>
-        /// <typeparam name="T">The type of the table.</typeparam>
         /// <returns>The alias.</returns>
-        IAlias<T> Alias<T>(Expression expression);
+        IAlias Alias(Expression<Func<object>> expression);
 
         /// <summary>
         /// Creates an alias with an expression.
         /// </summary>
         /// <param name="expression">The alias.</param>
         /// <returns>The alias.</returns>
-        IAlias Alias(Expression<Func<object>> expression);
+        IAlias Alias(LambdaExpression expression);
 
         /// <summary>
         /// Creates an alias with an expression.
@@ -148,6 +147,13 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The column.</param>
         /// <returns>The column.</returns>
+        IColumn Col(LambdaExpression expression);
+
+        /// <summary>
+        /// Creates a column with an expression.
+        /// </summary>
+        /// <param name="expression">The column.</param>
+        /// <returns>The column.</returns>
         IColumn Col(Expression expression);
 
         /// <summary>
@@ -166,6 +172,15 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The value.</param>
         /// <returns>The value</returns>
+        object Val(LambdaExpression expression);
+
+        /// <summary>
+        /// Creates a value with an expression.
+        /// <para>The value can be a literal value or an <see cref="IQueryFragment"/> that represents a value,
+        /// like a column, a function or an arithmetic operator.</para>
+        /// </summary>
+        /// <param name="expression">The value.</param>
+        /// <returns>The value</returns>
         object Val(Expression expression);
 
         /// <summary>
@@ -174,6 +189,13 @@ namespace Suilder.Builder
         /// <param name="expression">The expression.</param>
         /// <returns>The operator.</returns>
         IOperator Op(Expression<Func<bool>> expression);
+
+        /// <summary>
+        /// Creates an operator with an expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The operator.</returns>
+        IOperator Op(LambdaExpression expression);
 
         /// <summary>
         /// Creates an operator with an expression.
@@ -588,7 +610,21 @@ namespace Suilder.Builder
         /// Creates a "case" statement.
         /// </summary>
         /// <value>The "case" statement.</value>
-        ICase Case { get; }
+        ICase Case();
+
+        /// <summary>
+        /// Creates a "case" statement.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <value>The "case" statement.</value>
+        ICase Case(object value);
+
+        /// <summary>
+        /// Creates a "case" statement.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <value>The "case" statement.</value>
+        ICase Case(Expression<Func<object>> value);
 
         /// <summary>
         /// Creates a function.
@@ -865,7 +901,7 @@ namespace Suilder.Builder
         /// <para>The values can be any object even other <see cref="IQueryFragment"/>.</para>
         /// <para>For escaped table and column names use an <see cref="IAlias"/> or an <see cref="IColumn"/> value.</para>
         /// </summary>
-        /// <param name="sql">A composite string, each item takes the following form: {index}.</param>
+        /// <param name="sql">A composite format string, each item takes the following form: {index}.</param>
         /// <param name="values">An object array that contains zero or more objects to add to the raw SQL.</param>
         /// <returns>The raw fragment.</returns>
         /// <exception cref="FormatException">The format of <paramref name="sql"/> is invalid or the index of a format item
@@ -884,7 +920,7 @@ namespace Suilder.Builder
         /// <para>The values can be any object even other <see cref="IQueryFragment"/>.</para>
         /// <para>For escaped table and column names use an <see cref="IAlias"/> or an <see cref="IColumn"/> value.</para>
         /// </summary>
-        /// <param name="sql">A composite string, each item takes the following form: {index}.</param>
+        /// <param name="sql">A composite format string, each item takes the following form: {index}.</param>
         /// <param name="values">An object array that contains zero or more objects to add to the raw SQL.</param>
         /// <returns>The raw fragment.</returns>
         /// <exception cref="FormatException">The format of <paramref name="sql"/> is invalid or the index of a format item

@@ -6,7 +6,7 @@ using Suilder.Core;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder
+namespace Suilder.Test.Builder.Delete
 {
     public class DeleteTest : BuilderBaseTest
     {

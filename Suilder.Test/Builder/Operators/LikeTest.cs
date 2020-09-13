@@ -491,14 +491,14 @@ namespace Suilder.Test.Builder.Operators
         public void Expression_Inline_Value()
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Name.Like("abcd"));
+            IOperator op = sql.Op(() => person.Name.Like("%abcd%"));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "abcd"
+                ["@p0"] = "%abcd%"
             }, result.Parameters);
         }
 
@@ -583,14 +583,14 @@ namespace Suilder.Test.Builder.Operators
         public void Expression_Method_Inline_Value()
         {
             Person person = null;
-            IOperator op = sql.Op(() => SqlExp.Like(person.Name, "abcd"));
+            IOperator op = sql.Op(() => SqlExp.Like(person.Name, "%abcd%"));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "abcd"
+                ["@p0"] = "%abcd%"
             }, result.Parameters);
         }
 
@@ -734,7 +734,7 @@ namespace Suilder.Test.Builder.Operators
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => person.Name.Like("%SomeName%"));
+            Exception ex = Assert.Throws<InvalidOperationException>(() => person.Name.Like("%abcd%"));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -743,7 +743,7 @@ namespace Suilder.Test.Builder.Operators
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Like(person.Name, "%SomeName%"));
+            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Like(person.Name, "%abcd%"));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -763,9 +763,9 @@ namespace Suilder.Test.Builder.Operators
         public void To_String()
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.Like(person["Name"], "%SomeName%");
+            IOperator op = sql.Like(person["Name"], "%abcd%");
 
-            Assert.Equal("person.Name LIKE \"%SomeName%\"", op.ToString());
+            Assert.Equal("person.Name LIKE \"%abcd%\"", op.ToString());
         }
 
         [Fact]

@@ -491,14 +491,14 @@ namespace Suilder.Test.Builder.Operators
         public void Expression_Inline_Value()
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Name.NotLike("abcd"));
+            IOperator op = sql.Op(() => person.Name.NotLike("%abcd%"));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "abcd"
+                ["@p0"] = "%abcd%"
             }, result.Parameters);
         }
 
@@ -583,14 +583,14 @@ namespace Suilder.Test.Builder.Operators
         public void Expression_Method_Inline_Value()
         {
             Person person = null;
-            IOperator op = sql.Op(() => SqlExp.NotLike(person.Name, "abcd"));
+            IOperator op = sql.Op(() => SqlExp.NotLike(person.Name, "%abcd%"));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" NOT LIKE @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "abcd"
+                ["@p0"] = "%abcd%"
             }, result.Parameters);
         }
 
@@ -735,7 +735,7 @@ namespace Suilder.Test.Builder.Operators
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => person.Name.NotLike("%SomeName%"));
+            Exception ex = Assert.Throws<InvalidOperationException>(() => person.Name.NotLike("%abcd%"));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -744,7 +744,7 @@ namespace Suilder.Test.Builder.Operators
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.NotLike(person.Name, "%SomeName%"));
+            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.NotLike(person.Name, "%abcd%"));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -764,9 +764,9 @@ namespace Suilder.Test.Builder.Operators
         public void To_String()
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.NotLike(person["Name"], "%SomeName%");
+            IOperator op = sql.NotLike(person["Name"], "%abcd%");
 
-            Assert.Equal("person.Name NOT LIKE \"%SomeName%\"", op.ToString());
+            Assert.Equal("person.Name NOT LIKE \"%abcd%\"", op.ToString());
         }
 
         [Fact]

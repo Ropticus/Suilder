@@ -4,7 +4,7 @@ using Suilder.Core;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder.FunctionOperators
+namespace Suilder.Test.Builder.Functions
 {
     public class CoalesceTest : BuilderBaseTest
     {

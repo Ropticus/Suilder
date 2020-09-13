@@ -13,10 +13,22 @@ namespace Suilder.Core
     public class Case : ICase
     {
         /// <summary>
+        /// If has a case value.
+        /// </summary>
+        /// <value>If has a case value.</value>
+        protected bool HasCaseValue { get; set; }
+
+        /// <summary>
+        /// The case value.
+        /// </summary>
+        /// <value>The case value.</value>
+        protected object CaseValue { get; set; }
+
+        /// <summary>
         /// The list of conditions.
         /// </summary>
         /// <returns>The list of conditions.</returns>
-        protected List<IQueryFragment> Conditions { get; set; } = new List<IQueryFragment>();
+        protected List<object> Conditions { get; set; } = new List<object>();
 
         /// <summary>
         /// The list of values.
@@ -37,12 +49,29 @@ namespace Suilder.Core
         protected object ElseValue { get; set; }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Case"/> class.
+        /// </summary>
+        public Case()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Case"/> class.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        public Case(object value)
+        {
+            HasCaseValue = true;
+            CaseValue = value;
+        }
+
+        /// <summary>
         /// Adds a "when" clause.
         /// </summary>
         /// <param name="condition">The condition.</param>
         /// <param name="value">The value returned when the condition is true.</param>
         /// <returns>The case statement.</returns>
-        public virtual ICase When(IQueryFragment condition, object value)
+        public virtual ICase When(object condition, object value)
         {
             Conditions.Add(condition);
             Values.Add(value);
@@ -55,9 +84,12 @@ namespace Suilder.Core
         /// <param name="condition">The condition.</param>
         /// <param name="value">The value returned when the condition is true.</param>
         /// <returns>The case statement.</returns>
-        public virtual ICase When(Expression<Func<bool>> condition, object value)
+        public virtual ICase When(object condition, Expression<Func<object>> value)
         {
-            return When(SqlBuilder.Instance.Op(condition), value);
+            if (value == null)
+                return When(condition, (object)null);
+
+            return When(condition, SqlBuilder.Instance.Val(value));
         }
 
         /// <summary>
@@ -66,12 +98,36 @@ namespace Suilder.Core
         /// <param name="condition">The condition.</param>
         /// <param name="value">The value returned when the condition is true.</param>
         /// <returns>The case statement.</returns>
-        public virtual ICase When(Expression<Func<bool>> condition, Expression<Func<object>> value)
+        public virtual ICase When(Expression<Func<object>> condition, object value)
         {
-            if (value == null)
+            if (condition == null)
+                return When((object)null, value);
+
+            if (HasCaseValue)
+                return When(SqlBuilder.Instance.Val(condition), value);
+            else
+                return When(SqlBuilder.Instance.Op(condition), value);
+        }
+
+        /// <summary>
+        /// Adds a "when" clause.
+        /// </summary>
+        /// <param name="condition">The condition.</param>
+        /// <param name="value">The value returned when the condition is true.</param>
+        /// <returns>The case statement.</returns>
+        public virtual ICase When(Expression<Func<object>> condition, Expression<Func<object>> value)
+        {
+            if (condition == null && value == null)
+                return When((object)null, (object)null);
+            else if (condition == null)
+                return When((object)null, value);
+            else if (value == null)
                 return When(condition, (object)null);
 
-            return When(SqlBuilder.Instance.Op(condition), SqlBuilder.Instance.Val(value));
+            if (HasCaseValue)
+                return When(SqlBuilder.Instance.Val(condition), SqlBuilder.Instance.Val(value));
+            else
+                return When(SqlBuilder.Instance.Op(condition), SqlBuilder.Instance.Val(value));
         }
 
         /// <summary>
@@ -111,16 +167,17 @@ namespace Suilder.Core
 
             queryBuilder.Write("CASE");
 
+            if (HasCaseValue)
+                queryBuilder.Write(" ").WriteValue(CaseValue);
+
             for (int i = 0; i < Conditions.Count; i++)
             {
-                queryBuilder.Write(" WHEN ").WriteFragment(Conditions[i]);
+                queryBuilder.Write(" WHEN ").WriteValue(Conditions[i]);
                 queryBuilder.Write(" THEN ").WriteValue(Values[i]);
             }
 
             if (HasElse)
-            {
                 queryBuilder.Write(" ELSE ").WriteValue(ElseValue);
-            }
 
             queryBuilder.Write(" END");
         }
@@ -132,10 +189,12 @@ namespace Suilder.Core
         public override string ToString()
         {
             return ToStringBuilder.Build(b => b.Write("CASE")
+                .IfNotNull(CaseValue, x => b.Write(" ").WriteValue(x))
                 .ForEach(Conditions, (x, i) => b
-                    .Write(" WHEN ").WriteFragment(Conditions[i])
+                    .Write(" WHEN ").WriteValue(Conditions[i])
                     .Write(" THEN ").WriteValue(Values[i]))
-                .IfNotNull(ElseValue, x => b.Write(" ELSE ").WriteValue(x)));
+                .IfNotNull(ElseValue, x => b.Write(" ELSE ").WriteValue(x))
+                .Write(" END"));
         }
     }
 }

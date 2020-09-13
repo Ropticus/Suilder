@@ -7,7 +7,7 @@ using Suilder.Exceptions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder
+namespace Suilder.Test.Builder.Insert
 {
     public class InsertTest : BuilderBaseTest
     {

@@ -38,7 +38,7 @@ namespace Suilder.Core
         /// <para>The values can be any object even other <see cref="IQueryFragment"/>.</para>
         /// <para>For escaped table and column names use an <see cref="IAlias"/> or an <see cref="IColumn"/> value.</para>
         /// </summary>
-        /// <param name="sql">A composite string, each item takes the following form: {index}.</param>
+        /// <param name="sql">A composite format string, each item takes the following form: {index}.</param>
         /// <param name="values">An object array that contains zero or more objects to add to the raw SQL.</param>
         /// <returns>The raw fragment.</returns>
         /// <exception cref="FormatException">The format of <paramref name="sql"/> is invalid or the index of a format item

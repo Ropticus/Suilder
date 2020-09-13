@@ -8,7 +8,7 @@ using Suilder.Extensions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder
+namespace Suilder.Test.Builder.Order
 {
     public class OrderByTest : BuilderBaseTest
     {
@@ -220,7 +220,7 @@ namespace Suilder.Test.Builder
         {
             IAlias person = sql.Alias("person");
             IOrderBy orderBy = sql.OrderBy()
-                .Add(sql.Case
+                .Add(sql.Case()
                     .When(person["Name"].IsNotNull(), person["Name"])
                     .Else(person["SurName"])).Desc;
 

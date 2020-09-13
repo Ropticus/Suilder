@@ -6,7 +6,7 @@ using Suilder.Engines;
 using Suilder.Exceptions;
 using Xunit;
 
-namespace Suilder.Test.Builder
+namespace Suilder.Test.Builder.Offset
 {
     public class OffsetTest : BuilderBaseTest
     {

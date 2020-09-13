@@ -80,6 +80,18 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
+        public void Expression_Lambda_Overload()
+        {
+            Person person = null;
+            Expression<Func<object>> expression = () => person.Id;
+            IColumn column = sql.Col((LambdaExpression)expression);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+        }
+
+        [Fact]
         public void Expression_Body_Overload()
         {
             Person person = null;

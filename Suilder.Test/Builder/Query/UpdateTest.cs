@@ -27,7 +27,7 @@ namespace Suilder.Test.Builder.Query
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Update()
-                .Set("person.Name", "SomeName")
+                .Set("person.Name", "abcd")
                 .From(person);
 
             QueryResult result = engine.Compile(query);
@@ -35,7 +35,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -44,7 +44,7 @@ namespace Suilder.Test.Builder.Query
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Update()
-                .Set(person["Name"], "SomeName")
+                .Set(person["Name"], "abcd")
                 .From(person);
 
             QueryResult result = engine.Compile(query);
@@ -52,7 +52,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -61,7 +61,7 @@ namespace Suilder.Test.Builder.Query
         {
             Person person = null;
             IQuery query = sql.Query.Update()
-                .Set(() => person.Name, "SomeName")
+                .Set(() => person.Name, "abcd")
                 .From(() => person); ;
 
             QueryResult result = engine.Compile(query);
@@ -69,7 +69,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"Person\" AS \"person\" SET \"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -78,7 +78,7 @@ namespace Suilder.Test.Builder.Query
         {
             Person person = null;
             IQuery query = sql.Query.Update()
-                .Set(() => person.Name, () => "SomeName")
+                .Set(() => person.Name, () => "abcd")
                 .From(() => person);
 
             QueryResult result = engine.Compile(query);
@@ -86,7 +86,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"Person\" AS \"person\" SET \"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -112,7 +112,7 @@ namespace Suilder.Test.Builder.Query
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Update()
-                .Set(person["Name"], "SomeName")
+                .Set(person["Name"], "abcd")
                 .From(person);
 
             QueryResult result = engine.Compile(query);
@@ -120,7 +120,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -131,7 +131,7 @@ namespace Suilder.Test.Builder.Query
 
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Update()
-                .Set(person["Name"], "SomeName")
+                .Set(person["Name"], "abcd")
                 .From(person);
 
             QueryResult result = engine.Compile(query);
@@ -139,7 +139,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"person\" SET \"person\".\"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -150,7 +150,7 @@ namespace Suilder.Test.Builder.Query
 
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Update()
-                .Set(person["Name"], "SomeName")
+                .Set(person["Name"], "abcd")
                 .From(person);
 
             QueryResult result = engine.Compile(query);
@@ -158,7 +158,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0 FROM \"person\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -170,7 +170,7 @@ namespace Suilder.Test.Builder.Query
             IAlias person = sql.Alias("person");
             IAlias dept = sql.Alias("dept");
             IQuery query = sql.Query.Update()
-                .Set(person["Name"], "SomeName")
+                .Set(person["Name"], "abcd")
                 .From(person)
                 .Join(dept)
                     .On(dept["Id"].Eq(person["DepartmentId"]));
@@ -181,7 +181,7 @@ namespace Suilder.Test.Builder.Query
                 + "SET \"person\".\"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -193,7 +193,7 @@ namespace Suilder.Test.Builder.Query
             IAlias person = sql.Alias("person");
             IAlias dept = sql.Alias("dept");
             IQuery query = sql.Query.Update()
-                .Set(person["Name"], "SomeName")
+                .Set(person["Name"], "abcd")
                 .From(person)
                 .Join(dept)
                     .On(dept["Id"].Eq(person["DepartmentId"]));
@@ -204,7 +204,7 @@ namespace Suilder.Test.Builder.Query
                 + "\"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -216,7 +216,7 @@ namespace Suilder.Test.Builder.Query
             IAlias person = sql.Alias("person");
             IAlias dept = sql.Alias("dept");
             IQuery query = sql.Query.Update()
-                .Set(dept["Name"], "SomeName")
+                .Set(dept["Name"], "abcd")
                 .From(person)
                 .Join(dept)
                     .On(dept["Id"].Eq(person["DepartmentId"]));
@@ -227,7 +227,7 @@ namespace Suilder.Test.Builder.Query
                 + "SET \"dept\".\"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -239,7 +239,7 @@ namespace Suilder.Test.Builder.Query
             IAlias person = sql.Alias("person");
             IAlias dept = sql.Alias("dept");
             IQuery query = sql.Query.Update()
-                .Set(dept["Name"], "SomeName")
+                .Set(dept["Name"], "abcd")
                 .From(person)
                 .Join(dept)
                     .On(dept["Id"].Eq(person["DepartmentId"]));
@@ -250,7 +250,7 @@ namespace Suilder.Test.Builder.Query
                 + "\"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -262,8 +262,8 @@ namespace Suilder.Test.Builder.Query
             IAlias person = sql.Alias("person");
             IAlias dept = sql.Alias("dept");
             IQuery query = sql.Query.Update()
-                .Set(person["Name"], "SomeName")
-                .Set(dept["Name"], "SomeName2")
+                .Set(person["Name"], "abcd")
+                .Set(dept["Name"], "efgh")
                 .From(person)
                 .Join(dept)
                     .On(dept["Id"].Eq(person["DepartmentId"]));
@@ -274,8 +274,8 @@ namespace Suilder.Test.Builder.Query
                 + "SET \"person\".\"Name\" = @p0, \"dept\".\"Name\" = @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName",
-                ["@p1"] = "SomeName2"
+                ["@p0"] = "abcd",
+                ["@p1"] = "efgh"
             }, result.Parameters);
         }
 
@@ -284,7 +284,7 @@ namespace Suilder.Test.Builder.Query
         {
             Person person = null;
             IQuery query = sql.Query.Update()
-                .Set(() => person.Name, "SomeName")
+                .Set(() => person.Name, "abcd")
                 .From(() => person);
 
             QueryResult result = engine.Compile(query);
@@ -292,7 +292,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"Person\" AS \"person\" SET \"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -303,7 +303,7 @@ namespace Suilder.Test.Builder.Query
 
             Person person = null;
             IQuery query = sql.Query.Update()
-                .Set(() => person.Name, "SomeName")
+                .Set(() => person.Name, "abcd")
                 .From(() => person);
 
             QueryResult result = engine.Compile(query);
@@ -311,7 +311,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"Person\" AS \"person\" SET \"person\".\"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -322,7 +322,7 @@ namespace Suilder.Test.Builder.Query
 
             Person person = null;
             IQuery query = sql.Query.Update()
-                .Set(() => person.Name, "SomeName")
+                .Set(() => person.Name, "abcd")
                 .From(() => person);
 
             QueryResult result = engine.Compile(query);
@@ -330,7 +330,7 @@ namespace Suilder.Test.Builder.Query
             Assert.Equal("UPDATE \"person\" SET \"Name\" = @p0 FROM \"Person\" AS \"person\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -342,7 +342,7 @@ namespace Suilder.Test.Builder.Query
             Person person = null;
             Department dept = null;
             IQuery query = sql.Query.Update()
-                .Set(() => person.Name, "SomeName")
+                .Set(() => person.Name, "abcd")
                 .From(() => person)
                 .Join(() => dept)
                     .On(() => dept.Id == person.Department.Id);
@@ -353,7 +353,7 @@ namespace Suilder.Test.Builder.Query
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" SET \"person\".\"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -365,7 +365,7 @@ namespace Suilder.Test.Builder.Query
             Person person = null;
             Department dept = null;
             IQuery query = sql.Query.Update()
-                .Set(() => person.Name, "SomeName")
+                .Set(() => person.Name, "abcd")
                 .From(() => person)
                 .Join(() => dept)
                     .On(() => dept.Id == person.Department.Id);
@@ -376,7 +376,7 @@ namespace Suilder.Test.Builder.Query
                 + "\"Dept\" AS \"dept\" ON \"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -388,7 +388,7 @@ namespace Suilder.Test.Builder.Query
             Person person = null;
             Department dept = null;
             IQuery query = sql.Query.Update()
-                .Set(() => dept.Name, "SomeName")
+                .Set(() => dept.Name, "abcd")
                 .From(() => person)
                 .Join(() => dept)
                     .On(() => dept.Id == person.Department.Id);
@@ -399,7 +399,7 @@ namespace Suilder.Test.Builder.Query
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\" SET \"dept\".\"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -411,7 +411,7 @@ namespace Suilder.Test.Builder.Query
             Person person = null;
             Department dept = null;
             IQuery query = sql.Query.Update()
-                .Set(() => dept.Name, "SomeName")
+                .Set(() => dept.Name, "abcd")
                 .From(() => person)
                 .Join(() => dept)
                     .On(() => dept.Id == person.Department.Id);
@@ -422,7 +422,7 @@ namespace Suilder.Test.Builder.Query
                 + "\"Dept\" AS \"dept\" ON \"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -434,8 +434,8 @@ namespace Suilder.Test.Builder.Query
             Person person = null;
             Department dept = null;
             IQuery query = sql.Query.Update()
-                .Set(() => person.Name, "SomeName")
-                .Set(() => dept.Name, "SomeName2")
+                .Set(() => person.Name, "abcd")
+                .Set(() => dept.Name, "efgh")
                 .From(() => person)
                 .Join(() => dept)
                     .On(() => dept.Id == person.Department.Id);
@@ -447,8 +447,8 @@ namespace Suilder.Test.Builder.Query
                 + "\"dept\".\"Name\" = @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "SomeName",
-                ["@p1"] = "SomeName2"
+                ["@p0"] = "abcd",
+                ["@p1"] = "efgh"
             }, result.Parameters);
         }
 
@@ -459,7 +459,7 @@ namespace Suilder.Test.Builder.Query
 
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Update()
-                .Set("Name", "SomeName")
+                .Set("Name", "abcd")
                 .From(person);
 
             Exception ex = Assert.Throws<CompileException>(() => engine.Compile(query));
@@ -513,7 +513,7 @@ namespace Suilder.Test.Builder.Query
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.Update()
-                .Set(person["Name"], "SomeName")
+                .Set(person["Name"], "abcd")
                 .From(sql.Raw("FROM {0}", person));
 
             Exception ex = Assert.Throws<CompileException>(() => engine.Compile(query));

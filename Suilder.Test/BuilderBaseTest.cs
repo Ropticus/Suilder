@@ -96,6 +96,19 @@ namespace Suilder.Test
             }
         }
 
+        public static IEnumerable<object[]> DataDecimal
+        {
+            get
+            {
+                return new List<object[]>
+                {
+                    new object[] { 1.5m },
+                    new object[] { 2.5m },
+                    new object[] { 3.5m }
+                };
+            }
+        }
+
         public static IEnumerable<object[]> DataString
         {
             get

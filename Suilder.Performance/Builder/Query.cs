@@ -52,6 +52,7 @@ namespace Suilder.Performance.Builder
         public QueryResult Expression()
         {
             int id = 1;
+
             Person person = null;
             IQuery query = sql.Query
                 .Select(() => person)

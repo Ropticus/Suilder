@@ -112,11 +112,10 @@ namespace Suilder.Builder
         /// Creates an alias with an expression.
         /// </summary>
         /// <param name="expression">The alias.</param>
-        /// <typeparam name="T">The type of the table.</typeparam>
         /// <returns>The alias.</returns>
-        public virtual IAlias<T> Alias<T>(Expression expression)
+        public virtual IAlias Alias(Expression<Func<object>> expression)
         {
-            return ExpressionProcessor.ParseAlias<T>(expression);
+            return ExpressionProcessor.ParseAlias(expression);
         }
 
         /// <summary>
@@ -124,7 +123,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The alias.</param>
         /// <returns>The alias.</returns>
-        public virtual IAlias Alias(Expression<Func<object>> expression)
+        public virtual IAlias Alias(LambdaExpression expression)
         {
             return ExpressionProcessor.ParseAlias(expression);
         }
@@ -244,6 +243,16 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The column.</param>
         /// <returns>The column.</returns>
+        public virtual IColumn Col(LambdaExpression expression)
+        {
+            return ExpressionProcessor.ParseColumn(expression);
+        }
+
+        /// <summary>
+        /// Creates a column with an expression.
+        /// </summary>
+        /// <param name="expression">The column.</param>
+        /// <returns>The column.</returns>
         public virtual IColumn Col(Expression expression)
         {
             return ExpressionProcessor.ParseColumn(expression);
@@ -268,6 +277,18 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The value.</param>
         /// <returns>The value</returns>
+        public virtual object Val(LambdaExpression expression)
+        {
+            return ExpressionProcessor.ParseValue(expression);
+        }
+
+        /// <summary>
+        /// Creates a value with an expression.
+        /// <para>The value can be a literal value or an <see cref="IQueryFragment"/> that represents a value,
+        /// like a column, a function or an arithmetic operator.</para>
+        /// </summary>
+        /// <param name="expression">The value.</param>
+        /// <returns>The value</returns>
         public virtual object Val(Expression expression)
         {
             return ExpressionProcessor.ParseValue(expression);
@@ -279,6 +300,16 @@ namespace Suilder.Builder
         /// <param name="expression">The expression.</param>
         /// <returns>The operator.</returns>
         public virtual IOperator Op(Expression<Func<bool>> expression)
+        {
+            return ExpressionProcessor.ParseBoolOperator(expression);
+        }
+
+        /// <summary>
+        /// Creates an operator with an expression.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The operator.</returns>
+        public virtual IOperator Op(LambdaExpression expression)
         {
             return ExpressionProcessor.ParseBoolOperator(expression);
         }
@@ -886,8 +917,33 @@ namespace Suilder.Builder
         /// Creates a "case" statement.
         /// </summary>
         /// <value>The "case" statement.</value>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual ICase Case => new Case();
+        public virtual ICase Case()
+        {
+            return new Case();
+        }
+
+        /// <summary>
+        /// Creates a "case" statement.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <value>The "case" statement.</value>
+        public virtual ICase Case(object value)
+        {
+            return new Case(value);
+        }
+
+        /// <summary>
+        /// Creates a "case" statement.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <value>The "case" statement.</value>
+        public virtual ICase Case(Expression<Func<object>> value)
+        {
+            if (value == null)
+                return Case((object)null);
+
+            return new Case(Val(value));
+        }
 
         /// <summary>
         /// Creates a function.
@@ -1255,7 +1311,7 @@ namespace Suilder.Builder
         /// <para>The values can be any object even other <see cref="IQueryFragment"/>.</para>
         /// <para>For escaped table and column names use an <see cref="IAlias"/> or an <see cref="IColumn"/> value.</para>
         /// </summary>
-        /// <param name="sql">A composite string, each item takes the following form: {index}.</param>
+        /// <param name="sql">A composite format string, each item takes the following form: {index}.</param>
         /// <param name="values">An object array that contains zero or more objects to add to the raw SQL.</param>
         /// <returns>The raw fragment.</returns>
         /// <exception cref="FormatException">The format of <paramref name="sql"/> is invalid or the index of a format item
@@ -1280,7 +1336,7 @@ namespace Suilder.Builder
         /// <para>The values can be any object even other <see cref="IQueryFragment"/>.</para>
         /// <para>For escaped table and column names use an <see cref="IAlias"/> or an <see cref="IColumn"/> value.</para>
         /// </summary>
-        /// <param name="sql">A composite string, each item takes the following form: {index}.</param>
+        /// <param name="sql">A composite format string, each item takes the following form: {index}.</param>
         /// <param name="values">An object array that contains zero or more objects to add to the raw SQL.</param>
         /// <returns>The raw fragment.</returns>
         /// <exception cref="FormatException">The format of <paramref name="sql"/> is invalid or the index of a format item

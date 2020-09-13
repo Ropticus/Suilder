@@ -5,7 +5,7 @@ using Suilder.Builder;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder
+namespace Suilder.Test.Builder.Expressions
 {
     public class ExpressionHelperTest : BuilderBaseTest
     {

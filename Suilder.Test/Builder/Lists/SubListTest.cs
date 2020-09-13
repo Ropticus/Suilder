@@ -7,18 +7,19 @@ using Suilder.Exceptions;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
-namespace Suilder.Test.Builder
+namespace Suilder.Test.Builder.Lists
 {
     public class SubListTest : BuilderBaseTest
     {
-        [Fact]
-        public void Add()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Add(object value)
         {
             IAlias person = sql.Alias("person");
             ISubList list = sql.SubList
                 .Add(person["Id"])
                 .Add(1)
-                .Add("text");
+                .Add(value);
 
             QueryResult result = engine.Compile(list);
 
@@ -26,15 +27,16 @@ namespace Suilder.Test.Builder
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1,
-                ["@p1"] = "text"
+                ["@p1"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Add_Params()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Add_Params(object value)
         {
             IAlias person = sql.Alias("person");
-            ISubList list = sql.SubList.Add(person["Id"], 1, "text");
+            ISubList list = sql.SubList.Add(person["Id"], 1, value);
 
             QueryResult result = engine.Compile(list);
 
@@ -42,15 +44,16 @@ namespace Suilder.Test.Builder
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1,
-                ["@p1"] = "text"
+                ["@p1"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Add_Enumerable()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Add_Enumerable(object value)
         {
             IAlias person = sql.Alias("person");
-            ISubList list = sql.SubList.Add(new List<object> { person["Id"], 1, "text" });
+            ISubList list = sql.SubList.Add(new List<object> { person["Id"], 1, value });
 
             QueryResult result = engine.Compile(list);
 
@@ -58,18 +61,19 @@ namespace Suilder.Test.Builder
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1,
-                ["@p1"] = "text"
+                ["@p1"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Add_Expression()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Add_Expression(object value)
         {
             Person person = null;
             ISubList list = sql.SubList
                 .Add(() => person.Id)
                 .Add(() => 1)
-                .Add(() => "text");
+                .Add(() => value);
 
             QueryResult result = engine.Compile(list);
 
@@ -77,15 +81,16 @@ namespace Suilder.Test.Builder
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1,
-                ["@p1"] = "text"
+                ["@p1"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Add_Expression_Params()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Add_Expression_Params(object value)
         {
             Person person = null;
-            ISubList list = sql.SubList.Add(() => person.Id, () => 1, () => "text");
+            ISubList list = sql.SubList.Add(() => person.Id, () => 1, () => value);
 
             QueryResult result = engine.Compile(list);
 
@@ -93,15 +98,16 @@ namespace Suilder.Test.Builder
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1,
-                ["@p1"] = "text"
+                ["@p1"] = value
             }, result.Parameters);
         }
 
-        [Fact]
-        public void Add_Expression_Enumerable()
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Add_Expression_Enumerable(object value)
         {
             Person person = null;
-            ISubList list = sql.SubList.Add(new List<Expression<Func<object>>> { () => person.Id, () => 1, () => "text" });
+            ISubList list = sql.SubList.Add(new List<Expression<Func<object>>> { () => person.Id, () => 1, () => value });
 
             QueryResult result = engine.Compile(list);
 
@@ -109,17 +115,8 @@ namespace Suilder.Test.Builder
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1,
-                ["@p1"] = "text"
+                ["@p1"] = value
             }, result.Parameters);
-        }
-
-        [Fact]
-        public void Empty_List()
-        {
-            ISubList list = sql.SubList;
-
-            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(list));
-            Assert.Equal("List is empty.", ex.Message);
         }
 
         [Fact]
@@ -139,15 +136,24 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void Empty_List()
+        {
+            ISubList list = sql.SubList;
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(list));
+            Assert.Equal("List is empty.", ex.Message);
+        }
+
+        [Fact]
         public void To_String()
         {
             IAlias person = sql.Alias("person");
             ISubList list = sql.SubList
                 .Add(person["Id"])
                 .Add(1)
-                .Add("text");
+                .Add("abcd");
 
-            Assert.Equal("person.Id, 1, \"text\"", list.ToString());
+            Assert.Equal("person.Id, 1, \"abcd\"", list.ToString());
         }
     }
 }
