@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\Suilder\Suilder.csproj" />
-  </ItemGroup>
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PathMap>$(MSBuildProjectDirectory)=./</PathMap>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -22,8 +23,8 @@
     <PackageReleaseNotes>https://suilder.readthedocs.io/en/latest/releases/releases-notes/</PackageReleaseNotes>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Suilder\Suilder.csproj" />
+  </ItemGroup>
 
 </Project>

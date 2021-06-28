@@ -1,7 +1,7 @@
 # Suilder - SQL query builder
-[![Build Status](https://img.shields.io/github/workflow/status/Ropticus/Suilder/Build)](https://github.com/Ropticus/Suilder/actions?query=workflow%3ABuild)
-[![Test Status](https://img.shields.io/github/workflow/status/Ropticus/Suilder/Test?label=test)](https://github.com/Ropticus/Suilder/actions?query=workflow%3ATest)
-[![Documentation Status](https://readthedocs.org/projects/suilder/badge/?version=latest)](https://suilder.readthedocs.io/en/latest/?badge=latest)
+[![Build Status](https://img.shields.io/github/workflow/status/Ropticus/Suilder/Build?event=push)](https://github.com/Ropticus/Suilder/actions?query=workflow%3ABuild)
+[![Test Status](https://img.shields.io/github/workflow/status/Ropticus/Suilder/Test?event=push&label=test)](https://github.com/Ropticus/Suilder/actions?query=workflow%3ATest)
+[![Documentation Status](https://img.shields.io/readthedocs/suilder/latest)](https://suilder.readthedocs.io/en/latest/)
 [![GitHub release](https://img.shields.io/github/release/Ropticus/Suilder)](https://github.com/Ropticus/Suilder/releases/latest)
 
 Suilder is a SQL query builder for .NET.
@@ -81,10 +81,10 @@ Any member of a class that is not registered as a table, is invoked and the resu
 
 The following methods of the builder allow you to compile a lambda expression:
 
-* **Alias**: compile to an alias instance (`IAlias`).
-* **Col**: compile to a column instance (`IColumn`).
-* **Val**: compile to a value, anything that returns a value like a column (`IColumn`), a function, or an arithmetic operator.
-* **Op**: compile a boolean expression to a boolean operator.
+- **Alias**: compile to an alias instance (`IAlias`).
+- **Col**: compile to a column instance (`IColumn`).
+- **Val**: compile to a value, anything that returns a value like a column (`IColumn`), a function, or an arithmetic operator.
+- **Op**: compile a boolean expression to a boolean operator.
 
 > **Note**: in most cases you do not need to call these methods because other components accept a lambda expression and compile for you with the correct method.
 

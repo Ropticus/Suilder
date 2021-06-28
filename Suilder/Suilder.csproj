@@ -4,6 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PathMap>$(MSBuildProjectDirectory)=./</PathMap>
+  </PropertyGroup>
+
   <PropertyGroup>
     <PackageId>Suilder</PackageId>
     <VersionPrefix>2.3.0</VersionPrefix>
@@ -20,10 +25,6 @@ This library is only a query builder, so you have to combine with any other libr
     <PackageTags>sql; query; builder</PackageTags>
     <RepositoryUrl>https://github.com/Ropticus/Suilder</RepositoryUrl>
     <PackageReleaseNotes>https://suilder.readthedocs.io/en/latest/releases/releases-notes/</PackageReleaseNotes>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
 </Project>

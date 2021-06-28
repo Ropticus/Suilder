@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -11,12 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Suilder\Suilder.csproj" />
-    <ProjectReference Include="..\Suilder.Engines\Suilder.Engines.csproj" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+    <ProjectReference Include="..\Suilder\Suilder.csproj" />
+    <ProjectReference Include="..\Suilder.Engines\Suilder.Engines.csproj" />
   </ItemGroup>
 
 </Project>
