@@ -172,11 +172,10 @@ namespace Suilder.Builder
         /// <returns>The column.</returns>
         public virtual IColumn Col<T>(string columnName)
         {
-            int index = columnName.LastIndexOf('.');
-            if (index >= 0)
-                return new EntityColumn(typeof(T), columnName.Substring(0, index), columnName.Substring(index + 1));
-            else
-                return new EntityColumn(typeof(T), null, columnName);
+            Type type = typeof(T);
+            string tableName = type.Name;
+            tableName = char.ToLowerInvariant(tableName[0]) + tableName.Substring(1);
+            return new EntityColumn(type, tableName, columnName);
         }
 
         /// <summary>
@@ -327,8 +326,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates an "equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "equal to" operator.</returns>
         public virtual IOperator Eq(object left, object right)
         {
@@ -341,8 +340,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates an "equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "equal to" operator.</returns>
         public virtual IOperator Eq(Expression<Func<object>> left, object right)
         {
@@ -352,8 +351,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates an "equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "equal to" operator.</returns>
         public virtual IOperator Eq(Expression<Func<object>> left, Expression<Func<object>> right)
         {
@@ -366,8 +365,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "not equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not equal to" operator.</returns>
         public virtual IOperator NotEq(object left, object right)
         {
@@ -380,8 +379,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "not equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not equal to" operator.</returns>
         public virtual IOperator NotEq(Expression<Func<object>> left, object right)
         {
@@ -391,8 +390,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "not equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not equal to" operator.</returns>
         public virtual IOperator NotEq(Expression<Func<object>> left, Expression<Func<object>> right)
         {
@@ -405,8 +404,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "like" operator.</returns>
         public virtual IOperator Like(object left, object right)
         {
@@ -416,8 +415,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "like" operator.</returns>
         public virtual IOperator Like(Expression<Func<object>> left, object right)
         {
@@ -427,8 +426,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "like" operator.</returns>
         public virtual IOperator Like(Expression<Func<object>> left, Expression<Func<object>> right)
         {
@@ -441,8 +440,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "not like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not like" operator.</returns>
         public virtual IOperator NotLike(object left, object right)
         {
@@ -452,8 +451,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "not like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not like" operator.</returns>
         public virtual IOperator NotLike(Expression<Func<object>> left, object right)
         {
@@ -463,8 +462,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "not like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not like" operator.</returns>
         public virtual IOperator NotLike(Expression<Func<object>> left, Expression<Func<object>> right)
         {
@@ -477,8 +476,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "less than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than" operator.</returns>
         public virtual IOperator Lt(object left, object right)
         {
@@ -488,8 +487,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "less than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than" operator.</returns>
         public virtual IOperator Lt(Expression<Func<object>> left, object right)
         {
@@ -499,8 +498,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "less than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than" operator.</returns>
         public virtual IOperator Lt(Expression<Func<object>> left, Expression<Func<object>> right)
         {
@@ -513,8 +512,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "less than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than or equal to" operator.</returns>
         public virtual IOperator Le(object left, object right)
         {
@@ -524,8 +523,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "less than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than or equal to" operator.</returns>
         public virtual IOperator Le(Expression<Func<object>> left, object right)
         {
@@ -535,8 +534,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "less than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than or equal to" operator.</returns>
         public virtual IOperator Le(Expression<Func<object>> left, Expression<Func<object>> right)
         {
@@ -549,8 +548,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "greater than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than" operator.</returns>
         public virtual IOperator Gt(object left, object right)
         {
@@ -560,8 +559,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "greater than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than" operator.</returns>
         public virtual IOperator Gt(Expression<Func<object>> left, object right)
         {
@@ -571,8 +570,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "greater than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than" operator.</returns>
         public virtual IOperator Gt(Expression<Func<object>> left, Expression<Func<object>> right)
         {
@@ -585,8 +584,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "greater than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than or equal to" operator.</returns>
         public virtual IOperator Ge(object left, object right)
         {
@@ -596,8 +595,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "greater than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than or equal to" operator.</returns>
         public virtual IOperator Ge(Expression<Func<object>> left, object right)
         {
@@ -607,8 +606,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "greater than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than or equal to" operator.</returns>
         public virtual IOperator Ge(Expression<Func<object>> left, Expression<Func<object>> right)
         {
@@ -621,8 +620,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates an "in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "in" operator.</returns>
         public virtual IOperator In(object left, object right)
         {
@@ -632,8 +631,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates an "in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "in" operator.</returns>
         public virtual IOperator In(Expression<Func<object>> left, object right)
         {
@@ -643,8 +642,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates an "in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "in" operator.</returns>
         public virtual IOperator In(Expression<Func<object>> left, Expression<Func<object>> right)
         {
@@ -657,8 +656,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "not in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "not in" operator.</returns>
         public virtual IOperator NotIn(object left, object right)
         {
@@ -668,8 +667,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "not in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "not in" operator.</returns>
         public virtual IOperator NotIn(Expression<Func<object>> left, object right)
         {
@@ -679,8 +678,8 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates a "not in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "not in" operator.</returns>
         public virtual IOperator NotIn(Expression<Func<object>> left, Expression<Func<object>> right)
         {
@@ -710,7 +709,7 @@ namespace Suilder.Builder
             if (value == null)
                 return Not((object)value);
 
-            return new LeftOperator("NOT", Op(value));
+            return Not(Op(value));
         }
 
         /// <summary>
@@ -733,7 +732,7 @@ namespace Suilder.Builder
             if (value == null)
                 return IsNull((object)value);
 
-            return new RightOperator("IS NULL", Val(value));
+            return IsNull(Val(value));
         }
 
         /// <summary>
@@ -756,7 +755,87 @@ namespace Suilder.Builder
             if (value == null)
                 return IsNotNull((object)value);
 
-            return new RightOperator("IS NOT NULL", Val(value));
+            return IsNotNull(Val(value));
+        }
+
+        /// <summary>
+        /// Creates a "between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "between" operator.</returns>
+        public virtual IOperator Between(object left, object min, object max)
+        {
+            return new RangeOperator("BETWEEN", left, min, max);
+        }
+
+        /// <summary>
+        /// Creates a "between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "between" operator.</returns>
+        public virtual IOperator Between(Expression<Func<object>> left, object min, object max)
+        {
+            return Between(Val(left), min, max);
+        }
+
+        /// <summary>
+        /// Creates a "between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "between" operator.</returns>
+        public virtual IOperator Between(Expression<Func<object>> left, Expression<Func<object>> min,
+            Expression<Func<object>> max)
+        {
+            if (min == null && max == null)
+                return Between(left, min, (object)max);
+
+            return Between(Val(left), Val(min), Val(max));
+        }
+
+        /// <summary>
+        /// Creates a "not between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "not between" operator.</returns>
+        public virtual IOperator NotBetween(object left, object min, object max)
+        {
+            return new RangeOperator("NOT BETWEEN", left, min, max);
+        }
+
+        /// <summary>
+        /// Creates a "not between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "not between" operator.</returns>
+        public virtual IOperator NotBetween(Expression<Func<object>> left, object min, object max)
+        {
+            return NotBetween(Val(left), min, max);
+        }
+
+        /// <summary>
+        /// Creates a "not between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "not between" operator.</returns>
+        public virtual IOperator NotBetween(Expression<Func<object>> left, Expression<Func<object>> min,
+            Expression<Func<object>> max)
+        {
+            if (min == null && max == null)
+                return NotBetween(left, min, (object)max);
+
+            return NotBetween(Val(left), Val(min), Val(max));
         }
 
         /// <summary>
@@ -764,9 +843,9 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The "all" operator.</returns>
-        public virtual IOperator All(object value)
+        public virtual IOperator All(IQueryFragment value)
         {
-            return new LeftOperator("ALL", value);
+            return new LeftQueryOperator("ALL", value);
         }
 
         /// <summary>
@@ -774,9 +853,9 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The "any" operator.</returns>
-        public virtual IOperator Any(object value)
+        public virtual IOperator Any(IQueryFragment value)
         {
-            return new LeftOperator("ANY", value);
+            return new LeftQueryOperator("ANY", value);
         }
 
         /// <summary>
@@ -784,9 +863,9 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The "exists" operator.</returns>
-        public virtual IOperator Exists(object value)
+        public virtual IOperator Exists(IQueryFragment value)
         {
-            return new LeftOperator("EXISTS", value);
+            return new LeftQueryOperator("EXISTS", value);
         }
 
         /// <summary>
@@ -794,9 +873,9 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The "some" operator.</returns>
-        public virtual IOperator Some(object value)
+        public virtual IOperator Some(IQueryFragment value)
         {
-            return new LeftOperator("SOME", value);
+            return new LeftQueryOperator("SOME", value);
         }
 
         /// <summary>
@@ -849,6 +928,29 @@ namespace Suilder.Builder
         public virtual IArithOperator Modulo => new ArithOperator("%");
 
         /// <summary>
+        /// Creates a "negate" operator.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The "negate" operator.</returns>
+        public virtual IOperator Negate(object value)
+        {
+            return new LeftOperator("-", value);
+        }
+
+        /// <summary>
+        /// Creates a "negate" operator.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The "negate" operator.</returns>
+        public virtual IOperator Negate(Expression<Func<object>> value)
+        {
+            if (value == null)
+                return Negate((object)value);
+
+            return Negate(Val(value));
+        }
+
+        /// <summary>
         /// Creates a bitwise "and" operator.
         /// </summary>
         /// <value>The bitwise "and" operator.</value>
@@ -870,47 +972,106 @@ namespace Suilder.Builder
         public virtual IBitOperator BitXor => new BitOperator("^");
 
         /// <summary>
+        /// Creates a bitwise "not" operator.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The bitwise "not" operator.</returns>
+        public virtual IOperator BitNot(object value)
+        {
+            return new LeftOperator("~", value);
+        }
+
+        /// <summary>
+        /// Creates a bitwise "not" operator.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The bitwise "not" operator.</returns>
+        public virtual IOperator BitNot(Expression<Func<object>> value)
+        {
+            if (value == null)
+                return BitNot((object)value);
+
+            return BitNot(Val(value));
+        }
+
+        /// <summary>
+        /// Creates a "left shift" operator.
+        /// </summary>
+        /// <value>The "left shift" operator.</value>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public virtual IBitOperator LeftShift => new BitOperator("<<");
+
+        /// <summary>
+        /// Creates a "right shift" operator.
+        /// </summary>
+        /// <value>The "right shift" operator.</value>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public virtual IBitOperator RightShift => new BitOperator(">>");
+
+        /// <summary>
         /// Creates an "union" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "union" operator.</returns>
-        public virtual IOperator Union(IQueryFragment left, IQueryFragment right)
+        public virtual ISetOperator Union(IQueryFragment left, IQueryFragment right)
         {
-            return new QueryOperator("UNION", left, right);
+            return new SetOperator("UNION", left, right);
         }
 
         /// <summary>
         /// Creates an "union all" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "union all" operator.</returns>
-        public virtual IOperator UnionAll(IQueryFragment left, IQueryFragment right)
+        public virtual ISetOperator UnionAll(IQueryFragment left, IQueryFragment right)
         {
-            return new QueryOperator("UNION ALL", left, right);
+            return new SetOperator("UNION ALL", left, right);
         }
 
         /// <summary>
         /// Creates an "except" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "except" operator.</returns>
-        public virtual IOperator Except(IQueryFragment left, IQueryFragment right)
+        public virtual ISetOperator Except(IQueryFragment left, IQueryFragment right)
         {
-            return new QueryOperator("EXCEPT", left, right);
+            return new SetOperator("EXCEPT", left, right);
+        }
+
+        /// <summary>
+        /// Creates an "except all" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
+        /// <returns>The "except all" operator.</returns>
+        public virtual ISetOperator ExceptAll(IQueryFragment left, IQueryFragment right)
+        {
+            return new SetOperator("EXCEPT ALL", left, right);
         }
 
         /// <summary>
         /// Creates an "intersect" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "intersect" operator.</returns>
-        public virtual IOperator Intersect(IQueryFragment left, IQueryFragment right)
+        public virtual ISetOperator Intersect(IQueryFragment left, IQueryFragment right)
         {
-            return new QueryOperator("INTERSECT", left, right);
+            return new SetOperator("INTERSECT", left, right);
+        }
+
+        /// <summary>
+        /// Creates an "intersect all" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
+        /// <returns>The "intersect all" operator.</returns>
+        public virtual ISetOperator IntersectAll(IQueryFragment left, IQueryFragment right)
+        {
+            return new SetOperator("INTERSECT ALL", left, right);
         }
 
         /// <summary>
@@ -991,6 +1152,27 @@ namespace Suilder.Builder
         public virtual ICte Cte(string name)
         {
             return new Cte(name);
+        }
+
+        /// <summary>
+        /// Creates a CTE.
+        /// </summary>
+        /// <param name="alias">The alias.</param>
+        /// <returns>The CTE.</returns>
+        public virtual ICte Cte(IAlias alias)
+        {
+            return new Cte(alias);
+        }
+
+        /// <summary>
+        /// Creates a CTE.
+        /// </summary>
+        /// <param name="alias">The alias.</param>
+        /// <typeparam name="T">The type of the table.</typeparam>
+        /// <returns>The CTE.</returns>
+        public virtual ICte Cte<T>(Expression<Func<T>> alias)
+        {
+            return new Cte(Alias<T>(alias));
         }
 
         /// <summary>

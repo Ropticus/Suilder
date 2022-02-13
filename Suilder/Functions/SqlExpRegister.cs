@@ -1,4 +1,3 @@
-using System;
 using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Extensions;
@@ -30,48 +29,52 @@ namespace Suilder.Functions
         public static void RegisterOperators()
         {
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Eq),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.Eq));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.Eq));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.NotEq),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.NotEq));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.NotEq));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Like),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.Like));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.Like));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.NotLike),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.NotLike));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.NotLike));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Lt),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.Lt));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.Lt));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Le),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.Le));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.Le));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Gt),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.Gt));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.Gt));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Ge),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.Ge));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.Ge));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.In),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.In));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.In));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.NotIn),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.NotIn));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.NotIn));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Not), ExpressionHelper.Not);
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.IsNull),
-                x => ExpressionHelper.SingleOperator(x, SqlBuilder.Instance.IsNull));
+                x => ExpressionHelper.UnaryOperator(x, SqlBuilder.Instance.IsNull));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.IsNotNull),
-                x => ExpressionHelper.SingleOperator(x, SqlBuilder.Instance.IsNotNull));
+                x => ExpressionHelper.UnaryOperator(x, SqlBuilder.Instance.IsNotNull));
+            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Between),
+                x => ExpressionHelper.TernaryOperator(x, SqlBuilder.Instance.Between));
+            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.NotBetween),
+            x => ExpressionHelper.TernaryOperator(x, SqlBuilder.Instance.NotBetween));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.All),
-                x => ExpressionHelper.SingleOperator(x, SqlBuilder.Instance.All));
+                x => ExpressionHelper.UnaryOperator(x, value => SqlBuilder.Instance.All((IQueryFragment)value)));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Any),
-                x => ExpressionHelper.SingleOperator(x, SqlBuilder.Instance.Any));
+                x => ExpressionHelper.UnaryOperator(x, value => SqlBuilder.Instance.Any((IQueryFragment)value)));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Exists),
-                x => ExpressionHelper.SingleOperator(x, SqlBuilder.Instance.Exists));
+                x => ExpressionHelper.UnaryOperator(x, value => SqlBuilder.Instance.Exists((IQueryFragment)value)));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Some),
-                x => ExpressionHelper.SingleOperator(x, SqlBuilder.Instance.Some));
+                x => ExpressionHelper.UnaryOperator(x, value => SqlBuilder.Instance.Some((IQueryFragment)value)));
 
             // Extensions
             ExpressionProcessor.AddFunction(typeof(SqlExtensions), nameof(SqlExtensions.Like),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.Like));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.Like));
             ExpressionProcessor.AddFunction(typeof(SqlExtensions), nameof(SqlExtensions.NotLike),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.NotLike));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.NotLike));
             ExpressionProcessor.AddFunction(typeof(SqlExtensions), nameof(SqlExtensions.In),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.In));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.In));
             ExpressionProcessor.AddFunction(typeof(SqlExtensions), nameof(SqlExtensions.NotIn),
-                x => ExpressionHelper.Operator(x, SqlBuilder.Instance.NotIn));
+                x => ExpressionHelper.BinaryOperator(x, SqlBuilder.Instance.NotIn));
         }
 
         /// <summary>
@@ -81,6 +84,8 @@ namespace Suilder.Functions
         {
             // Special methods
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Function), ExpressionHelper.FunctionWithName);
+            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.ColName), ExpressionHelper.ColName);
+            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.As), ExpressionHelper.As);
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Val), ExpressionHelper.Val);
 
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Abs));
@@ -134,9 +139,9 @@ namespace Suilder.Functions
         /// </summary>
         public static void RegisterSystemFunctions()
         {
-            ExpressionProcessor.AddFunction(typeof(String), nameof(String.StartsWith), ExpressionHelper.LikeStart);
-            ExpressionProcessor.AddFunction(typeof(String), nameof(String.EndsWith), ExpressionHelper.LikeEnd);
-            ExpressionProcessor.AddFunction(typeof(String), nameof(String.Contains), ExpressionHelper.LikeAny);
+            ExpressionProcessor.AddFunction(typeof(string), nameof(string.StartsWith), ExpressionHelper.LikeStart);
+            ExpressionProcessor.AddFunction(typeof(string), nameof(string.EndsWith), ExpressionHelper.LikeEnd);
+            ExpressionProcessor.AddFunction(typeof(string), nameof(string.Contains), ExpressionHelper.LikeAny);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Id\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"Id\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -72,7 +72,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" IN \"dept\".\"Id\"", result.Sql);
+            Assert.Equal("\"person\".\"DepartmentId\" IN (\"dept\".\"Id\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -84,8 +84,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" IN (@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Fact]
@@ -96,8 +99,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("NULL IN \"person\".\"Name\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("@p0 IN (\"person\".\"Name\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -109,7 +115,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Id\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"Id\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -125,7 +131,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"DepartmentId\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -141,7 +147,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"AddressStreet\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"AddressStreet\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -157,7 +163,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"AddressCityCountryName\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"AddressCityCountryName\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -209,7 +215,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" IN \"dept\".\"Id\"", result.Sql);
+            Assert.Equal("\"person\".\"DepartmentId\" IN (\"dept\".\"Id\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -221,8 +227,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" IN (@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -234,7 +243,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Id\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"Id\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -250,7 +259,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"DepartmentId\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -266,7 +275,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"AddressStreet\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"AddressStreet\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -282,7 +291,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"AddressCityCountryName\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"AddressCityCountryName\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -334,7 +343,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" IN \"dept\".\"Id\"", result.Sql);
+            Assert.Equal("\"person\".\"DepartmentId\" IN (\"dept\".\"Id\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -346,8 +355,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" IN (@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -359,7 +371,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Id\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"Id\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -410,8 +422,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" IN (@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -423,7 +438,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Id\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"Id\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -475,7 +490,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" IN \"dept\".\"Id\"", result.Sql);
+            Assert.Equal("\"person\".\"DepartmentId\" IN (\"dept\".\"Id\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -487,8 +502,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" IN (@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -616,6 +634,81 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Theory]
+        [InlineData(null)]
+        public void Expression_Null(int[] value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id.In(value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" IN (@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id.In(SqlExp.As<int[]>(person.Name)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" IN (\"person\".\"Name\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As_SubQuery()
+        {
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => person.Id.In(SqlExp.As<int[]>(query)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" IN (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id.In(SqlExp.Cast<int[]>(person.Name, sql.Type("INT"))));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" IN (CAST(\"person\".\"Name\" AS INT))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast_SubQuery()
+        {
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => person.Id.In(SqlExp.Cast<int[]>(query, sql.Type("INT"))));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" IN (CAST((Subquery) AS INT))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Invalid_Call()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<NotSupportedException>(() => person.Id.In(new int[] { 1, 2, 3 }));
+            Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Theory]
         [MemberData(nameof(DataObject))]
         public void Expression_Method(object value)
         {
@@ -624,7 +717,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Id\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"Id\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -639,7 +732,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Id\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"Id\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1
@@ -655,7 +748,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"DepartmentId\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -671,7 +764,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"AddressStreet\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"AddressStreet\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -687,7 +780,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"AddressCityCountryName\" IN @p0", result.Sql);
+            Assert.Equal("\"person\".\"AddressCityCountryName\" IN (@p0)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -773,7 +866,7 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"DepartmentId\" IN \"dept\".\"Id\"", result.Sql);
+            Assert.Equal("\"person\".\"DepartmentId\" IN (\"dept\".\"Id\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -785,17 +878,24 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" IN NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" IN (@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Fact]
-        public void Expression_Invalid_Call()
+        public void Expression_Method_SubQuery()
         {
-            Person person = new Person();
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => SqlExp.In(person.Id, query));
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => person.Id.In(new int[] { 1, 2, 3 }));
-            Assert.Equal("Only for expressions.", ex.Message);
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" IN (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -803,19 +903,83 @@ namespace Suilder.Test.Builder.Operators
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.In(person.Id, new int[] { 1, 2, 3 }));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.In(person.Id, new int[] { 1, 2, 3 }));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
-        [Fact]
-        public void Subquery()
+        [Theory]
+        [MemberData(nameof(DataIntArray))]
+        public void Expression_Val_Method(int[] value)
         {
-            IAlias person = sql.Alias("person");
-            IOperator op = sql.In(person["Id"], sql.RawQuery("Subquery"));
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => person.Id.In(value));
 
             QueryResult result = engine.Compile(op);
 
+            Assert.Equal("\"person\".\"Id\" IN (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value[0],
+                ["@p1"] = value[1],
+                ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.In(sql.Gt(person["Id"], 10), sql.Lt(person["Id"], 20));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Id\" > @p0) IN (\"person\".\"Id\" < @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.In(sql.Add.Add(person["Salary"], 1000m), sql.Multiply.Add(person["Salary"], 2m));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Salary\" + @p0) IN (\"person\".\"Salary\" * @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1000m,
+                ["@p1"] = 2m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubQuery()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op1 = sql.In(person["Id"], sql.RawQuery("Subquery"));
+            IOperator op2 = sql.In(sql.RawQuery("Subquery"), person["Id"]);
+            IOperator op3 = sql.In(sql.RawQuery("Subquery1"), sql.RawQuery("Subquery2"));
+
+            QueryResult result;
+
+            result = engine.Compile(op1);
+
             Assert.Equal("\"person\".\"Id\" IN (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+
+            result = engine.Compile(op2);
+
+            Assert.Equal("(Subquery) IN (\"person\".\"Id\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+
+            result = engine.Compile(op3);
+
+            Assert.Equal("(Subquery1) IN (Subquery2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -825,7 +989,7 @@ namespace Suilder.Test.Builder.Operators
             IAlias person = sql.Alias("person");
             IOperator op = sql.In(person["Id"], 1);
 
-            Assert.Equal("person.Id IN 1", op.ToString());
+            Assert.Equal("person.Id IN (1)", op.ToString());
         }
 
         [Fact]
@@ -844,6 +1008,37 @@ namespace Suilder.Test.Builder.Operators
             IOperator op = sql.In(dept["Name"], new List<string> { "abcd", "efgh", "ijkl" });
 
             Assert.Equal("dept.Name IN (\"abcd\", \"efgh\", \"ijkl\")", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.In(sql.Gt(person["Id"], 10), sql.Lt(person["Id"], 20));
+
+            Assert.Equal("(person.Id > 10) IN (person.Id < 20)", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.In(sql.Add.Add(person["Salary"], 1000m), sql.Multiply.Add(person["Salary"], 2m));
+
+            Assert.Equal("(person.Salary + 1000) IN (person.Salary * 2)", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubQuery()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op1 = sql.In(person["Id"], sql.RawQuery("Subquery"));
+            IOperator op2 = sql.In(sql.RawQuery("Subquery"), person["Id"]);
+            IOperator op3 = sql.In(sql.RawQuery("Subquery1"), sql.RawQuery("Subquery2"));
+
+            Assert.Equal("person.Id IN (Subquery)", op1.ToString());
+            Assert.Equal("(Subquery) IN (person.Id)", op2.ToString());
+            Assert.Equal("(Subquery1) IN (Subquery2)", op3.ToString());
         }
     }
 }

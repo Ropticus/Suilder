@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Exceptions;
@@ -18,6 +19,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -28,6 +30,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -38,6 +41,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("RIGHT JOIN \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -48,6 +52,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("FULL JOIN \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -58,6 +63,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("CROSS JOIN \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -68,6 +74,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -78,6 +85,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -88,6 +96,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -98,6 +107,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -108,6 +118,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -118,6 +129,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -129,6 +141,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -140,6 +153,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -151,6 +165,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -162,6 +177,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -173,6 +189,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -184,6 +201,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -195,6 +213,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"Person\" AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -206,6 +225,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"Person\" AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -217,6 +237,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"Person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -228,6 +249,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"Person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -239,6 +261,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"Person\" AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -250,6 +273,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"Person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -261,6 +285,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"Person\" AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -272,6 +297,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"Person\" AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -283,40 +309,44 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"Person\" AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void Join_Subquery_String()
+        public void Join_SubQuery_String()
         {
             IJoin join = sql.Join(sql.RawQuery("Subquery"), "sub");
 
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN (Subquery) AS \"sub\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void Join_Subquery_String_With_JoinType()
+        public void Join_SubQuery_String_With_JoinType()
         {
             IJoin join = sql.Join(sql.RawQuery("Subquery"), "sub", JoinType.Left);
 
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN (Subquery) AS \"sub\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void JoinType_Subquery_String()
+        public void JoinType_SubQuery_String()
         {
             IJoin join = sql.Left.Join(sql.RawQuery("Subquery"), "sub");
 
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN (Subquery) AS \"sub\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void Join_Subquery_Alias()
+        public void Join_SubQuery_Alias()
         {
             IAlias person = sql.Alias("person");
             IJoin join = sql.Join(sql.RawQuery("Subquery"), person);
@@ -324,10 +354,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN (Subquery) AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void Join_Subquery_Alias_With_JoinType()
+        public void Join_SubQuery_Alias_With_JoinType()
         {
             IAlias person = sql.Alias("person");
             IJoin join = sql.Join(sql.RawQuery("Subquery"), person, JoinType.Left);
@@ -335,10 +366,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN (Subquery) AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void Join_Subquery_Alias_With_Alias_Name()
+        public void Join_SubQuery_Alias_With_Alias_Name()
         {
             IAlias person = sql.Alias("person", "per");
             IJoin join = sql.Join(sql.RawQuery("Subquery"), person);
@@ -346,10 +378,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN (Subquery) AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void Join_Subquery_Alias_With_Alias_Name_With_JoinType()
+        public void Join_SubQuery_Alias_With_Alias_Name_With_JoinType()
         {
             IAlias person = sql.Alias("person", "per");
             IJoin join = sql.Join(sql.RawQuery("Subquery"), person, JoinType.Left);
@@ -357,10 +390,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN (Subquery) AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void JoinType_Subquery_Alias()
+        public void JoinType_SubQuery_Alias()
         {
             IAlias person = sql.Alias("person");
             IJoin join = sql.Left.Join(sql.RawQuery("Subquery"), person);
@@ -368,10 +402,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN (Subquery) AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void JoinType_Subquery_Alias_With_Alias_Name()
+        public void JoinType_SubQuery_Alias_With_Alias_Name()
         {
             IAlias person = sql.Alias("person", "per");
             IJoin join = sql.Left.Join(sql.RawQuery("Subquery"), person);
@@ -379,10 +414,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN (Subquery) AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void Join_Subquery_Expression()
+        public void Join_SubQuery_Expression()
         {
             Person person = null;
             IJoin join = sql.Join(sql.RawQuery("Subquery"), () => person);
@@ -390,10 +426,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN (Subquery) AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void Join_Subquery_Expression_With_JoinType()
+        public void Join_SubQuery_Expression_With_JoinType()
         {
             Person person = null;
             IJoin join = sql.Join(sql.RawQuery("Subquery"), () => person, JoinType.Left);
@@ -401,10 +438,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN (Subquery) AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void JoinType_Subquery_Expression()
+        public void JoinType_SubQuery_Expression()
         {
             Person person = null;
             IJoin join = sql.Left.Join(sql.RawQuery("Subquery"), () => person);
@@ -412,10 +450,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN (Subquery) AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void Join_Subquery_String_Invalid_Alias_Name()
+        public void Join_SubQuery_String_Invalid_Alias_Name()
         {
             string alias = null;
             Exception ex = Assert.Throws<ArgumentNullException>(() => sql.Join(sql.RawQuery("Subquery"), alias));
@@ -423,7 +462,7 @@ namespace Suilder.Test.Builder.FromJoin
         }
 
         [Fact]
-        public void Join_Subquery_Alias_Invalid_Alias_Name()
+        public void Join_SubQuery_Alias_Invalid_Alias_Name()
         {
             string alias = null;
             IAlias person = sql.Alias(alias);
@@ -442,6 +481,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"cte\" AS \"personCte\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -455,6 +495,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"cte\" AS \"personCte\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -468,6 +509,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"cte\" AS \"personCte\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -480,6 +522,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"dept\" ON \"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -492,6 +535,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("INNER JOIN \"Dept\" AS \"dept\" ON \"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -505,6 +549,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(join);
 
             Assert.Equal("LEFT JOIN \"person\" \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -546,6 +591,7 @@ namespace Suilder.Test.Builder.FromJoin
 
             Assert.Equal("INNER JOIN \"Dept\" AS \"dept\" USE INDEX (myIndex) "
                 + "ON \"dept\".\"Id\" = \"person\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -570,6 +616,15 @@ namespace Suilder.Test.Builder.FromJoin
 
             Exception ex = Assert.Throws<ClauseNotSupportedException>(() => engine.Compile(join));
             Assert.Equal("Full join is not supported in this engine.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_JoinType()
+        {
+            IJoin join = sql.Join("person", (JoinType)int.MaxValue);
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(join));
+            Assert.Equal($"Invalid join type \"{int.MaxValue}\".", ex.Message);
         }
 
         [Fact]
@@ -619,7 +674,7 @@ namespace Suilder.Test.Builder.FromJoin
         }
 
         [Fact]
-        public void To_String_Subquery()
+        public void To_String_SubQuery()
         {
             IAlias person = sql.Alias("person");
             IJoin join = sql.Left.Join(sql.RawQuery("Subquery"), person);

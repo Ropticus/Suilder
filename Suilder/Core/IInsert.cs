@@ -34,9 +34,9 @@ namespace Suilder.Core
         IInsert Into<T>(Expression<Func<T>> alias);
 
         /// <summary>
-        /// Adds a value to the <see cref="IInsert"/>.
+        /// Adds a value to the end of the <see cref="IInsert"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IInsert"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IInsert"/>.</param>
         /// <returns>The "insert" statement.</returns>
         new IInsert Add(IColumn value);
 
@@ -57,9 +57,9 @@ namespace Suilder.Core
         new IInsert Add(IEnumerable<IColumn> values);
 
         /// <summary>
-        /// Adds a value to the <see cref="IInsert"/>.
+        /// Adds a value to the end of the <see cref="IInsert"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IInsert"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IInsert"/>.</param>
         /// <returns>The "insert" statement.</returns>
         new IInsert Add(Expression<Func<object>> value);
 

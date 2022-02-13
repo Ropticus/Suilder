@@ -6,7 +6,7 @@ namespace Suilder.Core
     /// <summary>
     /// Implementation of <see cref="IOperator"/> for a right operator.
     /// </summary>
-    public class RightOperator : IOperator
+    public class RightOperator : IOperator, ISubFragment
     {
         /// <summary>
         /// The operator.
@@ -38,7 +38,7 @@ namespace Suilder.Core
         /// <param name="engine">The engine.</param>
         public virtual void Compile(QueryBuilder queryBuilder, IEngine engine)
         {
-            queryBuilder.WriteValue(Value).Write(" ").Write(Op);
+            queryBuilder.WriteValue(Value, Parentheses.SubFragment).Write(" ").Write(Op);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Suilder.Core
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return ToStringBuilder.Build(b => b.WriteValue(Value).Write(" " + Op));
+            return ToStringBuilder.Build(b => b.WriteValue(Value, Parentheses.SubFragment).Write(" " + Op));
         }
     }
 }

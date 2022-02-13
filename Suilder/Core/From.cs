@@ -51,10 +51,7 @@ namespace Suilder.Core
         public From(IQueryFragment value, string aliasName)
         {
             Source = value is ICte cte ? cte.Alias : value;
-            AliasName = aliasName;
-
-            if (AliasName == null)
-                throw new ArgumentNullException(nameof(aliasName), "Alias name is null.");
+            AliasName = aliasName ?? throw new ArgumentNullException(nameof(aliasName), "Alias name is null.");
         }
 
         /// <summary>
@@ -65,10 +62,7 @@ namespace Suilder.Core
         public From(IQueryFragment value, IAlias alias)
         {
             Source = value is ICte cte ? cte.Alias : value;
-            AliasName = alias.AliasOrTableName;
-
-            if (AliasName == null)
-                throw new ArgumentException("Alias name is null.", nameof(alias));
+            AliasName = alias.AliasOrTableName ?? throw new ArgumentException("Alias name is null.", nameof(alias));
         }
 
         /// <summary>
@@ -126,17 +120,7 @@ namespace Suilder.Core
         public override string ToString()
         {
             return ToStringBuilder.Build(b => b.Write("FROM ")
-                .IfNotNull(Source, source =>
-                {
-                    if (source is IAlias alias)
-                    {
-                        return b.WriteFragment(source);
-                    }
-                    else
-                    {
-                        return b.WriteFragment(source).IfNotNull(AliasName, x => b.Write(" AS " + x));
-                    }
-                })
+                .WriteFragment(Source).IfNotNull(AliasName, x => b.Write(" AS " + x))
                 .IfNotNull(OptionsValue, x => b.Write(" ").WriteFragment(x)));
         }
     }

@@ -168,6 +168,30 @@ namespace Suilder.Test.Builder.Order
         }
 
         [Fact]
+        public void Add_One_Value()
+        {
+            IAlias person = sql.Alias("person");
+            IOrderBy orderBy = sql.OrderBy().Add(person["Name"]);
+
+            QueryResult result = engine.Compile(orderBy);
+
+            Assert.Equal("ORDER BY \"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Add_One_Value_With_Order()
+        {
+            IAlias person = sql.Alias("person");
+            IOrderBy orderBy = sql.OrderBy().Add(person["Name"]).Asc;
+
+            QueryResult result = engine.Compile(orderBy);
+
+            Assert.Equal("ORDER BY \"person\".\"Name\" ASC", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Ascending()
         {
             IAlias person = sql.Alias("person");
@@ -248,6 +272,23 @@ namespace Suilder.Test.Builder.Order
         }
 
         [Fact]
+        public void Count_List()
+        {
+            IAlias person = sql.Alias("person");
+            IOrderBy orderBy = sql.OrderBy();
+            object[] values = new object[] { person["Name"], person["SurName"], person["Id"] };
+
+            int i = 0;
+            Assert.Equal(i, orderBy.Count);
+
+            foreach (object value in values)
+            {
+                orderBy.Add(value);
+                Assert.Equal(++i, orderBy.Count);
+            }
+        }
+
+        [Fact]
         public void Empty_List()
         {
             IOrderBy orderBy = sql.OrderBy();
@@ -261,10 +302,39 @@ namespace Suilder.Test.Builder.Order
         {
             IAlias person = sql.Alias("person");
             IOrderBy orderBy = sql.OrderBy()
+                .Add(person["Name"])
+                .Add(person["SurName"]);
+
+            Assert.Equal("ORDER BY person.Name, person.SurName", orderBy.ToString());
+        }
+
+        [Fact]
+        public void To_String_With_Order()
+        {
+            IAlias person = sql.Alias("person");
+            IOrderBy orderBy = sql.OrderBy()
                 .Add(person["Name"]).Asc
                 .Add(person["SurName"]).Desc;
 
             Assert.Equal("ORDER BY person.Name ASC, person.SurName DESC", orderBy.ToString());
+        }
+
+        [Fact]
+        public void To_String_One_Value()
+        {
+            IAlias person = sql.Alias("person");
+            IOrderBy orderBy = sql.OrderBy().Add(person["Name"]);
+
+            Assert.Equal("ORDER BY person.Name", orderBy.ToString());
+        }
+
+        [Fact]
+        public void To_String_One_Value_With_Order()
+        {
+            IAlias person = sql.Alias("person");
+            IOrderBy orderBy = sql.OrderBy().Add(person["Name"]).Asc;
+
+            Assert.Equal("ORDER BY person.Name ASC", orderBy.ToString());
         }
     }
 }

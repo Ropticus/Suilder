@@ -27,7 +27,7 @@ namespace Suilder.Builder
             = new ConcurrentDictionary<string, Func<MethodCallExpression, object>>();
 
         /// <summary>
-        /// Determines if the expression is an alias.
+        /// Determines if the <see cref="MemberExpression"/> is an alias.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns><see langword="true"/> if the expression is an alias, otherwise, <see langword="false"/>.</returns>
@@ -42,7 +42,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to an <see cref="IAlias"/>.
+        /// Compiles a <see cref="LambdaExpression"/> to an <see cref="IAlias"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <typeparam name="T">The type of the alias.</typeparam>
@@ -53,7 +53,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to an <see cref="IAlias"/>.
+        /// Compiles an <see cref="Expression"/> to an <see cref="IAlias"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <typeparam name="T">The type of the alias.</typeparam>
@@ -71,7 +71,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to an <see cref="IAlias"/>.
+        /// Compiles a <see cref="LambdaExpression"/> to an <see cref="IAlias"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The alias.</returns>
@@ -81,7 +81,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to an <see cref="IAlias"/>.
+        /// Compiles an <see cref="Expression"/> to an <see cref="IAlias"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The alias.</returns>
@@ -98,7 +98,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to an <see cref="IColumn"/>.
+        /// Compiles a <see cref="LambdaExpression"/> to an <see cref="IColumn"/>.
         /// </summary>
         /// <param name="tableName">The table name or his alias.</param>
         /// <param name="expression">The expression.</param>
@@ -110,7 +110,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to an <see cref="IColumn"/>.
+        /// Compiles a <see cref="Expression"/> to an <see cref="IColumn"/>.
         /// </summary>
         /// <param name="tableName">The table name or his alias.</param>
         /// <param name="expression">The expression.</param>
@@ -152,7 +152,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to an <see cref="IColumn"/>.
+        /// Compiles a <see cref="LambdaExpression"/> to an <see cref="IColumn"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The column.</returns>
@@ -162,7 +162,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to an <see cref="IColumn"/>.
+        /// Compiles an <see cref="Expression"/> to an <see cref="IColumn"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The column.</returns>
@@ -178,7 +178,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to an <see cref="IColumn"/>.
+        /// Compiles a <see cref="MemberExpression"/> to an <see cref="IColumn"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The column.</returns>
@@ -216,8 +216,9 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to a literal value or an <see cref="IQueryFragment"/> that represent a value
-        /// like a column, a function or an arithmetic operator.
+        /// Compiles a <see cref="LambdaExpression"/> to a value.
+        /// <para>The value can be a literal value or an <see cref="IQueryFragment"/> that represents a value,
+        /// like a column, a function or an arithmetic operator.</para>
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The value.</returns>
@@ -227,53 +228,51 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to a literal value or an <see cref="IQueryFragment"/> that represent a value
-        /// like a column, a function or an arithmetic operator.
+        /// Compiles an <see cref="Expression"/> to a value.
+        /// <para>The value can be a literal value or an <see cref="IQueryFragment"/> that represents a value,
+        /// like a column, a function or an arithmetic operator.</para>
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The value.</returns>
         public static object ParseValue(Expression expression)
         {
-            switch (expression.NodeType)
+            switch (expression)
             {
-                case ExpressionType.Convert:
-                    return ParseValue(((UnaryExpression)expression).Operand);
-                case ExpressionType.Constant:
-                    return ((ConstantExpression)expression).Value;
-                case ExpressionType.MemberAccess:
-                    MemberExpression memberExp = (MemberExpression)expression;
-                    return IsAlias(memberExp) ? ParseColumn(memberExp) : Compile(memberExp);
-                case ExpressionType.Call:
-                    return ParseMethod((MethodCallExpression)expression);
-                case ExpressionType.Add:
-                case ExpressionType.Subtract:
-                case ExpressionType.Multiply:
-                case ExpressionType.Divide:
-                case ExpressionType.Modulo:
-                    return ParseArithmeticOperator((BinaryExpression)expression);
-                case ExpressionType.And:
-                case ExpressionType.Or:
-                case ExpressionType.ExclusiveOr:
-                    return ParseBitOperator((BinaryExpression)expression);
-                case ExpressionType.Coalesce:
-                    return ParseFunctionOperator((BinaryExpression)expression);
-                case ExpressionType.Conditional:
-                    return ParseCase((ConditionalExpression)expression);
-                case ExpressionType.New:
-                    return Compile((NewExpression)expression);
-                case ExpressionType.NewArrayInit:
-                    return Compile((NewArrayExpression)expression);
-                case ExpressionType.ArrayIndex:
-                    return Compile((BinaryExpression)expression);
-                case ExpressionType.ListInit:
-                    return Compile((ListInitExpression)expression);
+                case ConstantExpression constantExpression:
+                    return Compile(constantExpression);
+                case MemberExpression memberExpression:
+                    return ParseValue(memberExpression);
+                case NewExpression newExpression:
+                    return Compile(newExpression);
+                case NewArrayExpression newArrayExpression:
+                    return Compile(newArrayExpression);
+                case ListInitExpression listInitExpression:
+                    return Compile(listInitExpression);
+                case MethodCallExpression methodCallExpression:
+                    return ParseMethod(methodCallExpression);
+                case UnaryExpression unaryExpression:
+                    return ParseValue(unaryExpression);
+                case BinaryExpression binaryExpression:
+                    return ParseValue(binaryExpression);
+                case ConditionalExpression conditionalExpression:
+                    return ParseCase(conditionalExpression);
                 default:
                     throw new ArgumentException("Invalid expression.");
             }
         }
 
         /// <summary>
-        /// Compile a method expression to a value.
+        /// Compiles a <see cref="MemberExpression"/> to a value.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The value.</returns>
+        public static object ParseValue(MemberExpression expression)
+        {
+            return IsAlias(expression) ? ParseColumn(expression) : Compile(expression);
+        }
+
+        /// <summary>
+        /// Compiles a <see cref="MethodCallExpression"/> to a value.
         /// <para>If the method is registered it returns an <see cref="IQueryFragment"/>.</para>
         /// <para>Else, it invoke the method and return his value.</para>
         /// </summary>
@@ -293,7 +292,67 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to an <see cref="IOperator"/>.
+        /// Compiles a <see cref="UnaryExpression"/> to a value.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The value.</returns>
+        public static object ParseValue(UnaryExpression expression)
+        {
+            switch (expression.NodeType)
+            {
+                case ExpressionType.Convert:
+                case ExpressionType.UnaryPlus:
+                    return ParseValue(expression.Operand);
+                case ExpressionType.Not:
+                    if (expression.Type != typeof(bool))
+                        return SqlBuilder.Instance.BitNot(ParseValue(expression.Operand));
+                    break;
+                case ExpressionType.Negate:
+                    return SqlBuilder.Instance.Negate(ParseValue(expression.Operand));
+            }
+
+            return ParseBoolOperator(expression);
+        }
+
+        /// <summary>
+        /// Compiles a <see cref="BinaryExpression"/> to a value.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The value.</returns>
+        public static object ParseValue(BinaryExpression expression)
+        {
+            switch (expression.NodeType)
+            {
+                case ExpressionType.Add:
+                    if (expression.Type != typeof(string))
+                        return ParseArithmeticOperator(expression);
+                    else
+                        return ParseFunction(expression);
+                case ExpressionType.Subtract:
+                case ExpressionType.Multiply:
+                case ExpressionType.Divide:
+                case ExpressionType.Modulo:
+                    return ParseArithmeticOperator(expression);
+                case ExpressionType.And:
+                case ExpressionType.Or:
+                    if (expression.Type != typeof(bool))
+                        return ParseBitOperator(expression);
+                    break;
+                case ExpressionType.ExclusiveOr:
+                case ExpressionType.LeftShift:
+                case ExpressionType.RightShift:
+                    return ParseBitOperator(expression);
+                case ExpressionType.Coalesce:
+                    return SqlFn.Coalesce(ParseValue(expression.Left), ParseValue(expression.Right));
+                case ExpressionType.ArrayIndex:
+                    return Compile(expression);
+            }
+
+            return ParseBoolOperator(expression);
+        }
+
+        /// <summary>
+        /// Compiles a <see cref="LambdaExpression"/> to an <see cref="IOperator"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The operator.</returns>
@@ -303,47 +362,102 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression to an <see cref="IOperator"/>.
+        /// Compiles an <see cref="Expression"/> to an <see cref="IOperator"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The operator.</returns>
         public static IOperator ParseBoolOperator(Expression expression)
         {
-            if (expression is BinaryExpression binaryExp)
-                return ParseBoolOperator(binaryExp);
-
-            switch (expression.NodeType)
+            switch (expression)
             {
-                case ExpressionType.Convert:
-                    return ParseBoolOperator(((UnaryExpression)expression).Operand);
-                case ExpressionType.MemberAccess:
-                    if (expression.Type == typeof(bool))
-                        return SqlBuilder.Instance.Eq(ParseValue((MemberExpression)expression), true);
-                    break;
-                case ExpressionType.Not:
-                    {
-                        UnaryExpression unaryExp = (UnaryExpression)expression;
-                        if (unaryExp.Operand is MemberExpression memberExp && memberExp.Type == typeof(bool))
-                            return SqlBuilder.Instance.Eq(ParseValue(memberExp), false);
-                        else
-                            return SqlBuilder.Instance.Not(ParseBoolOperator(unaryExp.Operand));
-                    }
-                case ExpressionType.Call:
-                    {
-                        object value = ParseMethod((MethodCallExpression)expression);
-                        if (value is IOperator op)
-                            return op;
-                        else if (value is IFunction function)
-                            return SqlBuilder.Instance.Eq(function, true);
-                        break;
-                    }
+                case MemberExpression memberExpression:
+                    return ParseBoolOperator(memberExpression);
+                case MethodCallExpression methodCallExpression:
+                    return ParseBoolOperator(methodCallExpression);
+                case UnaryExpression unaryExpression:
+                    return ParseBoolOperator(unaryExpression);
+                case BinaryExpression binaryExpression:
+                    return ParseBoolOperator(binaryExpression);
+                default:
+                    throw new ArgumentException("Invalid expression.");
+            }
+        }
+
+        /// <summary>
+        /// Compiles a <see cref="MemberExpression"/> to an <see cref="IOperator"/>.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The operator.</returns>
+        public static IOperator ParseBoolOperator(MemberExpression expression)
+        {
+            if (expression.Type == typeof(bool))
+                return SqlBuilder.Instance.Eq(ParseValue(expression), true);
+
+            throw new ArgumentException("Invalid expression.");
+        }
+
+        /// <summary>
+        /// Compiles a <see cref="MethodCallExpression"/> to an <see cref="IOperator"/>.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The operator.</returns>
+        public static IOperator ParseBoolOperator(MethodCallExpression expression)
+        {
+            if (expression.Type == typeof(bool))
+            {
+                object value = ParseMethod(expression);
+                switch (value)
+                {
+                    case IOperator op:
+                        return op;
+                    case IQueryFragment queryFragment:
+                        return SqlBuilder.Instance.Eq(queryFragment, true);
+                }
             }
 
             throw new ArgumentException("Invalid expression.");
         }
 
         /// <summary>
-        /// Compile a binary expression to an <see cref="IOperator"/>.
+        /// Compiles a <see cref="UnaryExpression"/> to an <see cref="IOperator"/>.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <returns>The operator.</returns>
+        public static IOperator ParseBoolOperator(UnaryExpression expression)
+        {
+            switch (expression.NodeType)
+            {
+                case ExpressionType.Convert:
+                    return ParseBoolOperator(expression.Operand);
+                case ExpressionType.Not:
+                    if (expression.Type == typeof(bool))
+                    {
+                        switch (expression.Operand)
+                        {
+                            case MemberExpression memberExpression:
+                                return SqlBuilder.Instance.Eq(ParseValue(memberExpression), false);
+                            case MethodCallExpression methodCallExpression:
+                                object value = ParseMethod(methodCallExpression);
+                                switch (value)
+                                {
+                                    case IOperator op:
+                                        return SqlBuilder.Instance.Not(op);
+                                    case IQueryFragment queryFragment:
+                                        return SqlBuilder.Instance.Eq(queryFragment, false);
+                                }
+                                break;
+                            default:
+                                return SqlBuilder.Instance.Not(ParseBoolOperator(expression.Operand));
+                        }
+                    }
+                    break;
+            }
+
+            throw new ArgumentException("Invalid expression.");
+        }
+
+        /// <summary>
+        /// Compiles a <see cref="BinaryExpression"/> to an <see cref="IOperator"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The operator.</returns>
@@ -351,11 +465,6 @@ namespace Suilder.Builder
         {
             switch (expression.NodeType)
             {
-                case ExpressionType.And:
-                case ExpressionType.AndAlso:
-                case ExpressionType.Or:
-                case ExpressionType.OrElse:
-                    return ParseLogicalOperator(expression);
                 case ExpressionType.Equal:
                     return SqlBuilder.Instance.Eq(ParseValue(expression.Left), ParseValue(expression.Right));
                 case ExpressionType.NotEqual:
@@ -368,152 +477,207 @@ namespace Suilder.Builder
                     return SqlBuilder.Instance.Gt(ParseValue(expression.Left), ParseValue(expression.Right));
                 case ExpressionType.GreaterThanOrEqual:
                     return SqlBuilder.Instance.Ge(ParseValue(expression.Left), ParseValue(expression.Right));
-                default:
-                    throw new ArgumentException("Invalid expression.");
+                case ExpressionType.And:
+                case ExpressionType.Or:
+                    if (expression.Type == typeof(bool))
+                        return ParseLogicalOperator(expression);
+                    break;
+                case ExpressionType.AndAlso:
+                case ExpressionType.OrElse:
+                    return ParseLogicalOperator(expression);
             }
+
+            throw new ArgumentException("Invalid expression.");
         }
 
         /// <summary>
-        /// Compile a binary expression to an <see cref="ILogicalOperator"/>.
+        /// Compiles a <see cref="BinaryExpression"/> to an <see cref="ILogicalOperator"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The logical operator.</returns>
         public static ILogicalOperator ParseLogicalOperator(BinaryExpression expression)
         {
             ILogicalOperator logicalOperator = null;
+            Expression left = expression.Left;
 
-            switch (expression.NodeType)
+            if (left.NodeType != expression.NodeType)
             {
-                case ExpressionType.And:
-                case ExpressionType.AndAlso:
-                    if (expression.Left.NodeType != ExpressionType.And && expression.Left.NodeType != ExpressionType.AndAlso)
-                        logicalOperator = SqlBuilder.Instance.And;
-                    break;
-                case ExpressionType.Or:
-                case ExpressionType.OrElse:
-                    if (expression.Left.NodeType != ExpressionType.Or && expression.Left.NodeType != ExpressionType.OrElse)
-                        logicalOperator = SqlBuilder.Instance.Or;
-                    break;
-                default:
-                    throw new ArgumentException("Invalid expression.");
+                switch (expression.NodeType)
+                {
+                    case ExpressionType.And:
+                        if (left.NodeType != ExpressionType.AndAlso)
+                            logicalOperator = SqlBuilder.Instance.And;
+                        break;
+                    case ExpressionType.AndAlso:
+                        if (left.NodeType != ExpressionType.And)
+                            logicalOperator = SqlBuilder.Instance.And;
+                        break;
+                    case ExpressionType.Or:
+                        if (left.NodeType != ExpressionType.OrElse)
+                            logicalOperator = SqlBuilder.Instance.Or;
+                        break;
+                    case ExpressionType.OrElse:
+                        if (left.NodeType != ExpressionType.Or)
+                            logicalOperator = SqlBuilder.Instance.Or;
+                        break;
+                    default:
+                        throw new ArgumentException("Invalid expression.");
+                }
             }
 
             if (logicalOperator != null)
             {
-                logicalOperator.Add(ParseBoolOperator(expression.Left));
+                logicalOperator.Add(ParseBoolOperator(left));
             }
             else
             {
-                logicalOperator = (ILogicalOperator)ParseBoolOperator(expression.Left);
+                logicalOperator = (ILogicalOperator)ParseBoolOperator(left);
             }
 
             return logicalOperator.Add(ParseBoolOperator(expression.Right));
         }
 
         /// <summary>
-        /// Compile a binary expression to an <see cref="IArithOperator"/>.
+        /// Compiles a <see cref="BinaryExpression"/> to an <see cref="IArithOperator"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The arithmetic operator.</returns>
         public static IArithOperator ParseArithmeticOperator(BinaryExpression expression)
         {
             IArithOperator arithOperator = null;
+            Expression left = expression.Left;
 
-            switch (expression.NodeType)
+            while (left.NodeType == ExpressionType.Convert)
             {
-                case ExpressionType.Add:
-                    if (expression.Left.NodeType != expression.NodeType)
+                left = ((UnaryExpression)left).Operand;
+            }
+
+            if (left.NodeType != expression.NodeType)
+            {
+                switch (expression.NodeType)
+                {
+                    case ExpressionType.Add:
                         arithOperator = SqlBuilder.Instance.Add;
-                    break;
-                case ExpressionType.Subtract:
-                    if (expression.Left.NodeType != expression.NodeType)
+                        break;
+                    case ExpressionType.Subtract:
                         arithOperator = SqlBuilder.Instance.Subtract;
-                    break;
-                case ExpressionType.Multiply:
-                    if (expression.Left.NodeType != expression.NodeType)
+                        break;
+                    case ExpressionType.Multiply:
                         arithOperator = SqlBuilder.Instance.Multiply;
-                    break;
-                case ExpressionType.Divide:
-                    if (expression.Left.NodeType != expression.NodeType)
+                        break;
+                    case ExpressionType.Divide:
                         arithOperator = SqlBuilder.Instance.Divide;
-                    break;
-                case ExpressionType.Modulo:
-                    if (expression.Left.NodeType != expression.NodeType)
+                        break;
+                    case ExpressionType.Modulo:
                         arithOperator = SqlBuilder.Instance.Modulo;
-                    break;
-                default:
-                    throw new ArgumentException("Invalid expression.");
+                        break;
+                    default:
+                        throw new ArgumentException("Invalid expression.");
+                }
             }
 
             if (arithOperator != null)
             {
-                arithOperator.Add(ParseValue(expression.Left));
+                arithOperator.Add(ParseValue(left));
             }
             else
             {
-                arithOperator = (IArithOperator)ParseValue(expression.Left);
+                arithOperator = (IArithOperator)ParseValue(left);
             }
 
             return arithOperator.Add(ParseValue(expression.Right));
         }
 
         /// <summary>
-        /// Compile a binary expression to an <see cref="IBitOperator"/>.
+        /// Compiles a <see cref="BinaryExpression"/> to an <see cref="IBitOperator"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The bitwise operator.</returns>
         public static IBitOperator ParseBitOperator(BinaryExpression expression)
         {
             IBitOperator bitOperator = null;
+            Expression left = expression.Left;
 
-            switch (expression.NodeType)
+            while (left.NodeType == ExpressionType.Convert)
             {
-                case ExpressionType.And:
-                    if (expression.Left.NodeType != expression.NodeType)
+                left = ((UnaryExpression)left).Operand;
+            }
+
+            if (left.NodeType != expression.NodeType)
+            {
+                switch (expression.NodeType)
+                {
+                    case ExpressionType.And:
                         bitOperator = SqlBuilder.Instance.BitAnd;
-                    break;
-                case ExpressionType.Or:
-                    if (expression.Left.NodeType != expression.NodeType)
+                        break;
+                    case ExpressionType.Or:
                         bitOperator = SqlBuilder.Instance.BitOr;
-                    break;
-                case ExpressionType.ExclusiveOr:
-                    if (expression.Left.NodeType != expression.NodeType)
+                        break;
+                    case ExpressionType.ExclusiveOr:
                         bitOperator = SqlBuilder.Instance.BitXor;
-                    break;
-                default:
-                    throw new ArgumentException("Invalid expression.");
+                        break;
+                    case ExpressionType.LeftShift:
+                        bitOperator = SqlBuilder.Instance.LeftShift;
+                        break;
+                    case ExpressionType.RightShift:
+                        bitOperator = SqlBuilder.Instance.RightShift;
+                        break;
+                    default:
+                        throw new ArgumentException("Invalid expression.");
+                }
             }
 
             if (bitOperator != null)
             {
-                bitOperator.Add(ParseValue(expression.Left));
+                bitOperator.Add(ParseValue(left));
             }
             else
             {
-                bitOperator = (IBitOperator)ParseValue(expression.Left);
+                bitOperator = (IBitOperator)ParseValue(left);
             }
 
             return bitOperator.Add(ParseValue(expression.Right));
         }
 
         /// <summary>
-        /// Compile a binary expression to an <see cref="IFunction"/>.
+        /// Compiles a <see cref="BinaryExpression"/> to an <see cref="IFunction"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
-        /// <returns>The function operator.</returns>
-        public static IFunction ParseFunctionOperator(BinaryExpression expression)
+        /// <returns>The function.</returns>
+        public static IFunction ParseFunction(BinaryExpression expression)
         {
+            IFunction func = null;
+            Expression left = expression.Left;
+
+            while (left.NodeType == ExpressionType.Convert)
+            {
+                left = ((UnaryExpression)left).Operand;
+            }
+
             switch (expression.NodeType)
             {
-                case ExpressionType.Coalesce:
-                    return SqlFn.Coalesce(ParseValue(expression.Left), ParseValue(expression.Right));
+                case ExpressionType.Add:
+                    if (left.NodeType != expression.NodeType || left.Type != typeof(string))
+                        func = SqlBuilder.Instance.Function(FunctionName.Concat);
+                    break;
                 default:
                     throw new ArgumentException("Invalid expression.");
             }
+
+            if (func != null)
+            {
+                func.Add(ParseValue(left));
+            }
+            else
+            {
+                func = (IFunction)ParseValue(left);
+            }
+
+            return func.Add(ParseValue(expression.Right));
         }
 
         /// <summary>
-        /// Compile a conditional expression to an <see cref="ICase"/>.
+        /// Compiles a <see cref="ConditionalExpression"/> to an <see cref="ICase"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The "case" statement.</returns>
@@ -523,7 +687,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile a conditional expression to an <see cref="ICase"/>.
+        /// Compiles a <see cref="ConditionalExpression"/> to an <see cref="ICase"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <param name="caseWhen">The "case" to append conditions.</param>
@@ -548,7 +712,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles a <see cref="LambdaExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
@@ -558,7 +722,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles an <see cref="Expression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
@@ -584,13 +748,13 @@ namespace Suilder.Builder
                     return Compile(binaryExpression);
                 case ConditionalExpression conditionalExpression:
                     return Compile(conditionalExpression);
+                default:
+                    return CompileDynamicInvoke(expression);
             }
-
-            return CompileDynamicInvoke(expression);
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles a <see cref="ConstantExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
@@ -600,7 +764,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles a <see cref="MemberExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
@@ -620,7 +784,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles a <see cref="NewExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
@@ -643,7 +807,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles a <see cref="NewArrayExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
@@ -660,7 +824,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles a <see cref="ListInitExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
@@ -687,7 +851,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles a <see cref="MethodCallExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
@@ -709,30 +873,43 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles a <see cref="UnaryExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
         public static object Compile(UnaryExpression expression)
         {
-            object value = Compile(expression.Operand);
-
             if (expression.Method != null)
-                return expression.Method.Invoke(null, new object[] { value });
+                return expression.Method.Invoke(null, new object[] { Compile(expression.Operand) });
 
             switch (expression.NodeType)
             {
                 case ExpressionType.Convert:
-                    if (expression.Type != typeof(object))
-                        return Convert.ChangeType(value, expression.Type);
-                    return value;
+                    if (expression.Type == typeof(object) || expression.Type.IsAssignableFrom(expression.Operand.Type))
+                    {
+                        return Compile(expression.Operand);
+                    }
+                    else if (expression.Type.IsPrimitive)
+                    {
+                        if (typeof(IConvertible).IsAssignableFrom(expression.Operand.Type))
+                        {
+                            return Convert.ChangeType(Compile(expression.Operand), expression.Type);
+                        }
+                        else
+                        {
+                            Type operandType = Nullable.GetUnderlyingType(expression.Operand.Type);
+                            if (operandType != null && typeof(IConvertible).IsAssignableFrom(operandType))
+                                return Convert.ChangeType(Compile(expression.Operand), expression.Type);
+                        }
+                    }
+                    break;
             }
 
             return CompileDynamicInvoke(expression);
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles a <see cref="BinaryExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
@@ -749,13 +926,13 @@ namespace Suilder.Builder
                     return array.GetValue(index);
                 case ExpressionType.Coalesce:
                     return Compile(expression.Left) ?? Compile(expression.Right);
+                default:
+                    return CompileDynamicInvoke(expression);
             }
-
-            return CompileDynamicInvoke(expression);
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles a <see cref="ConditionalExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
@@ -765,7 +942,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Compile an expression.
+        /// Compiles an <see cref="Expression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The result of the expression.</returns>
@@ -775,7 +952,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Get the full method name.
+        /// Gets the full method name.
         /// </summary>
         /// <param name="type">The type of the class of the method.</param>
         /// <param name="methodName">The method name.</param>
@@ -786,7 +963,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Get the full method name.
+        /// Gets the full method name of a <see cref="MethodCallExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The full method name.</returns>
@@ -819,7 +996,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Gets the property path of an expression.
+        /// Gets the property path of a <see cref="LambdaExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The property path.</returns>
@@ -829,7 +1006,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Gets the property path of an expression.
+        /// Gets the property path of an <see cref="Expression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The property path.</returns>
@@ -839,7 +1016,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Get all the nested members of an expression.
+        /// Gets all the nested members of a <see cref="LambdaExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>A list with the <see cref="MemberInfo"/> of all members.</returns>
@@ -849,7 +1026,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Get all the nested members of an expression.
+        /// Gets all the nested members of an <see cref="Expression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>A list with the <see cref="MemberInfo"/> of all members.</returns>
@@ -865,7 +1042,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Get all the nested members of an expression.
+        /// Gets all the nested members of a <see cref="MemberExpression"/>.
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>A list with the <see cref="MemberInfo"/> of all members.</returns>
@@ -981,7 +1158,7 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Register a type as a table.
+        /// Registers a type as a table.
         /// </summary>
         /// <param name="type">The type.</param>
         public static void AddTable(Type type)

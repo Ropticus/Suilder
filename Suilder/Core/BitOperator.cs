@@ -29,9 +29,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IBitOperator"/>.
+        /// Adds a value to the end of the <see cref="IBitOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IBitOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IBitOperator"/>.</param>
         public override void Add(Expression<Func<object>> value)
         {
             Values.Add(SqlBuilder.Instance.Val(value));
@@ -58,9 +58,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IBitOperator"/>.
+        /// Adds a value to the end of the <see cref="IBitOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IBitOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IBitOperator"/>.</param>
         /// <returns>The bitwise operator.</returns>
         IBitOperator IBitOperator.Add(object value)
         {
@@ -93,9 +93,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IBitOperator"/>.
+        /// Adds a value to the end of the <see cref="IBitOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IBitOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IBitOperator"/>.</param>
         /// <returns>The bitwise operator.</returns>
         IBitOperator IBitOperator.Add(Expression<Func<object>> value)
         {
@@ -140,7 +140,7 @@ namespace Suilder.Core
             string separator = " " + Op + " ";
             foreach (object value in Values)
             {
-                queryBuilder.WriteValue(value).Write(separator);
+                queryBuilder.WriteValue(value, Parentheses.SubFragment).Write(separator);
             }
             queryBuilder.RemoveLast(separator.Length);
         }
@@ -151,7 +151,8 @@ namespace Suilder.Core
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return ToStringBuilder.Build(b => b.Join(" " + Op + " ", Values, (x) => b.WriteValue(x)));
+            return ToStringBuilder.Build(b => b
+                .Join(" " + Op + " ", Values, (x) => b.WriteValue(x, Parentheses.SubFragment)));
         }
     }
 }

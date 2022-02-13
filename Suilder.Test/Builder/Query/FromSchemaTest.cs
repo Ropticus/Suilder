@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Test.Builder.Tables;
@@ -15,6 +16,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"dbo\".\"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -25,6 +27,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"dbo\".\"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -36,6 +39,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"dbo\".\"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -47,6 +51,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"dbo\".\"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -58,6 +63,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"dbo\".\"Person\" AS \"person2\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -69,6 +75,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"dbo\".\"Person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -80,6 +87,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"dbo\".\"Person\" AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
     }
 }

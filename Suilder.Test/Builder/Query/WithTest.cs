@@ -17,6 +17,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("WITH \"personCte\" AS (SELECT \"person\".* FROM \"person\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -32,6 +33,7 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("WITH \"personCte\" AS (SELECT \"person\".* FROM \"person\"), "
                 + "\"deptCte\" AS (SELECT \"dept\".* FROM \"dept\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -47,6 +49,7 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("WITH \"personCte\" AS (SELECT \"person\".* FROM \"person\"), "
                 + "\"deptCte\" AS (SELECT \"dept\".* FROM \"dept\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -59,6 +62,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("WITH \"personCte\" AS (SELECT \"person\".* FROM \"person\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -71,6 +75,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("WITH \"personCte\" AS (SELECT \"person\".* FROM \"person\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -83,6 +88,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("WITH \"personCte\" AS (SELECT \"person\".* FROM \"person\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
     }
 }

@@ -65,6 +65,7 @@ namespace Suilder.Test.Builder.Select
             QueryResult result = engine.Compile(over);
 
             Assert.Equal("OVER(PARTITION BY \"person\".\"DepartmentId\" ORDER BY \"person\".\"Name\" ASC)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -78,6 +79,7 @@ namespace Suilder.Test.Builder.Select
             QueryResult result = engine.Compile(over);
 
             Assert.Equal("OVER(PARTITION BY \"person\".\"DepartmentId\" ORDER BY \"person\".\"Name\" ASC)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -91,6 +93,7 @@ namespace Suilder.Test.Builder.Select
             QueryResult result = engine.Compile(over);
 
             Assert.Equal("OVER(PARTITION BY \"person\".\"DepartmentId\" ORDER BY \"person\".\"Name\" ASC)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -106,6 +109,7 @@ namespace Suilder.Test.Builder.Select
 
             Assert.Equal("OVER(PARTITION BY \"person\".\"DepartmentId\" ORDER BY \"person\".\"Name\" ASC ROWS 5 PRECEDING)",
                 result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]

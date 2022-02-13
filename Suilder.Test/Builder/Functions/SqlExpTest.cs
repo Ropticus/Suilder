@@ -33,11 +33,47 @@ namespace Suilder.Test.Builder.Functions
         }
 
         [Fact]
+        public void ColName()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(person.Id));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_With_Translation()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(person.Created));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void As()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.As<string>(person.Id));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Val_Alias()
         {
             Person person = null;
             Person personValue = new Person() { Id = 1 };
-            IOperator op = (IOperator)sql.Op(() => person.Id == SqlExp.Val(personValue.Id));
+            IOperator op = sql.Op(() => person.Id == SqlExp.Val(personValue.Id));
 
             QueryResult result = engine.Compile(op);
 
@@ -53,7 +89,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = null;
             Person personValue = new Person() { Name = "abcd" };
-            IOperator op = (IOperator)sql.Op(() => person.Active == SqlExp.Val(personValue.Name.Contains("bc")));
+            IOperator op = sql.Op(() => person.Active == SqlExp.Val(personValue.Name.Contains("bc")));
 
             QueryResult result = engine.Compile(op);
 
@@ -105,6 +141,18 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = null;
             IFunction func = (IFunction)sql.Val(() => SqlExp.Cast(person.Salary, sql.Type("VARCHAR")));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("CAST(\"person\".\"Salary\" AS VARCHAR)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Cast_Generic()
+        {
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Cast<string>(person.Salary, sql.Type("VARCHAR")));
 
             QueryResult result = engine.Compile(func);
 
@@ -170,7 +218,7 @@ namespace Suilder.Test.Builder.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("\"person\".\"Name\" || \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("(\"person\".\"Name\" || \"person\".\"SurName\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

@@ -1,9 +1,9 @@
 namespace Suilder.Core
 {
     /// <summary>
-    /// Any <see cref="IQueryFragment"/> that can be used as subquery or must be enclosed in parentheses.
+    /// Any <see cref="IQueryFragment"/> that must be enclosed in parentheses, like a subquery or a list of values.
     /// </summary>
-    public interface ISubQuery
+    public interface ISubQuery : ISubFragment
     {
     }
 }

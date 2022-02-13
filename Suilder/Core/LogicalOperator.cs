@@ -29,9 +29,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="ILogicalOperator"/>.
+        /// Adds a value to the end of the <see cref="ILogicalOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ILogicalOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ILogicalOperator"/>.</param>
         public override void Add(Expression<Func<bool>> value)
         {
             Values.Add(SqlBuilder.Instance.Op(value));
@@ -58,9 +58,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="ILogicalOperator"/>.
+        /// Adds a value to the end of the <see cref="ILogicalOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ILogicalOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ILogicalOperator"/>.</param>
         /// <returns>The logical operator.</returns>
         ILogicalOperator ILogicalOperator.Add(IQueryFragment value)
         {
@@ -93,9 +93,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="ILogicalOperator"/>.
+        /// Adds a value to the end of the <see cref="ILogicalOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ILogicalOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ILogicalOperator"/>.</param>
         /// <returns>The logical operator.</returns>
         ILogicalOperator ILogicalOperator.Add(Expression<Func<bool>> value)
         {
@@ -140,7 +140,7 @@ namespace Suilder.Core
             string separator = " " + Op + " ";
             foreach (IQueryFragment value in Values)
             {
-                queryBuilder.WriteFragment(value).Write(separator);
+                queryBuilder.WriteFragment(value, value is ILogicalOperator || value is ISubQuery).Write(separator);
             }
             queryBuilder.RemoveLast(separator.Length);
         }
@@ -152,7 +152,7 @@ namespace Suilder.Core
         public override string ToString()
         {
             return ToStringBuilder.Build(b => b
-                .Join(" " + Op + " ", Values, (x) => b.WriteValue(x)));
+                .Join(" " + Op + " ", Values, (x) => b.WriteFragment(x, x is ILogicalOperator || x is ISubQuery)));
         }
     }
 }

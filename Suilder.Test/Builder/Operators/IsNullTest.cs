@@ -30,8 +30,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("NULL IS NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("@p0 IS NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Fact]
@@ -195,8 +198,61 @@ namespace Suilder.Test.Builder.Operators
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.IsNull(person.Name));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.IsNull(person.Name));
             Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Fact]
+        public void Expression_Val_Method()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => person.Name == null);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" IS NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.IsNull(sql.Gt(person["Id"], 10));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Id\" > @p0) IS NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.IsNull(sql.Add.Add(person["Salary"], 1000m));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Salary\" + @p0) IS NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1000m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubQuery()
+        {
+            IOperator op = sql.IsNull(sql.RawQuery("Subquery"));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(Subquery) IS NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -206,6 +262,32 @@ namespace Suilder.Test.Builder.Operators
             IOperator op = sql.IsNull(person["Name"]);
 
             Assert.Equal("person.Name IS NULL", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.IsNull(sql.Gt(person["Id"], 10));
+
+            Assert.Equal("(person.Id > 10) IS NULL", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.IsNull(sql.Add.Add(person["Salary"], 1000m));
+
+            Assert.Equal("(person.Salary + 1000) IS NULL", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubQuery()
+        {
+            IOperator op = sql.IsNull(sql.RawQuery("Subquery"));
+
+            Assert.Equal("(Subquery) IS NULL", op.ToString());
         }
     }
 }

@@ -124,6 +124,18 @@ namespace Suilder.Test.Builder.Select
         }
 
         [Fact]
+        public void Add_One_Value()
+        {
+            IAlias person = sql.Alias("person");
+            ISelect select = sql.Select().Add(person["Name"]);
+
+            QueryResult result = engine.Compile(select);
+
+            Assert.Equal("SELECT \"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Alias()
         {
             IAlias person = sql.Alias("person");
@@ -244,7 +256,8 @@ namespace Suilder.Test.Builder.Select
             Assert.Equal("SELECT DISTINCT ON(\"person\".\"Id\") \"person\".\"Id\", \"person\".\"Active\", "
                 + "\"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", "
                 + "\"person\".\"AddressNumber\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
-                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"", result.Sql);
+                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
+                + "\"person\".\"Flags\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -259,7 +272,8 @@ namespace Suilder.Test.Builder.Select
             Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"SurName\") \"person\".\"Id\", "
                 + "\"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", "
                 + "\"person\".\"AddressNumber\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
-                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"", result.Sql);
+                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
+                + "\"person\".\"Flags\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -275,7 +289,8 @@ namespace Suilder.Test.Builder.Select
             Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"SurName\") \"person\".\"Id\", "
                 + "\"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", "
                 + "\"person\".\"AddressNumber\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
-                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"", result.Sql);
+                + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
+                + "\"person\".\"Flags\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -454,6 +469,66 @@ namespace Suilder.Test.Builder.Select
         }
 
         [Fact]
+        public void SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            ISelect select = sql.Select().Add(sql.Gt(person["Id"], 10), sql.Lt(person["Id"], 20));
+
+            QueryResult result = engine.Compile(select);
+
+            Assert.Equal("SELECT \"person\".\"Id\" > @p0, \"person\".\"Id\" < @p1", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            ISelect select = sql.Select().Add(sql.Add.Add(person["Salary"], 1000m), sql.Multiply.Add(person["Salary"], 2m));
+
+            QueryResult result = engine.Compile(select);
+
+            Assert.Equal("SELECT \"person\".\"Salary\" + @p0, \"person\".\"Salary\" * @p1", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1000m,
+                ["@p1"] = 2m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubQuery()
+        {
+            ISelect select = sql.Select().Add(sql.RawQuery("Subquery1"), sql.RawQuery("Subquery2"));
+
+            QueryResult result = engine.Compile(select);
+
+            Assert.Equal("SELECT (Subquery1), (Subquery2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Count_List()
+        {
+            IAlias person = sql.Alias("person");
+            ISelect select = sql.Select();
+            object[] values = new object[] { person["Name"], ", ", person["SurName"], 1 };
+
+            int i = 0;
+            Assert.Equal(i, select.Count);
+
+            foreach (object value in values)
+            {
+                select.Add(value);
+                Assert.Equal(++i, select.Count);
+            }
+        }
+
+        [Fact]
         public void Empty_List()
         {
             ISelect select = sql.Select();
@@ -464,6 +539,24 @@ namespace Suilder.Test.Builder.Select
 
         [Fact]
         public void To_String()
+        {
+            IAlias person = sql.Alias("person");
+            ISelect select = sql.Select().Add(person["Name"], person["SurName"]);
+
+            Assert.Equal("SELECT person.Name, person.SurName", select.ToString());
+        }
+
+        [Fact]
+        public void To_String_One_Value()
+        {
+            IAlias person = sql.Alias("person");
+            ISelect select = sql.Select().Add(person["Name"]);
+
+            Assert.Equal("SELECT person.Name", select.ToString());
+        }
+
+        [Fact]
+        public void To_String_Alias()
         {
             IAlias person = sql.Alias("person");
             ISelect select = sql.Select().Add(person["Name"]).As("Name");

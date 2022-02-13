@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Test.Builder.Tables;
@@ -23,6 +24,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"personField\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -33,6 +35,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"PersonProperty\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -43,6 +46,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"personFieldStatic\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -53,6 +57,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"PersonPropertyStatic\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
     }
 }

@@ -41,6 +41,9 @@ namespace Suilder.Engines
             options.FullJoinSupported = false;
             options.OffsetStyle = OffsetStyle.Limit;
 
+            options.SetOperatorWrapQuery = false;
+            options.SetOperatorWithSubQuery = true;
+
             return options;
         }
 

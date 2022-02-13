@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
 using Xunit;
@@ -14,6 +15,7 @@ namespace Suilder.Test.Builder.Alias.StringAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -24,6 +26,7 @@ namespace Suilder.Test.Builder.Alias.StringAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -55,7 +58,7 @@ namespace Suilder.Test.Builder.Alias.StringAlias
         {
             IAlias alias = sql.Alias("person", "per");
 
-            Assert.Equal("person AS per", alias.ToString());
+            Assert.Equal("person", alias.ToString());
         }
     }
 }

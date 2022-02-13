@@ -12,7 +12,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() =>
+            Exception ex = Assert.Throws<NotSupportedException>(() =>
                 SqlExp.Function("CONCAT", person.Name, person.SurName));
             Assert.Equal("Only for expressions.", ex.Message);
         }
@@ -20,7 +20,25 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Function_Name_Only()
         {
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Function("NOW"));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Function("NOW"));
+            Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Fact]
+        public void ColName()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.ColName(person.Id));
+            Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Fact]
+        public void As()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.As<string>(person.Id));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -29,7 +47,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Val(person.Id));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Val(person.Id));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -38,7 +56,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Abs(person.Salary));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Abs(person.Salary));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -47,7 +65,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Avg(person.Salary));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Avg(person.Salary));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -56,7 +74,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.AvgDistinct(person.Salary));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.AvgDistinct(person.Salary));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -65,7 +83,17 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Cast(person.Salary, sql.Type("VARCHAR")));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Cast(person.Salary, sql.Type("VARCHAR")));
+            Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Fact]
+        public void Cast_Generic()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<NotSupportedException>(() =>
+                SqlExp.Cast<string>(person.Salary, sql.Type("VARCHAR")));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -74,7 +102,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Ceiling(person.Salary));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Ceiling(person.Salary));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -83,7 +111,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Coalesce(person.Name, person.SurName));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Coalesce(person.Name, person.SurName));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -92,7 +120,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Coalesce(person.Name, person.Salary));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Coalesce(person.Name, person.Salary));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -101,14 +129,14 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Concat(person.Name, person.SurName));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Concat(person.Name, person.SurName));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
         [Fact]
         public void Count()
         {
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Count());
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Count());
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -116,7 +144,7 @@ namespace Suilder.Test.Builder.Functions
         public void Count_Column()
         {
             Person person = new Person();
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Count(person.Name));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Count(person.Name));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -127,7 +155,7 @@ namespace Suilder.Test.Builder.Functions
 
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.CountDistinct(person.Name));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.CountDistinct(person.Name));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -136,14 +164,14 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Floor(person.Salary));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Floor(person.Salary));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
         [Fact]
         public void LastInsertId()
         {
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.LastInsertId());
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.LastInsertId());
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -152,7 +180,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Length(person.Name));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Length(person.Name));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -161,7 +189,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Lower(person.Name));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Lower(person.Name));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -170,7 +198,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.LTrim(person.Name));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.LTrim(person.Name));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -179,7 +207,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.LTrim(person.Name, ","));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.LTrim(person.Name, ","));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -188,7 +216,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Max(person.Salary));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Max(person.Salary));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -197,14 +225,14 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Min(person.Salary));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Min(person.Salary));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
         [Fact]
         public void Now()
         {
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Now());
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Now());
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -213,7 +241,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.NullIf(person.Name, "empty"));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.NullIf(person.Name, "empty"));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -222,7 +250,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Replace(person.Name, "a", "b"));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Replace(person.Name, "a", "b"));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -231,7 +259,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Round(person.Salary));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Round(person.Salary));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -240,7 +268,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Round(person.Salary, 2));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Round(person.Salary, 2));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -249,7 +277,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.RTrim(person.Name));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.RTrim(person.Name));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -258,7 +286,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.RTrim(person.Name, ","));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.RTrim(person.Name, ","));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -267,7 +295,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Substring(person.Name, 2, 4));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Substring(person.Name, 2, 4));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -276,7 +304,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Sum(person.Salary));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Sum(person.Salary));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -285,7 +313,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.SumDistinct(person.Salary));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.SumDistinct(person.Salary));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -294,7 +322,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Trim(person.Name));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Trim(person.Name));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -303,7 +331,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Trim(person.Name, ","));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Trim(person.Name, ","));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -312,7 +340,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Upper(person.Name));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Upper(person.Name));
             Assert.Equal("Only for expressions.", ex.Message);
         }
     }

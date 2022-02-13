@@ -29,6 +29,8 @@ namespace Suilder.Test.Builder.Tables
 
         public byte[] Image { get; set; }
 
+        public ulong Flags { get; set; }
+
         [Ignore]
         public string Ignore { get; set; }
     }

@@ -80,8 +80,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" < NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" < @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Fact]
@@ -92,8 +95,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("NULL < \"person\".\"Name\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("@p0 < \"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -213,8 +219,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" < NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" < @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -334,8 +343,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" < NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" < @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -394,8 +406,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" < NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" < @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -467,8 +482,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" < NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" < @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -560,6 +578,84 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"DepartmentId\" < \"dept\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        public void Expression_Null(int? value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id <= value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" <= @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id < SqlExp.Max(person.Id));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" < MAX(\"person\".\"Id\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id < SqlExp.As<int>(person.Name));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" < \"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As_SubQuery()
+        {
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => person.Id < SqlExp.As<int>(query));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" < (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id < SqlExp.Cast<int>(person.Name, sql.Type("INT")));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" < CAST(\"person\".\"Name\" AS INT)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast_SubQuery()
+        {
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => person.Id < SqlExp.Cast<int>(query, sql.Type("INT")));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" < CAST((Subquery) AS INT)", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -725,7 +821,23 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" < NULL", result.Sql);
+            Assert.Equal("\"person\".\"Name\" < @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Method_SubQuery()
+        {
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => SqlExp.Lt(person.Id, query));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" < (Subquery)", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -734,19 +846,93 @@ namespace Suilder.Test.Builder.Operators
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Lt(person.Id, 1));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Lt(person.Id, 1));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
-        [Fact]
-        public void Subquery()
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_Val_Method(int value)
         {
-            IAlias person = sql.Alias("person");
-            IOperator op = sql.Lt(person["Id"], sql.RawQuery("Subquery"));
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => person.Id < value);
 
             QueryResult result = engine.Compile(op);
 
+            Assert.Equal("\"person\".\"Id\" < @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Lt(sql.Gt(person["Id"], 10), sql.Lt(person["Id"], 20));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Id\" > @p0) < (\"person\".\"Id\" < @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Lt(sql.Add.Add(person["Salary"], 1000m), sql.Multiply.Add(person["Salary"], 2m));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Salary\" + @p0) < (\"person\".\"Salary\" * @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1000m,
+                ["@p1"] = 2m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubQuery()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op1 = sql.Lt(person["Id"], sql.RawQuery("Subquery"));
+            IOperator op2 = sql.Lt(sql.RawQuery("Subquery"), person["Id"]);
+            IOperator op3 = sql.Lt(sql.RawQuery("Subquery1"), sql.RawQuery("Subquery2"));
+
+            QueryResult result;
+
+            result = engine.Compile(op1);
+
             Assert.Equal("\"person\".\"Id\" < (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+
+            result = engine.Compile(op2);
+
+            Assert.Equal("(Subquery) < \"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+
+            result = engine.Compile(op3);
+
+            Assert.Equal("(Subquery1) < (Subquery2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void SubQuery_Operator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Lt(person["Id"], sql.Any(sql.RawQuery("Subquery")));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" < ANY (Subquery)", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -775,6 +961,37 @@ namespace Suilder.Test.Builder.Operators
             IOperator op = sql.Lt(dept["Tags"], new List<string> { "abcd", "efgh", "ijkl" });
 
             Assert.Equal("dept.Tags < [\"abcd\", \"efgh\", \"ijkl\"]", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Lt(sql.Gt(person["Id"], 10), sql.Lt(person["Id"], 20));
+
+            Assert.Equal("(person.Id > 10) < (person.Id < 20)", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Lt(sql.Add.Add(person["Salary"], 1000m), sql.Multiply.Add(person["Salary"], 2m));
+
+            Assert.Equal("(person.Salary + 1000) < (person.Salary * 2)", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubQuery()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op1 = sql.Lt(person["Id"], sql.RawQuery("Subquery"));
+            IOperator op2 = sql.Lt(sql.RawQuery("Subquery"), person["Id"]);
+            IOperator op3 = sql.Lt(sql.RawQuery("Subquery1"), sql.RawQuery("Subquery2"));
+
+            Assert.Equal("person.Id < (Subquery)", op1.ToString());
+            Assert.Equal("(Subquery) < person.Id", op2.ToString());
+            Assert.Equal("(Subquery1) < (Subquery2)", op3.ToString());
         }
     }
 }

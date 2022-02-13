@@ -35,9 +35,9 @@ namespace Suilder.Core
         IFunction Before(IQueryFragment value);
 
         /// <summary>
-        /// Adds a value to the <see cref="IFunction"/>.
+        /// Adds a value to the end of the <see cref="IFunction"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IFunction"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IFunction"/>.</param>
         /// <returns>The function.</returns>
         new IFunction Add(object value);
 
@@ -58,9 +58,9 @@ namespace Suilder.Core
         new IFunction Add(IEnumerable<object> values);
 
         /// <summary>
-        /// Adds a value to the <see cref="IFunction"/>.
+        /// Adds a value to the end of the <see cref="IFunction"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IFunction"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IFunction"/>.</param>
         /// <returns>The function.</returns>
         new IFunction Add(Expression<Func<object>> value);
 

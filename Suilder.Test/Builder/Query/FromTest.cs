@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Test.Builder.Tables;
@@ -15,6 +16,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -25,6 +27,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -36,6 +39,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -47,6 +51,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -58,6 +63,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"Person\" AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -69,6 +75,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"Person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -80,20 +87,22 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"Person\" AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void From_Subquery_String()
+        public void From_SubQuery_String()
         {
             IQuery query = sql.Query.From(sql.RawQuery("Subquery"), "sub");
 
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM (Subquery) AS \"sub\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void From_Subquery_Alias()
+        public void From_SubQuery_Alias()
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query.From(sql.RawQuery("Subquery"), person);
@@ -101,10 +110,11 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM (Subquery) AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void From_Subquery_Alias_With_Alias_Name()
+        public void From_SubQuery_Alias_With_Alias_Name()
         {
             IAlias person = sql.Alias("person", "per");
             IQuery query = sql.Query.From(sql.RawQuery("Subquery"), person);
@@ -112,10 +122,11 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM (Subquery) AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void From_Subquery_Expression()
+        public void From_SubQuery_Expression()
         {
             Person person = null;
             IQuery query = sql.Query.From(sql.RawQuery("Subquery"), () => person);
@@ -123,6 +134,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM (Subquery) AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -134,6 +146,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -145,6 +158,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -155,6 +169,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -167,6 +182,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM DUAL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -178,6 +194,7 @@ namespace Suilder.Test.Builder.Query
             QueryResult result = engine.Compile(query);
 
             Assert.Equal("FROM \"Person\" AS \"person\" WITH (NO LOCK)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
     }
 }

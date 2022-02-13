@@ -7,12 +7,12 @@ namespace Suilder.Core
     /// <summary>
     /// A bitwise operator.
     /// </summary>
-    public interface IBitOperator : IOperator, ISubQuery, IQueryFragmentList<object, object>
+    public interface IBitOperator : IOperator, ISubFragment, IQueryFragmentList<object, object>
     {
         /// <summary>
-        /// Adds a value to the <see cref="IBitOperator"/>.
+        /// Adds a value to the end of the <see cref="IBitOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IBitOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IBitOperator"/>.</param>
         /// <returns>The bitwise operator.</returns>
         new IBitOperator Add(object value);
 
@@ -33,9 +33,9 @@ namespace Suilder.Core
         new IBitOperator Add(IEnumerable<object> values);
 
         /// <summary>
-        /// Adds a value to the <see cref="IBitOperator"/>.
+        /// Adds a value to the end of the <see cref="IBitOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IBitOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IBitOperator"/>.</param>
         /// <returns>The bitwise operator.</returns>
         new IBitOperator Add(Expression<Func<object>> value);
 

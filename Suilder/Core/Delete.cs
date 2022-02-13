@@ -91,9 +91,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IDelete"/>.
+        /// Adds a value to the end of the <see cref="IDelete"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IDelete"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IDelete"/>.</param>
         public override void Add(Expression<Func<object>> value)
         {
             Values.Add(SqlBuilder.Instance.Alias(value));
@@ -120,9 +120,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IDelete"/>.
+        /// Adds a value to the end of the <see cref="IDelete"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IDelete"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IDelete"/>.</param>
         /// <returns>The "delete" statement.</returns>
         IDelete IDelete.Add(IAlias value)
         {
@@ -155,9 +155,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IDelete"/>.
+        /// Adds a value to the end of the <see cref="IDelete"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IDelete"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IDelete"/>.</param>
         /// <returns>The "delete" statement.</returns>
         IDelete IDelete.Add(Expression<Func<object>> value)
         {

@@ -22,9 +22,9 @@ namespace Suilder.Core
         IAlias Alias { get; }
 
         /// <summary>
-        /// Adds a value to the <see cref="ICte"/>.
+        /// Adds a value to the end of the <see cref="ICte"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ICte"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ICte"/>.</param>
         /// <returns>The CTE.</returns>
         new ICte Add(IColumn value);
 
@@ -45,9 +45,9 @@ namespace Suilder.Core
         new ICte Add(IEnumerable<IColumn> values);
 
         /// <summary>
-        /// Adds a value to the <see cref="ICte"/>.
+        /// Adds a value to the end of the <see cref="ICte"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ICte"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ICte"/>.</param>
         /// <returns>The CTE.</returns>
         new ICte Add(Expression<Func<object>> value);
 
@@ -72,13 +72,6 @@ namespace Suilder.Core
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>The CTE.</returns>
-        ICte As(IQuery query);
-
-        /// <summary>
-        /// Sets the query of the CTE.
-        /// </summary>
-        /// <param name="query">The query.</param>
-        /// <returns>The CTE.</returns>
-        ICte As(IRawQuery query);
+        ICte As(IQueryFragment query);
     }
 }

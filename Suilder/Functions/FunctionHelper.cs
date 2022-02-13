@@ -64,12 +64,14 @@ namespace Suilder.Functions
             if (func.Args.Count == 0)
                 throw new CompileException($"Invalid function \"{func.Name}\", wrong number of parameters.");
 
+            queryBuilder.Write("(");
+
             string separator = " || ";
             foreach (object value in func.Args)
             {
                 queryBuilder.WriteValue(value).Write(separator);
             }
-            queryBuilder.RemoveLast(separator.Length);
+            queryBuilder.RemoveLast(separator.Length).Write(")");
         }
 
         /// <summary>

@@ -87,8 +87,7 @@ namespace Suilder.Core
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return ToStringBuilder.Build(b => b.Write(TableName)
-                .IfNotNull(AliasName, () => b.Write(" AS ").Write(AliasName)));
+            return ToStringBuilder.Build(b => b.Write(TableName));
         }
     }
 }

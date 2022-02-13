@@ -39,9 +39,19 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="ICte"/>.
+        /// Initializes a new instance of the <see cref="Cte"/> class.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ICte"/>.</param>
+        /// <param name="alias">The alias.</param>
+        public Cte(IAlias alias)
+        {
+            Alias = SqlBuilder.Instance.Alias(alias.AliasOrTableName
+                ?? throw new ArgumentException("Alias name is null.", nameof(alias)));
+        }
+
+        /// <summary>
+        /// Adds a value to the end of the <see cref="ICte"/>.
+        /// </summary>
+        /// <param name="value">The value to add to the end of the <see cref="ICte"/>.</param>
         /// <returns>The CTE.</returns>
         ICte ICte.Add(IColumn value)
         {
@@ -74,9 +84,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="ICte"/>.
+        /// Adds a value to the end of the <see cref="ICte"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ICte"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ICte"/>.</param>
         /// <returns>The CTE.</returns>
         ICte ICte.Add(Expression<Func<object>> value)
         {
@@ -113,18 +123,7 @@ namespace Suilder.Core
         /// </summary>
         /// <param name="query">The query.</param>
         /// <returns>The CTE.</returns>
-        public virtual ICte As(IQuery query)
-        {
-            Query = query;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the query of the CTE.
-        /// </summary>
-        /// <param name="query">The query.</param>
-        /// <returns>The CTE.</returns>
-        public virtual ICte As(IRawQuery query)
+        public virtual ICte As(IQueryFragment query)
         {
             Query = query;
             return this;

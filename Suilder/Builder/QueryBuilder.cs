@@ -12,6 +12,12 @@ namespace Suilder.Builder
     public class QueryBuilder
     {
         /// <summary>
+        /// The string builder with the SQL result.
+        /// </summary>
+        /// <returns>The string builder with the SQL result.</returns>
+        protected StringBuilder Builder { get; set; } = new StringBuilder();
+
+        /// <summary>
         /// The named parameters of the query.
         /// </summary>
         /// <value>The named parameters of the query.</value>
@@ -22,12 +28,6 @@ namespace Suilder.Builder
         /// </summary>
         /// <value>The positional parameters of the query.</value>
         protected IList<object> ParametersList { get; set; }
-
-        /// <summary>
-        /// The string builder with the SQL result.
-        /// </summary>
-        /// <returns>The string builder with the SQL result.</returns>
-        protected StringBuilder Builder { get; set; } = new StringBuilder();
 
         /// <summary>
         /// The engine to compile the query.
@@ -85,6 +85,29 @@ namespace Suilder.Builder
         /// Writes an <see cref="IQueryFragment"/> to the query.
         /// </summary>
         /// <param name="value">The <see cref="IQueryFragment"/> to write.</param>
+        /// <param name="parentheses">When to add parentheses to the <see cref="IQueryFragment"/>.</param>
+        /// <returns>The query builder.</returns>
+        public QueryBuilder WriteFragment(IQueryFragment value, Parentheses parentheses)
+        {
+            switch (parentheses)
+            {
+                case Parentheses.Never:
+                    return WriteFragment(value, false);
+                case Parentheses.SubFragment:
+                    return WriteFragment(value, value is ISubFragment);
+                case Parentheses.SubQuery:
+                    return WriteFragment(value, value is ISubQuery);
+                case Parentheses.Always:
+                    return WriteFragment(value, true);
+                default:
+                    throw new ArgumentException("Invalid value.", nameof(parentheses));
+            }
+        }
+
+        /// <summary>
+        /// Writes an <see cref="IQueryFragment"/> to the query.
+        /// </summary>
+        /// <param name="value">The <see cref="IQueryFragment"/> to write.</param>
         /// <param name="addParentheses">If add parentheses to the <see cref="IQueryFragment"/>.</param>
         /// <returns>The query builder.</returns>
         public QueryBuilder WriteFragment(IQueryFragment value, bool addParentheses)
@@ -101,31 +124,94 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Writes an object to the query.
+        /// Writes a value to the query.
         /// </summary>
-        /// <param name="value">The object to write.</param>
+        /// <param name="value">The value to write.</param>
         /// <returns>The query builder.</returns>
         public QueryBuilder WriteValue(object value)
         {
             if (value is IQueryFragment queryFragment)
-                WriteFragment(queryFragment);
+                return WriteFragment(queryFragment);
             else
-                AddParameter(value);
+                return AddParameter(value);
+        }
+
+        /// <summary>
+        /// Writes a value to the query.
+        /// </summary>
+        /// <param name="value">The value to write.</param>
+        /// <param name="parentheses">When to add parentheses to the value.</param>
+        /// <returns>The query builder.</returns>
+        public QueryBuilder WriteValue(object value, Parentheses parentheses)
+        {
+            if (value is IQueryFragment queryFragment)
+                return WriteFragment(queryFragment, parentheses);
+            else
+                return AddParameter(value, parentheses);
+        }
+
+        /// <summary>
+        /// Writes a value to the query.
+        /// </summary>
+        /// <param name="value">The value to write.</param>
+        /// <param name="addParentheses">If add parentheses to the value.</param>
+        /// <returns>The query builder.</returns>
+        public QueryBuilder WriteValue(object value, bool addParentheses)
+        {
+            if (value is IQueryFragment queryFragment)
+                return WriteFragment(queryFragment, addParentheses);
+            else
+                return AddParameter(value, addParentheses);
+        }
+
+        /// <summary>
+        /// Adds a parameter to the query.
+        /// </summary>
+        /// <param name="value">The parameter value.</param>
+        /// <param name="parentheses">When to add parentheses to the parameter.</param>
+        /// <returns>The query builder.</returns>
+        public QueryBuilder AddParameter(object value, Parentheses parentheses)
+        {
+            switch (parentheses)
+            {
+                case Parentheses.Never:
+                case Parentheses.SubFragment:
+                case Parentheses.SubQuery:
+                    return AddParameter(value);
+                case Parentheses.Always:
+                    return AddParameter(value, true);
+                default:
+                    throw new ArgumentException("Invalid value.", nameof(parentheses));
+            }
+        }
+
+        /// <summary>
+        /// Adds a parameter to the query.
+        /// </summary>
+        /// <param name="value">The parameter value.</param>
+        /// <param name="addParentheses">If add parentheses to the parameter.</param>
+        /// <returns>The query builder.</returns>
+        public QueryBuilder AddParameter(object value, bool addParentheses)
+        {
+            if (addParentheses)
+                Builder.Append("(");
+
+            AddParameter(value);
+
+            if (addParentheses)
+                Builder.Append(")");
+
             return this;
         }
 
         /// <summary>
-        /// Add a parameter to the query.
+        /// Adds a parameter to the query.
         /// </summary>
         /// <param name="value">The parameter value.</param>
         /// <returns>The query builder.</returns>
         public QueryBuilder AddParameter(object value)
         {
-            if (value == null)
-            {
-                Builder.Append("NULL");
-            }
-            else if (Parameters != null)
+            if (Parameters != null)
             {
                 string key = Engine.Options.ParameterPrefix + Parameters.Keys.Count;
                 Builder.Append(key);
@@ -162,5 +248,31 @@ namespace Suilder.Builder
             else
                 return new QueryResult(Builder.ToString(), ParametersList);
         }
+    }
+
+    /// <summary>
+    /// When to add parentheses to an <see cref="IQueryFragment"/>.
+    /// </summary>
+    public enum Parentheses
+    {
+        /// <summary>
+        /// Do not add parentheses.
+        /// </summary>
+        Never,
+
+        /// <summary>
+        /// When the value implements the <see cref="ISubFragment"/> interface.
+        /// </summary>
+        SubFragment,
+
+        /// <summary>
+        /// When the value implements the <see cref="ISubQuery"/> interface.
+        /// </summary>
+        SubQuery,
+
+        /// <summary>
+        /// Add parentheses.
+        /// </summary>
+        Always
     }
 }

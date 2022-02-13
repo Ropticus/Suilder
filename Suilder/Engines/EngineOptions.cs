@@ -124,6 +124,18 @@ namespace Suilder.Engines
         public bool DeleteWithAlias { get; set; }
 
         /// <summary>
+        /// If <see langword="true"/>, adds parentheses to the set operator queries.
+        /// </summary>
+        /// <value>If <see langword="true"/>, adds parentheses to the set operator queries.</value>
+        public bool SetOperatorWrapQuery { get; set; } = true;
+
+        /// <summary>
+        /// If the set operator must use a subquery when the value is another set operator.
+        /// </summary>
+        /// <value>If the set operator must use a subquery when the value is another set operator.</value>
+        public bool SetOperatorWithSubQuery { get; set; }
+
+        /// <summary>
         /// The prefix of the parameters.
         /// </summary>
         /// <value>The prefix of the parameters.</value>

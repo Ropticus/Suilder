@@ -26,9 +26,9 @@ namespace Suilder.Core
         protected IDictionary<int, bool> OrderValues { get; set; } = new Dictionary<int, bool>();
 
         /// <summary>
-        /// Adds a value to the <see cref="IOrderBy"/>.
+        /// Adds a value to the end of the <see cref="IOrderBy"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IOrderBy"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IOrderBy"/>.</param>
         public override void Add(object value)
         {
             IndexStartAdd = Values.Count;
@@ -58,9 +58,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IOrderBy"/>.
+        /// Adds a value to the end of the <see cref="IOrderBy"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IOrderBy"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IOrderBy"/>.</param>
         public override void Add(Expression<Func<object>> value)
         {
             IndexStartAdd = Values.Count;
@@ -90,9 +90,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IOrderBy"/>.
+        /// Adds a value to the end of the <see cref="IOrderBy"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IOrderBy"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IOrderBy"/>.</param>
         /// <returns>The "order by" clause.</returns>
         IOrderBy IOrderBy.Add(object value)
         {
@@ -125,9 +125,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IOrderBy"/>.
+        /// Adds a value to the end of the <see cref="IOrderBy"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IOrderBy"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IOrderBy"/>.</param>
         /// <returns>The "order by" clause.</returns>
         IOrderBy IOrderBy.Add(Expression<Func<object>> value)
         {

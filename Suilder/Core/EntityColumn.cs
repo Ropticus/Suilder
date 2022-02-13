@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Suilder.Builder;
 using Suilder.Engines;
 
@@ -25,6 +26,13 @@ namespace Suilder.Core
         {
             Type = type;
         }
+
+        /// <summary>
+        /// Creates a column without the table name or alias.
+        /// </summary>
+        /// <value>The column without the table name or alias.</value>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public override IColumn Name => TableName != null ? new EntityColumn(Type, null, ColumnName) : this;
 
         /// <summary>
         /// Compiles the fragment.

@@ -19,9 +19,15 @@ namespace Suilder.Core
         protected List<TValue> Values { get; set; } = new List<TValue>();
 
         /// <summary>
-        /// Adds a value to the <see cref="IQueryFragmentList{T}"/>.
+        /// Gets the number of elements contained in the <see cref="IQueryFragmentList{T}"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IQueryFragmentList{T}"/>.</param>
+        /// <value>The number of elements contained in the <see cref="IQueryFragmentList{T}"/>.</value>
+        public int Count => Values.Count;
+
+        /// <summary>
+        /// Adds a value to the end of the <see cref="IQueryFragmentList{T}"/>.
+        /// </summary>
+        /// <param name="value">The value to add to the end of the <see cref="IQueryFragmentList{T}"/>.</param>
         public virtual void Add(TValue value)
         {
             Values.Add(value);
@@ -64,9 +70,9 @@ namespace Suilder.Core
         IQueryFragmentList<TValue, TExpression>
     {
         /// <summary>
-        /// Adds a value to the <see cref="IQueryFragmentList{T, T2}"/>.
+        /// Adds a value to the end of the <see cref="IQueryFragmentList{T, T2}"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IQueryFragmentList{T, T2}"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IQueryFragmentList{T, T2}"/>.</param>
         public abstract void Add(Expression<Func<TExpression>> value);
 
         /// <summary>

@@ -12,9 +12,9 @@ namespace Suilder.Core
     public interface IColList : IQueryFragmentList<IColumn, object>
     {
         /// <summary>
-        /// Adds a value to the <see cref="IColList"/>.
+        /// Adds a value to the end of the <see cref="IColList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IColList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IColList"/>.</param>
         /// <returns>The list of columns.</returns>
         new IColList Add(IColumn value);
 
@@ -35,9 +35,9 @@ namespace Suilder.Core
         new IColList Add(IEnumerable<IColumn> values);
 
         /// <summary>
-        /// Adds a value to the <see cref="IColList"/>.
+        /// Adds a value to the end of the <see cref="IColList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IColList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IColList"/>.</param>
         /// <returns>The list of columns.</returns>
         new IColList Add(Expression<Func<object>> value);
 

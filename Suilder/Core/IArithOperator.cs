@@ -7,19 +7,19 @@ namespace Suilder.Core
     /// <summary>
     /// An arithmetic operator.
     /// </summary>
-    public interface IArithOperator : IOperator, ISubQuery, IQueryFragmentList<object, object>
+    public interface IArithOperator : IOperator, ISubFragment, IQueryFragmentList<object, object>
     {
         /// <summary>
-        /// Adds a value to the <see cref="IArithOperator"/>.
+        /// Adds a value to the end of the <see cref="IArithOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IArithOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IArithOperator"/>.</param>
         /// <returns>The arithmetic operator.</returns>
         new IArithOperator Add(object value);
 
         /// <summary>
         /// Adds the elements of the specified array to the end of the <see cref="IArithOperator"/>.
         /// </summary>
-        /// <param name="values">The array whose elements should be added to the end of the 
+        /// <param name="values">The array whose elements should be added to the end of the
         /// <see cref="IArithOperator"/>.</param>
         /// <returns>The arithmetic operator.</returns>
         new IArithOperator Add(params object[] values);
@@ -27,22 +27,22 @@ namespace Suilder.Core
         /// <summary>
         /// Adds the elements of the specified collection to the end of the <see cref="IArithOperator"/>.
         /// </summary>
-        /// <param name="values">The collection whose elements should be added to the end of the 
+        /// <param name="values">The collection whose elements should be added to the end of the
         /// <see cref="IArithOperator"/>.</param>
         /// <returns>The arithmetic operator.</returns>
         new IArithOperator Add(IEnumerable<object> values);
 
         /// <summary>
-        /// Adds a value to the <see cref="IArithOperator"/>.
+        /// Adds a value to the end of the <see cref="IArithOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IArithOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IArithOperator"/>.</param>
         /// <returns>The arithmetic operator.</returns>
         new IArithOperator Add(Expression<Func<object>> value);
 
         /// <summary>
         /// Adds the elements of the specified array to the end of the <see cref="IArithOperator"/>.
         /// </summary>
-        /// <param name="values">The array whose elements should be added to the end of the 
+        /// <param name="values">The array whose elements should be added to the end of the
         /// <see cref="IArithOperator"/>.</param>
         /// <returns>The arithmetic operator.</returns>
         new IArithOperator Add(params Expression<Func<object>>[] values);
@@ -50,7 +50,7 @@ namespace Suilder.Core
         /// <summary>
         /// Adds the elements of the specified collection to the end of the <see cref="IArithOperator"/>.
         /// </summary>
-        /// <param name="values">The collection whose elements should be added to the end of the 
+        /// <param name="values">The collection whose elements should be added to the end of the
         /// <see cref="IArithOperator"/>.</param>
         /// <returns>The arithmetic operator.</returns>
         new IArithOperator Add(IEnumerable<Expression<Func<object>>> values);

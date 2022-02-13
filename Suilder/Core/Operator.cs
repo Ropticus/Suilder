@@ -6,7 +6,7 @@ namespace Suilder.Core
     /// <summary>
     /// Implementation of <see cref="IOperator"/>.
     /// </summary>
-    public class Operator : IOperator
+    public class Operator : IOperator, ISubFragment
     {
         /// <summary>
         /// The operator.
@@ -46,7 +46,8 @@ namespace Suilder.Core
         /// <param name="engine">The engine.</param>
         public virtual void Compile(QueryBuilder queryBuilder, IEngine engine)
         {
-            queryBuilder.WriteValue(Left).Write(" ").Write(Op).Write(" ").WriteValue(Right);
+            queryBuilder.WriteValue(Left, Parentheses.SubFragment)
+                .Write(" " + Op + " ").WriteValue(Right, Parentheses.SubFragment);
         }
 
         /// <summary>
@@ -55,7 +56,8 @@ namespace Suilder.Core
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return ToStringBuilder.Build(b => b.WriteValue(Left).Write(" " + Op + " ").WriteValue(Right));
+            return ToStringBuilder.Build(b => b.WriteValue(Left, Parentheses.SubFragment)
+                .Write(" " + Op + " ").WriteValue(Right, Parentheses.SubFragment));
         }
     }
 }

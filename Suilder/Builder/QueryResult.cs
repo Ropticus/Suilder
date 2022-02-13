@@ -18,18 +18,18 @@ namespace Suilder.Builder
         /// The named parameters of the query.
         /// <para>This property is <see langword="null"/> if <see cref="EngineOptions.ParameterIndex"/>
         /// is <see langword="false"/>.</para>
-        /// <seealso cref="ParametersList"/>
         /// </summary>
         /// <value>The named parameters of the query.</value>
+        /// <seealso cref="ParametersList"/>
         public IDictionary<string, object> Parameters { get; private set; }
 
         /// <summary>
         /// The positional parameters of the query.
         /// <para>This property is <see langword="null"/> if <see cref="EngineOptions.ParameterIndex"/>
         /// is <see langword="true"/>.</para>
-        /// <seealso cref="Parameters"/>
         /// </summary>
         /// <value>The positional parameters of the query.</value>
+        /// <seealso cref="Parameters"/>
         public IList<object> ParametersList { get; private set; }
 
         /// <summary>

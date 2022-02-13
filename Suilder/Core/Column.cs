@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Suilder.Builder;
 using Suilder.Engines;
 
@@ -36,6 +37,13 @@ namespace Suilder.Core
             TableName = tableName;
             ColumnName = columnName;
         }
+
+        /// <summary>
+        /// Creates a column without the table name or alias.
+        /// </summary>
+        /// <value>The column without the table name or alias.</value>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public virtual IColumn Name => TableName != null ? new Column(null, ColumnName) : this;
 
         /// <summary>
         /// Compiles the fragment.

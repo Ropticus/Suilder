@@ -10,9 +10,9 @@ namespace Suilder.Core
     public class With : QueryFragmentList<IQueryFragment>, IWith
     {
         /// <summary>
-        /// Adds a value to the <see cref="IWith"/>.
+        /// Adds a value to the end of the <see cref="IWith"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IWith"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IWith"/>.</param>
         /// <returns>The "with" clause.</returns>
         IWith IWith.Add(IQueryFragment value)
         {

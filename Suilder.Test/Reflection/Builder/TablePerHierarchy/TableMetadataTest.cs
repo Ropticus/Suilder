@@ -158,7 +158,7 @@ namespace Suilder.Test.Reflection.Builder.TablePerHierarchy
             Assert.Equal(new Dictionary<string, object>
             {
                 ["Key3"] = "Val3_Person",
-                ["Key5"] = "Val5_Employee",
+                ["Key5"] = "Val5_Employee"
             }, employeeInfo.TableMetadata);
 
             Assert.Equal(new Dictionary<string, object>
@@ -187,7 +187,7 @@ namespace Suilder.Test.Reflection.Builder.TablePerHierarchy
             Assert.Equal(new Dictionary<string, object>
             {
                 ["Key3"] = "Val3_Person",
-                ["Key5"] = "Val5_Employee",
+                ["Key5"] = "Val5_Employee"
             }, employeeInfo.TableMetadata);
 
             Assert.Equal(new Dictionary<string, object>

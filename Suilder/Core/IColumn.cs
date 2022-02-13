@@ -21,6 +21,12 @@ namespace Suilder.Core
         bool SelectAll { get; }
 
         /// <summary>
+        /// Creates a column without the table name or alias.
+        /// </summary>
+        /// <value>The column without the table name or alias.</value>
+        IColumn Name { get; }
+
+        /// <summary>
         /// Compiles the fragment.
         /// </summary>
         /// <param name="queryBuilder">The query builder.</param>

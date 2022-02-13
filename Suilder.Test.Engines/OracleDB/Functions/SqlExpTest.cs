@@ -103,7 +103,7 @@ namespace Suilder.Test.Engines.OracleDB.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("\"PERSON\".\"NAME\" || \"PERSON\".\"SURNAME\"", result.Sql);
+            Assert.Equal("(\"PERSON\".\"NAME\" || \"PERSON\".\"SURNAME\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

@@ -23,14 +23,14 @@ namespace Suilder.Test.Builder.Raw
         public void Raw_Format()
         {
             IAlias person = sql.Alias("person");
-            IRawSql raw = sql.Raw("SELECT {0}, {1} FROM {2}", person["Name"], "Some text", person);
+            IRawSql raw = sql.Raw("SELECT {0}, {1} FROM {2}", person["Name"], "abcd", person);
 
             QueryResult result = engine.Compile(raw);
 
             Assert.Equal("SELECT \"person\".\"Name\", @p0 FROM \"person\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = "Some text"
+                ["@p0"] = "abcd"
             }, result.Parameters);
         }
 
@@ -86,11 +86,11 @@ namespace Suilder.Test.Builder.Raw
         public void Raw_Format_Escape_Text()
         {
             IAlias person = sql.Alias("person");
-            IRawSql raw = sql.Raw("SELECT '{{Some text}}', {0} FROM {1}", person["Name"], person);
+            IRawSql raw = sql.Raw("SELECT '{{abcd}}', {0} FROM {1}", person["Name"], person);
 
             QueryResult result = engine.Compile(raw);
 
-            Assert.Equal("SELECT '{Some text}', \"person\".\"Name\" FROM \"person\"", result.Sql);
+            Assert.Equal("SELECT '{abcd}', \"person\".\"Name\" FROM \"person\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -98,11 +98,11 @@ namespace Suilder.Test.Builder.Raw
         public void Raw_Format_Escape_Multiple()
         {
             IAlias person = sql.Alias("person");
-            IRawSql raw = sql.Raw("SELECT '{{{{Some text}}}}', {0} FROM {1}", person["Name"], person);
+            IRawSql raw = sql.Raw("SELECT '{{{{abcd}}}}', {0} FROM {1}", person["Name"], person);
 
             QueryResult result = engine.Compile(raw);
 
-            Assert.Equal("SELECT '{{Some text}}', \"person\".\"Name\" FROM \"person\"", result.Sql);
+            Assert.Equal("SELECT '{{abcd}}', \"person\".\"Name\" FROM \"person\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -110,11 +110,11 @@ namespace Suilder.Test.Builder.Raw
         public void Raw_Format_Escape_Start_End()
         {
             IAlias person = sql.Alias("person");
-            IRawSql raw = sql.Raw("{{Some text}}", person["Name"], person);
+            IRawSql raw = sql.Raw("{{abcd}}", person["Name"], person);
 
             QueryResult result = engine.Compile(raw);
 
-            Assert.Equal("{Some text}", result.Sql);
+            Assert.Equal("{abcd}", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -304,7 +304,7 @@ namespace Suilder.Test.Builder.Raw
         public void To_String()
         {
             IAlias person = sql.Alias("person");
-            IRawSql raw = sql.Raw("SELECT {0} FROM {2}", person["Name"], "Some text", person);
+            IRawSql raw = sql.Raw("SELECT {0} FROM {1}", person["Name"], person);
 
             Assert.Equal("SELECT person.Name FROM person", raw.ToString());
         }

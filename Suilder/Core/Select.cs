@@ -229,9 +229,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="ISelect"/>.
+        /// Adds a value to the end of the <see cref="ISelect"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ISelect"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ISelect"/>.</param>
         /// <returns>The "select" statement.</returns>
         ISelect ISelect.Add(object value)
         {
@@ -264,9 +264,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="ISelect"/>.
+        /// Adds a value to the end of the <see cref="ISelect"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ISelect"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ISelect"/>.</param>
         /// <returns>The "select" statement.</returns>
         ISelect ISelect.Add(Expression<Func<object>> value)
         {

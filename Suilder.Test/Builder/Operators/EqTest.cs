@@ -503,6 +503,67 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Theory]
+        [MemberData(nameof(DataBool))]
+        public void Expression_Bool(bool value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Active == value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Bool_Inline_Value()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Active == true);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Bool_Property()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Active);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Bool_Property_Negation()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => !person.Active);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = false
+            }, result.Parameters);
+        }
+
+        [Theory]
         [MemberData(nameof(DataInt))]
         public void Expression_ForeignKey(int value)
         {
@@ -625,15 +686,42 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
-        [Fact]
-        public void Expression_Bool_Property()
+        [Theory]
+        [InlineData(null)]
+        public void Expression_Null(string value)
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Active);
+            IOperator op = sql.Op(() => person.Name == value);
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal("\"person\".\"Name\" IS NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id == SqlExp.Max(person.Id));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = MAX(\"person\".\"Id\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Bool()
+        {
+            ExpressionProcessor.AddFunction(typeof(CustomExp), nameof(CustomExp.IsNumeric));
+
+            Person person = null;
+            IOperator op = sql.Op(() => CustomExp.IsNumeric(person.Id));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("ISNUMERIC(\"person\".\"Id\") = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = true
@@ -641,48 +729,189 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Expression_Bool_Property_Negation()
+        public void Expression_Function_Bool_Negation()
         {
+            ExpressionProcessor.AddFunction(typeof(CustomExp), nameof(CustomExp.IsNumeric));
+
             Person person = null;
-            IOperator op = sql.Op(() => !person.Active);
+            IOperator op = sql.Op(() => !CustomExp.IsNumeric(person.Id));
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal("ISNUMERIC(\"person\".\"Id\") = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = false
             }, result.Parameters);
         }
 
-        [Theory]
-        [MemberData(nameof(DataBool))]
-        public void Expression_Bool(bool value)
+        [Fact]
+        public void Expression_Function_As()
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Active == value);
+            IOperator op = sql.Op(() => person.Id == SqlExp.As<int>(person.Name));
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal("\"person\".\"Id\" = \"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As_Bool()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.As<bool>(person.Name));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = value
+                ["@p0"] = true
             }, result.Parameters);
         }
 
         [Fact]
-        public void Expression_Bool_Inline_Value()
+        public void Expression_Function_As_Bool_Negation()
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Active == true);
+            IOperator op = sql.Op(() => !SqlExp.As<bool>(person.Name));
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal("\"person\".\"Name\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = false
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As_SubQuery()
+        {
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => person.Id == SqlExp.As<int>(query));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As_SubQuery_Bool()
+        {
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => SqlExp.As<bool>(query));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(Subquery) = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = true
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As_SubQuery_Bool_Negation()
+        {
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => !SqlExp.As<bool>(query));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(Subquery) = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = false
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id == SqlExp.Cast<int>(person.Name, sql.Type("INT")));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = CAST(\"person\".\"Name\" AS INT)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast_Bool()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.Cast<bool>(person.Name, sql.Type("BOOL")));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("CAST(\"person\".\"Name\" AS BOOL) = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast_Bool_Negation()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => !SqlExp.Cast<bool>(person.Name, sql.Type("BOOL")));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("CAST(\"person\".\"Name\" AS BOOL) = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = false
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast_SubQuery()
+        {
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => person.Id == SqlExp.Cast<int>(query, sql.Type("INT")));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = CAST((Subquery) AS INT)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast_SubQuery_Bool()
+        {
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => SqlExp.Cast<bool>(query, sql.Type("BOOL")));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("CAST((Subquery) AS BOOL) = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = true
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast_SubQuery_Bool_Negation()
+        {
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => !SqlExp.Cast<bool>(query, sql.Type("BOOL")));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("CAST((Subquery) AS BOOL) = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = false
             }, result.Parameters);
         }
 
@@ -714,6 +943,22 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataObject))]
+        public void Expression_Method_Bool_Property(object value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => SqlExp.Eq(person.Active, value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
             }, result.Parameters);
         }
 
@@ -853,19 +1098,11 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Expression_Method_Invalid_Call()
+        public void Expression_Method_SubQuery()
         {
-            Person person = new Person();
-
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Eq(person.Id, 1));
-            Assert.Equal("Only for expressions.", ex.Message);
-        }
-
-        [Fact]
-        public void Subquery()
-        {
-            IAlias person = sql.Alias("person");
-            IOperator op = sql.Eq(person["Id"], sql.RawQuery("Subquery"));
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => SqlExp.Eq(person.Id, query));
 
             QueryResult result = engine.Compile(op);
 
@@ -874,20 +1111,98 @@ namespace Suilder.Test.Builder.Operators
         }
 
         [Fact]
-        public void Expression_Bool_Function()
+        public void Expression_Method_Invalid_Call()
         {
-            ExpressionProcessor.AddFunction(typeof(CustomExp), nameof(CustomExp.IsNumeric));
+            Person person = new Person();
 
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Eq(person.Id, 1));
+            Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_Val_Method(int value)
+        {
             Person person = null;
-            IOperator op = sql.Op(() => CustomExp.IsNumeric(person.Id));
+            IOperator op = (IOperator)sql.Val(() => person.Id == value);
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("ISNUMERIC(\"person\".\"Id\") = @p0", result.Sql);
+            Assert.Equal("\"person\".\"Id\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
-                ["@p0"] = true
+                ["@p0"] = value
             }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Eq(sql.Gt(person["Id"], 10), sql.Lt(person["Id"], 20));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Id\" > @p0) = (\"person\".\"Id\" < @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Eq(sql.Add.Add(person["Salary"], 1000m), sql.Multiply.Add(person["Salary"], 2m));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Salary\" + @p0) = (\"person\".\"Salary\" * @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1000m,
+                ["@p1"] = 2m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubQuery()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op1 = sql.Eq(person["Id"], sql.RawQuery("Subquery"));
+            IOperator op2 = sql.Eq(sql.RawQuery("Subquery"), person["Id"]);
+            IOperator op3 = sql.Eq(sql.RawQuery("Subquery1"), sql.RawQuery("Subquery2"));
+
+            QueryResult result;
+
+            result = engine.Compile(op1);
+
+            Assert.Equal("\"person\".\"Id\" = (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+
+            result = engine.Compile(op2);
+
+            Assert.Equal("(Subquery) = \"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+
+            result = engine.Compile(op3);
+
+            Assert.Equal("(Subquery1) = (Subquery2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void SubQuery_Operator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Eq(person["Id"], sql.Any(sql.RawQuery("Subquery")));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = ANY (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -896,6 +1211,15 @@ namespace Suilder.Test.Builder.Operators
             Person person = new Person();
 
             Exception ex = Assert.Throws<ArgumentException>(() => sql.Op(() => CustomExp.Invalid(person.Id)));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Expression_Bool_Function_Negation()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Op(() => !CustomExp.Invalid(person.Id)));
             Assert.Equal("Invalid expression.", ex.Message);
         }
 
@@ -926,11 +1250,42 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal("dept.Tags = [\"abcd\", \"efgh\", \"ijkl\"]", op.ToString());
         }
 
+        [Fact]
+        public void To_String_SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Eq(sql.Gt(person["Id"], 10), sql.Lt(person["Id"], 20));
+
+            Assert.Equal("(person.Id > 10) = (person.Id < 20)", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Eq(sql.Add.Add(person["Salary"], 1000m), sql.Multiply.Add(person["Salary"], 2m));
+
+            Assert.Equal("(person.Salary + 1000) = (person.Salary * 2)", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubQuery()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op1 = sql.Eq(person["Id"], sql.RawQuery("Subquery"));
+            IOperator op2 = sql.Eq(sql.RawQuery("Subquery"), person["Id"]);
+            IOperator op3 = sql.Eq(sql.RawQuery("Subquery1"), sql.RawQuery("Subquery2"));
+
+            Assert.Equal("person.Id = (Subquery)", op1.ToString());
+            Assert.Equal("(Subquery) = person.Id", op2.ToString());
+            Assert.Equal("(Subquery1) = (Subquery2)", op3.ToString());
+        }
+
         private static class CustomExp
         {
             public static bool IsNumeric(object value)
             {
-                throw new InvalidOperationException("Only for expressions.");
+                throw new NotSupportedException("Only for expressions.");
             }
 
             public static bool Invalid(object value)

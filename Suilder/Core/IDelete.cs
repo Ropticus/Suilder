@@ -40,9 +40,9 @@ namespace Suilder.Core
         IDeleteTop Top(object fetch);
 
         /// <summary>
-        /// Adds a value to the <see cref="IDelete"/>.
+        /// Adds a value to the end of the <see cref="IDelete"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IDelete"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IDelete"/>.</param>
         /// <returns>The "delete" statement.</returns>
         new IDelete Add(IAlias value);
 
@@ -63,9 +63,9 @@ namespace Suilder.Core
         new IDelete Add(IEnumerable<IAlias> values);
 
         /// <summary>
-        /// Adds a value to the <see cref="IDelete"/>.
+        /// Adds a value to the end of the <see cref="IDelete"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IDelete"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IDelete"/>.</param>
         /// <returns>The "delete" statement.</returns>
         new IDelete Add(Expression<Func<object>> value);
 

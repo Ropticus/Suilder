@@ -101,7 +101,8 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
 
             Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "AddressStreet", "AddressCity" },
                 personInfo.ColumnNames);
-            Assert.Equal(new string[] { "Id", "Salary", "DepartmentId", "DepartmentGuid", "Image" }, employeeInfo.ColumnNames);
+            Assert.Equal(new string[] { "Id", "Salary", "DepartmentId", "DepartmentGuid", "Image" },
+                employeeInfo.ColumnNames);
             Assert.Equal(new string[] { "Id", "Guid", "Name", "BossGuid", "BossId", "Tags" }, deptInfo.ColumnNames);
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Suilder.Builder;
 using Suilder.Core;
@@ -18,6 +19,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -29,6 +31,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Dept\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -41,6 +44,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -53,6 +57,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -65,6 +70,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -110,7 +116,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             Person person = null;
             IAlias alias = sql.Alias(() => person);
 
-            Assert.Equal("Person AS person", alias.ToString());
+            Assert.Equal("Person", alias.ToString());
         }
     }
 }

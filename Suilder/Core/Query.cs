@@ -1372,7 +1372,7 @@ namespace Suilder.Core
                 if (!(WhereValue is IRawSql))
                     queryBuilder.Write("WHERE ");
 
-                queryBuilder.WriteFragment(WhereValue, false).Write(" ");
+                queryBuilder.WriteFragment(WhereValue).Write(" ");
             }
 
             if (GroupByValue != null)
@@ -1388,7 +1388,7 @@ namespace Suilder.Core
                 if (!(HavingValue is IRawSql))
                     queryBuilder.Write("HAVING ");
 
-                queryBuilder.WriteFragment(HavingValue, false).Write(" ");
+                queryBuilder.WriteFragment(HavingValue).Write(" ");
             }
 
             if (OrderByValue != null)
@@ -1434,7 +1434,7 @@ namespace Suilder.Core
                     string separator = ", ";
                     foreach (IValList row in InsertValues)
                     {
-                        queryBuilder.Write("(").WriteFragment(row).Write(")").Write(separator);
+                        queryBuilder.WriteFragment(row, true).Write(separator);
                     }
                     queryBuilder.RemoveLast(separator.Length).Write(" ");
                 }
@@ -1551,7 +1551,7 @@ namespace Suilder.Core
                 .IfNotNull(WithValue, x => b.WriteFragment(x).Write(" "))
                 .IfNotNull(InsertValue, x => b.WriteFragment(x).Write(" "))
                 .IfNotNull(InsertValues, x => b.Write("VALUES ")
-                    .Join(", ", x, item => b.Write("(").WriteFragment(item).Write(")")).Write(" "))
+                    .Join(", ", x, item => b.WriteFragment(item, true)).Write(" "))
                 .IfNotNull(SelectValue, x => b.WriteFragment(x).Write(" "))
                 .IfNotNull(UpdateValue, x => b.WriteFragment(x).Write(" "))
                 .IfNotNull(SetValues, x => b.Write("SET ")

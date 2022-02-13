@@ -110,6 +110,18 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void Add_One_Value()
+        {
+            IAlias person = sql.Alias("person");
+            IFunction func = sql.Function("CONCAT").Add(person["Name"]);
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("CONCAT(\"person\".\"Name\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Expression()
         {
             Person person = null;
@@ -240,6 +252,67 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            IFunction func = sql.Function("CONCAT").Add(sql.Gt(person["Id"], 10), sql.Lt(person["Id"], 20));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("CONCAT(\"person\".\"Id\" > @p0, \"person\".\"Id\" < @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            IFunction func = sql.Function("CONCAT").Add(sql.Add.Add(person["Salary"], 1000m),
+                sql.Multiply.Add(person["Salary"], 2m));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("CONCAT(\"person\".\"Salary\" + @p0, \"person\".\"Salary\" * @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1000m,
+                ["@p1"] = 2m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubQuery()
+        {
+            IFunction func = sql.Function("CONCAT").Add(sql.RawQuery("Subquery1"), sql.RawQuery("Subquery2"));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("CONCAT((Subquery1), (Subquery2))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Count_List()
+        {
+            IAlias person = sql.Alias("person");
+            IFunction func = sql.Function("CONCAT");
+            object[] values = new object[] { person["Name"], ", ", person["SurName"] };
+
+            int i = 0;
+            Assert.Equal(i, func.Count);
+
+            foreach (object value in values)
+            {
+                func.Add(value);
+                Assert.Equal(++i, func.Count);
+            }
+        }
+
+        [Fact]
         public void To_String()
         {
             IAlias person = sql.Alias("person");
@@ -249,6 +322,15 @@ namespace Suilder.Test.Builder
                 .Add(person["SurName"]);
 
             Assert.Equal("CONCAT(person.Name, \", \", person.SurName)", func.ToString());
+        }
+
+        [Fact]
+        public void To_String_One_Value()
+        {
+            IAlias person = sql.Alias("person");
+            IFunction func = sql.Function("CONCAT").Add(person["Name"]);
+
+            Assert.Equal("CONCAT(person.Name)", func.ToString());
         }
 
         [Fact]

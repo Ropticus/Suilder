@@ -102,7 +102,7 @@ namespace Suilder.Test.Builder.Functions
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("\"person\".\"Name\" || \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("(\"person\".\"Name\" || \"person\".\"SurName\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

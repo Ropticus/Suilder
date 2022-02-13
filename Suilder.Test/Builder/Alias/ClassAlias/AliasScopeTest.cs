@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Suilder.Builder;
 using Suilder.Core;
@@ -25,6 +26,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -35,6 +37,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -45,6 +48,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -55,6 +59,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -65,6 +70,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -75,6 +81,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -86,6 +93,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -97,6 +105,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -108,6 +117,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -119,6 +129,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -130,6 +141,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -141,6 +153,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             QueryResult result = engine.Compile(alias);
 
             Assert.Equal("\"Person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]

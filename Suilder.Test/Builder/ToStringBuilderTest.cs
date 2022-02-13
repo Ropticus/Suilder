@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Suilder.Builder;
 using Suilder.Core;
@@ -18,53 +19,401 @@ namespace Suilder.Test.Builder
         [Fact]
         public void WriteFragment()
         {
-            IFrom from = sql.From("person");
-            string result = ToStringBuilder.Build(b => b.WriteFragment(from));
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
 
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(from));
             Assert.Equal("FROM person", result);
-        }
 
-        [Fact]
-        public void WriteFragment_SubQuery()
-        {
-            IQuery query = sql.Query.From("person");
-            string result = ToStringBuilder.Build(b => b.WriteFragment(query));
+            result = ToStringBuilder.Build(b => b.WriteFragment(op));
+            Assert.Equal("person.Id = 1", result);
 
+            result = ToStringBuilder.Build(b => b.WriteFragment(query));
             Assert.Equal("(FROM person)", result);
         }
 
         [Fact]
-        public void WriteFragment_Parentheses()
+        public void WriteFragment_Parentheses_False()
         {
-            IFrom from = sql.From("person");
-            string result = ToStringBuilder.Build(b => b.WriteFragment(from, true));
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
 
-            Assert.Equal("(FROM person)", result);
-        }
+            string result;
 
-        [Fact]
-        public void WriteValue_Fragment()
-        {
-            IFrom from = sql.From("person");
-            string result = ToStringBuilder.Build(b => b.WriteValue(from));
+            result = ToStringBuilder.Build(b => b.WriteFragment(from, false));
+            Assert.Equal("FROM person", result);
 
+            result = ToStringBuilder.Build(b => b.WriteFragment(op, false));
+            Assert.Equal("person.Id = 1", result);
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(query, false));
             Assert.Equal("FROM person", result);
         }
 
         [Fact]
-        public void WriteValue_Parameter()
+        public void WriteFragment_Parentheses_True()
         {
-            string result = ToStringBuilder.Build(b => b.WriteValue("value"));
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
 
-            Assert.Equal("\"value\"", result);
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(from, true));
+            Assert.Equal("(FROM person)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(op, true));
+            Assert.Equal("(person.Id = 1)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(query, true));
+            Assert.Equal("(FROM person)", result);
+        }
+
+        [Fact]
+        public void WriteFragment_Parentheses_Never()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
+
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(from, Parentheses.Never));
+            Assert.Equal("FROM person", result);
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(op, Parentheses.Never));
+            Assert.Equal("person.Id = 1", result);
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(query, Parentheses.Never));
+            Assert.Equal("FROM person", result);
+        }
+
+        [Fact]
+        public void WriteFragment_Parentheses_SubFragment()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
+
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(from, Parentheses.SubFragment));
+            Assert.Equal("FROM person", result);
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(op, Parentheses.SubFragment));
+            Assert.Equal("(person.Id = 1)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(query, Parentheses.SubFragment));
+            Assert.Equal("(FROM person)", result);
+        }
+
+        [Fact]
+        public void WriteFragment_Parentheses_SubQuery()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
+
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(from, Parentheses.SubQuery));
+            Assert.Equal("FROM person", result);
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(op, Parentheses.SubQuery));
+            Assert.Equal("person.Id = 1", result);
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(query, Parentheses.SubQuery));
+            Assert.Equal("(FROM person)", result);
+        }
+
+        [Fact]
+        public void WriteFragment_Parentheses_Always()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
+
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(from, Parentheses.Always));
+            Assert.Equal("(FROM person)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(op, Parentheses.Always));
+            Assert.Equal("(person.Id = 1)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteFragment(query, Parentheses.Always));
+            Assert.Equal("(FROM person)", result);
+        }
+
+        [Fact]
+        public void Invalid_WriteFragment_Parentheses()
+        {
+            IFrom from = sql.From("person");
+
+            Exception ex = Assert.Throws<ArgumentException>(() =>
+                ToStringBuilder.Build(b => b.WriteFragment(from, (Parentheses)int.MaxValue)));
+            Assert.Equal($"Invalid value. (Parameter 'parentheses')", ex.Message);
+        }
+
+        [Fact]
+        public void WriteValue()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
+            string value = "abcd";
+
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteValue(from));
+            Assert.Equal("FROM person", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(op));
+            Assert.Equal("person.Id = 1", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(query));
+            Assert.Equal("(FROM person)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(value));
+            Assert.Equal("\"abcd\"", result);
+        }
+
+        [Fact]
+        public void WriteValue_Parentheses_False()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
+            string value = "abcd";
+
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteValue(from, false));
+            Assert.Equal("FROM person", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(op, false));
+            Assert.Equal("person.Id = 1", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(query, false));
+            Assert.Equal("FROM person", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(value, false));
+            Assert.Equal("\"abcd\"", result);
+        }
+
+        [Fact]
+        public void WriteValue_Parentheses_True()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
+            string value = "abcd";
+
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteValue(from, true));
+            Assert.Equal("(FROM person)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(op, true));
+            Assert.Equal("(person.Id = 1)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(query, true));
+            Assert.Equal("(FROM person)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(value, true));
+            Assert.Equal("(\"abcd\")", result);
+        }
+
+        [Fact]
+        public void WriteValue_Parentheses_Never()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
+            string value = "abcd";
+
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteValue(from, Parentheses.Never));
+            Assert.Equal("FROM person", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(op, Parentheses.Never));
+            Assert.Equal("person.Id = 1", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(query, Parentheses.Never));
+            Assert.Equal("FROM person", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(value, Parentheses.Never));
+            Assert.Equal("\"abcd\"", result);
+        }
+
+        [Fact]
+        public void WriteValue_Parentheses_SubFragment()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
+            string value = "abcd";
+
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteValue(from, Parentheses.SubFragment));
+            Assert.Equal("FROM person", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(op, Parentheses.SubFragment));
+            Assert.Equal("(person.Id = 1)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(query, Parentheses.SubFragment));
+            Assert.Equal("(FROM person)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(value, Parentheses.SubFragment));
+            Assert.Equal("\"abcd\"", result);
+        }
+
+        [Fact]
+        public void WriteValue_Parentheses_SubQuery()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
+            string value = "abcd";
+
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteValue(from, Parentheses.SubQuery));
+            Assert.Equal("FROM person", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(op, Parentheses.SubQuery));
+            Assert.Equal("person.Id = 1", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(query, Parentheses.SubQuery));
+            Assert.Equal("(FROM person)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(value, Parentheses.SubQuery));
+            Assert.Equal("\"abcd\"", result);
+        }
+
+        [Fact]
+        public void WriteValue_Parentheses_Always()
+        {
+            IAlias person = sql.Alias("person");
+            IFrom from = sql.From(person);
+            IOperator op = sql.Eq(person["Id"], 1);
+            IQuery query = sql.Query.From(from);
+            string value = "abcd";
+
+            string result;
+
+            result = ToStringBuilder.Build(b => b.WriteValue(from, Parentheses.Always));
+            Assert.Equal("(FROM person)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(op, Parentheses.Always));
+            Assert.Equal("(person.Id = 1)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(query, Parentheses.Always));
+            Assert.Equal("(FROM person)", result);
+
+            result = ToStringBuilder.Build(b => b.WriteValue(value, Parentheses.Always));
+            Assert.Equal("(\"abcd\")", result);
+        }
+
+        [Fact]
+        public void Invalid_WriteValue_Parentheses()
+        {
+            IFrom from = sql.From("person");
+
+            Exception ex = Assert.Throws<ArgumentException>(() =>
+                ToStringBuilder.Build(b => b.WriteValue(from, (Parentheses)int.MaxValue)));
+            Assert.Equal($"Invalid value. (Parameter 'parentheses')", ex.Message);
+        }
+
+        [Fact]
+        public void WriteParameter()
+        {
+            string result = ToStringBuilder.Build(b => b.WriteParameter("abcd"));
+
+            Assert.Equal("\"abcd\"", result);
+        }
+
+        [Fact]
+        public void WriteParameter_Parentheses_False()
+        {
+            string result = ToStringBuilder.Build(b => b.WriteParameter("abcd", false));
+
+            Assert.Equal("\"abcd\"", result);
+        }
+
+        [Fact]
+        public void WriteParameter_Parentheses_True()
+        {
+            string result = ToStringBuilder.Build(b => b.WriteParameter("abcd", true));
+
+            Assert.Equal("(\"abcd\")", result);
+        }
+
+        [Fact]
+        public void WriteParameter_Parentheses_Never()
+        {
+            string result = ToStringBuilder.Build(b => b.WriteParameter("abcd", Parentheses.Never));
+
+            Assert.Equal("\"abcd\"", result);
+        }
+
+        [Fact]
+        public void WriteParameter_Parentheses_SubFragment()
+        {
+            string result = ToStringBuilder.Build(b => b.WriteParameter("abcd", Parentheses.SubFragment));
+
+            Assert.Equal("\"abcd\"", result);
+        }
+
+        [Fact]
+        public void WriteParameter_Parentheses_SubQuery()
+        {
+            string result = ToStringBuilder.Build(b => b.WriteParameter("abcd", Parentheses.SubQuery));
+
+            Assert.Equal("\"abcd\"", result);
+        }
+
+        [Fact]
+        public void WriteParameter_Parentheses__Always()
+        {
+            string result = ToStringBuilder.Build(b => b.WriteParameter("abcd", Parentheses.Always));
+
+            Assert.Equal("(\"abcd\")", result);
+        }
+
+        [Fact]
+        public void Invalid_WriteParameter_Parentheses()
+        {
+            Exception ex = Assert.Throws<ArgumentException>(() =>
+                ToStringBuilder.Build(b => b.WriteParameter("abcd", (Parentheses)int.MaxValue)));
+            Assert.Equal($"Invalid value. (Parameter 'parentheses')", ex.Message);
         }
 
         [Fact]
         public void WriteParameter_String()
         {
-            string result = ToStringBuilder.Build(b => b.WriteParameter("value"));
+            string result = ToStringBuilder.Build(b => b.WriteParameter("abcd"));
 
-            Assert.Equal("\"value\"", result);
+            Assert.Equal("\"abcd\"", result);
         }
 
         [Fact]
@@ -90,15 +439,15 @@ namespace Suilder.Test.Builder
         {
             string result = ToStringBuilder.Build(b => b.WriteParameter(null));
 
-            Assert.Equal("NULL", result);
+            Assert.Equal("null", result);
         }
 
         [Fact]
         public void WriteParameter_Enumerable()
         {
-            string result = ToStringBuilder.Build(b => b.WriteParameter(new object[] { "value", true, false, 1, null }));
+            string result = ToStringBuilder.Build(b => b.WriteParameter(new object[] { "abcd", true, false, 1, null }));
 
-            Assert.Equal("[\"value\", true, false, 1, NULL]", result);
+            Assert.Equal("[\"abcd\", true, false, 1, null]", result);
         }
 
         [Fact]

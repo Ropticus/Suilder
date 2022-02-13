@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
 using Xunit;
@@ -14,6 +15,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -26,10 +28,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM DUAL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void From_Dummy_To_String()
+        public void To_String()
         {
             IRawSql from = sql.FromDummy;
 

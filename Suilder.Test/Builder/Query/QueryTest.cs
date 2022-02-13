@@ -184,7 +184,7 @@ namespace Suilder.Test.Builder.Query
         {
             IAlias person = sql.Alias("person");
             IAlias dept = sql.Alias("dept");
-            IAlias personCte = sql.Alias("", "personCte");
+            IAlias personCte = sql.Alias("personCte");
             ICte cte = sql.Cte("cte").As(sql.Query
                 .Select(person.All)
                 .From(person)
@@ -238,14 +238,21 @@ namespace Suilder.Test.Builder.Query
         public void Before()
         {
             IAlias person = sql.Alias("person");
+            IAlias personCte = sql.Alias("personCte");
+            ICte cte = sql.Cte("cte").As(sql.Query
+                .Select(person.All)
+                .From(person));
+
             IQuery query = sql.Query
                 .Before(sql.Raw("BEFORE VALUE"))
-                .Select(person.All)
-                .From(person);
+                .With(cte)
+                .Select(personCte.All)
+                .From(cte, personCte);
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("BEFORE VALUE SELECT \"person\".* FROM \"person\"", result.Sql);
+            Assert.Equal("BEFORE VALUE WITH \"cte\" AS (SELECT \"person\".* FROM \"person\") "
+                + "SELECT \"personCte\".* FROM \"cte\" AS \"personCte\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -256,12 +263,18 @@ namespace Suilder.Test.Builder.Query
             IQuery query = sql.Query
                 .Select(person.All)
                 .From(person)
+                .Offset(10, 20)
                 .After(sql.Raw("AFTER VALUE"));
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("SELECT \"person\".* FROM \"person\" AFTER VALUE", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("SELECT \"person\".* FROM \"person\" OFFSET @p0 ROWS FETCH NEXT @p1 ROWS ONLY AFTER VALUE",
+                result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]
@@ -269,7 +282,8 @@ namespace Suilder.Test.Builder.Query
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query;
-            QueryResult result = null;
+
+            QueryResult result;
 
             // Select
             query.Select(person.All)
@@ -361,7 +375,7 @@ namespace Suilder.Test.Builder.Query
         }
 
         [Fact]
-        public void Subquery()
+        public void As_SubQuery()
         {
             IAlias person = sql.Alias("person");
             IQuery query = sql.Query

@@ -10,9 +10,9 @@ namespace Suilder.Core
     public class SubList : ValList, ISubList
     {
         /// <summary>
-        /// Adds a value to the <see cref="ISubList"/>.
+        /// Adds a value to the end of the <see cref="ISubList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ISubList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ISubList"/>.</param>
         /// <returns>The sublist of values.</returns>
         ISubList ISubList.Add(object value)
         {
@@ -45,9 +45,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="ISubList"/>.
+        /// Adds a value to the end of the <see cref="ISubList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ISubList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ISubList"/>.</param>
         /// <returns>The sublist of values.</returns>
         ISubList ISubList.Add(Expression<Func<object>> value)
         {

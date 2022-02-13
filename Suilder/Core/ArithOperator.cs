@@ -29,9 +29,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IArithOperator"/>.
+        /// Adds a value to the end of the <see cref="IArithOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IArithOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IArithOperator"/>.</param>
         public override void Add(Expression<Func<object>> value)
         {
             Values.Add(SqlBuilder.Instance.Val(value));
@@ -58,9 +58,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IArithOperator"/>.
+        /// Adds a value to the end of the <see cref="IArithOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IArithOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IArithOperator"/>.</param>
         /// <returns>The arithmetic operator.</returns>
         IArithOperator IArithOperator.Add(object value)
         {
@@ -93,9 +93,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IArithOperator"/>.
+        /// Adds a value to the end of the <see cref="IArithOperator"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IArithOperator"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IArithOperator"/>.</param>
         /// <returns>The arithmetic operator.</returns>
         IArithOperator IArithOperator.Add(Expression<Func<object>> value)
         {
@@ -140,7 +140,7 @@ namespace Suilder.Core
             string separator = " " + Op + " ";
             foreach (object value in Values)
             {
-                queryBuilder.WriteValue(value).Write(separator);
+                queryBuilder.WriteValue(value, Parentheses.SubFragment).Write(separator);
             }
             queryBuilder.RemoveLast(separator.Length);
         }
@@ -151,7 +151,8 @@ namespace Suilder.Core
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return ToStringBuilder.Build(b => b.Join(" " + Op + " ", Values, (x) => b.WriteValue(x)));
+            return ToStringBuilder.Build(b => b
+                .Join(" " + Op + " ", Values, (x) => b.WriteValue(x, Parentheses.SubFragment)));
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Suilder.Test.Reflection.Builder
             ITableInfo propertyInfo = tableBuilder.GetConfig<PropertyTest>();
 
             Assert.Equal(new string[] { "PropertyPublicGetSet", "Array", "List", "Dic", "CustomStruct", "CustomClass",
-                "CustomList" }, propertyInfo.Columns);
+                "CustomList", "CustomEnum" }, propertyInfo.Columns);
         }
 
         [Fact]
@@ -82,6 +82,8 @@ namespace Suilder.Test.Reflection.Builder
             public CustomClass CustomClass { get; set; }
 
             public CustomList CustomList { get; set; }
+
+            public CustomEnum CustomEnum { get; set; }
         }
 
         private struct CustomStruct
@@ -96,6 +98,11 @@ namespace Suilder.Test.Reflection.Builder
 
         private class CustomList : List<int>
         {
+        }
+
+        private enum CustomEnum
+        {
+            ValueA, ValueB
         }
 
         private class Recursive

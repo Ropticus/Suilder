@@ -10,9 +10,9 @@ namespace Suilder.Core
     public interface ISubList : IValList, ISubQuery
     {
         /// <summary>
-        /// Adds a value to the <see cref="ISubList"/>.
+        /// Adds a value to the end of the <see cref="ISubList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ISubList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ISubList"/>.</param>
         /// <returns>The sublist of values.</returns>
         new ISubList Add(object value);
 
@@ -33,9 +33,9 @@ namespace Suilder.Core
         new ISubList Add(IEnumerable<object> values);
 
         /// <summary>
-        /// Adds a value to the <see cref="ISubList"/>.
+        /// Adds a value to the end of the <see cref="ISubList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="ISubList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="ISubList"/>.</param>
         /// <returns>The sublist of values.</returns>
         new ISubList Add(Expression<Func<object>> value);
 

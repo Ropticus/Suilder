@@ -192,6 +192,18 @@ namespace Suilder.Test.Builder.Delete
         }
 
         [Fact]
+        public void Add_One_Value()
+        {
+            IAlias person = sql.Alias("person");
+            IDelete delete = sql.Delete().Add(person);
+
+            QueryResult result = engine.Compile(delete);
+
+            Assert.Equal("DELETE \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void To_String()
         {
             IDelete delete = sql.Delete().Top(10);
@@ -209,6 +221,15 @@ namespace Suilder.Test.Builder.Delete
                 .Add(dept);
 
             Assert.Equal("DELETE person, dept", delete.ToString());
+        }
+
+        [Fact]
+        public void To_String_One_Value()
+        {
+            IAlias person = sql.Alias("person");
+            IDelete delete = sql.Delete().Add(person);
+
+            Assert.Equal("DELETE person", delete.ToString());
         }
     }
 }

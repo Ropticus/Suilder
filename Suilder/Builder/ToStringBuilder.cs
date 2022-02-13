@@ -59,6 +59,29 @@ namespace Suilder.Builder
         /// Writes an <see cref="IQueryFragment"/> to the builder.
         /// </summary>
         /// <param name="value">The <see cref="IQueryFragment"/> to write.</param>
+        /// <param name="parentheses">When to add parentheses to the <see cref="IQueryFragment"/>.</param>
+        /// <returns>The string builder.</returns>
+        public ToStringBuilder WriteFragment(IQueryFragment value, Parentheses parentheses)
+        {
+            switch (parentheses)
+            {
+                case Parentheses.Never:
+                    return WriteFragment(value, false);
+                case Parentheses.SubFragment:
+                    return WriteFragment(value, value is ISubFragment);
+                case Parentheses.SubQuery:
+                    return WriteFragment(value, value is ISubQuery);
+                case Parentheses.Always:
+                    return WriteFragment(value, true);
+                default:
+                    throw new ArgumentException("Invalid value.", nameof(parentheses));
+            }
+        }
+
+        /// <summary>
+        /// Writes an <see cref="IQueryFragment"/> to the builder.
+        /// </summary>
+        /// <param name="value">The <see cref="IQueryFragment"/> to write.</param>
         /// <param name="addParentheses">If add parentheses to the <see cref="IQueryFragment"/>.</param>
         /// <returns>The string builder.</returns>
         public ToStringBuilder WriteFragment(IQueryFragment value, bool addParentheses)
@@ -75,69 +98,134 @@ namespace Suilder.Builder
         }
 
         /// <summary>
-        /// Writes an object to the query.
+        /// Writes a value to the builder.
         /// </summary>
-        /// <param name="value">The object to write.</param>
+        /// <param name="value">The value to write.</param>
         /// <returns>The string builder.</returns>
         public ToStringBuilder WriteValue(object value)
         {
             if (value is IQueryFragment queryFragment)
-                WriteFragment(queryFragment);
+                return WriteFragment(queryFragment);
             else
-                WriteParameter(value);
+                return WriteParameter(value);
+        }
+
+        /// <summary>
+        /// Writes a value to the builder.
+        /// </summary>
+        /// <param name="value">The value to write.</param>
+        /// <param name="parentheses">When to add parentheses to the value.</param>
+        /// <returns>The string builder.</returns>
+        public ToStringBuilder WriteValue(object value, Parentheses parentheses)
+        {
+            if (value is IQueryFragment queryFragment)
+                return WriteFragment(queryFragment, parentheses);
+            else
+                return WriteParameter(value, parentheses);
+        }
+
+        /// <summary>
+        /// Writes a value to the builder.
+        /// </summary>
+        /// <param name="value">The value to write.</param>
+        /// <param name="addParentheses">If add parentheses to the value.</param>
+        /// <returns>The string builder.</returns>
+        public ToStringBuilder WriteValue(object value, bool addParentheses)
+        {
+            if (value is IQueryFragment queryFragment)
+                return WriteFragment(queryFragment, addParentheses);
+            else
+                return WriteParameter(value, addParentheses);
+        }
+
+        /// <summary>
+        /// Writes a parameter to the builder.
+        /// </summary>
+        /// <param name="value">The parameter value.</param>
+        /// <param name="parentheses">When to add parentheses to the parameter.</param>
+        /// <returns>The string builder.</returns>
+        public ToStringBuilder WriteParameter(object value, Parentheses parentheses)
+        {
+            switch (parentheses)
+            {
+                case Parentheses.Never:
+                case Parentheses.SubFragment:
+                case Parentheses.SubQuery:
+                    return WriteParameter(value);
+                case Parentheses.Always:
+                    return WriteParameter(value, true);
+                default:
+                    throw new ArgumentException("Invalid value.", nameof(parentheses));
+            }
+        }
+
+        /// <summary>
+        /// Writes a parameter to the builder.
+        /// </summary>
+        /// <param name="value">The parameter value.</param>
+        /// <param name="addParentheses">If add parentheses to the parameter.</param>
+        /// <returns>The string builder.</returns>
+        public ToStringBuilder WriteParameter(object value, bool addParentheses)
+        {
+            if (addParentheses)
+                Builder.Append("(");
+
+            WriteParameter(value);
+
+            if (addParentheses)
+                Builder.Append(")");
+
             return this;
         }
 
         /// <summary>
-        /// Add a parameter to the query.
+        /// Writes a parameter to the builder.
         /// </summary>
         /// <param name="value">The parameter value.</param>
         /// <returns>The string builder.</returns>
         public ToStringBuilder WriteParameter(object value)
         {
-            if (!(value is string) && value is IEnumerable list)
+            switch (value)
             {
-                Builder.Append("[");
-                string separator = ", ";
-                int i = 0, max = 5;
-                foreach (object item in list)
-                {
-                    if (i < max)
-                        WriteParameter(item);
-                    else
-                        Builder.Append("...");
+                case string valueString:
+                    Builder.Append("\"" + valueString + "\"");
+                    break;
+                case bool valueBool:
+                    Builder.Append(valueBool ? "true" : "false");
+                    break;
+                case IEnumerable list:
+                    Builder.Append("[");
+                    string separator = ", ";
+                    int i = 0, max = 5;
+                    foreach (object item in list)
+                    {
+                        if (i < max)
+                            WriteParameter(item);
+                        else
+                            Builder.Append("...");
 
-                    Builder.Append(separator);
+                        Builder.Append(separator);
 
-                    if (i++ >= max)
-                        break;
-                }
-                if (i > 1)
-                    RemoveLast(separator.Length);
-                Builder.Append("]");
-            }
-            else if (value == null)
-            {
-                Builder.Append("NULL");
-            }
-            else if (value is string valueString)
-            {
-                Builder.Append("\"" + valueString + "\"");
-            }
-            else if (value is bool valueBool)
-            {
-                Builder.Append(valueBool ? "true" : "false");
-            }
-            else
-            {
-                Builder.Append(value);
+                        if (i++ >= max)
+                            break;
+                    }
+                    if (i > 1)
+                        RemoveLast(separator.Length);
+                    Builder.Append("]");
+                    break;
+                case null:
+                    Builder.Append("null");
+                    break;
+                default:
+                    Builder.Append(value);
+                    break;
             }
 
             return this;
         }
 
         /// <summary>
-        /// Removes the last characters of the query.
+        /// Removes the last characters of the builder.
         /// </summary>
         /// <param name="length">The length to remove.</param>
         /// <returns>The string builder.</returns>

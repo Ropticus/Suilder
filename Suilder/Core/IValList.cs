@@ -10,9 +10,9 @@ namespace Suilder.Core
     public interface IValList : IQueryFragmentList<object, object>
     {
         /// <summary>
-        /// Adds a value to the <see cref="IValList"/>.
+        /// Adds a value to the end of the <see cref="IValList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IValList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IValList"/>.</param>
         /// <returns>The list of values.</returns>
         new IValList Add(object value);
 
@@ -33,9 +33,9 @@ namespace Suilder.Core
         new IValList Add(IEnumerable<object> values);
 
         /// <summary>
-        /// Adds a value to the <see cref="IValList"/>.
+        /// Adds a value to the end of the <see cref="IValList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IValList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IValList"/>.</param>
         /// <returns>The list of values.</returns>
         new IValList Add(Expression<Func<object>> value);
 

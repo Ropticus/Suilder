@@ -116,10 +116,7 @@ namespace Suilder.Core
         public virtual IJoin Join(IQueryFragment value, string aliasName)
         {
             Source = value is ICte cte ? cte.Alias : value;
-            AliasName = aliasName;
-
-            if (AliasName == null)
-                throw new ArgumentNullException(nameof(aliasName), "Alias name is null.");
+            AliasName = aliasName ?? throw new ArgumentNullException(nameof(aliasName), "Alias name is null.");
 
             return this;
         }
@@ -133,10 +130,7 @@ namespace Suilder.Core
         public virtual IJoin Join(IQueryFragment value, IAlias alias)
         {
             Source = value is ICte cte ? cte.Alias : value;
-            AliasName = alias.AliasOrTableName;
-
-            if (AliasName == null)
-                throw new ArgumentException("Alias name is null.", nameof(alias));
+            AliasName = alias.AliasOrTableName ?? throw new ArgumentException("Alias name is null.", nameof(alias));
 
             return this;
         }
@@ -215,6 +209,8 @@ namespace Suilder.Core
                 case JoinType.Cross:
                     queryBuilder.Write("CROSS JOIN ");
                     break;
+                default:
+                    throw new CompileException($"Invalid join type \"{JoinType}\".");
             }
 
             queryBuilder.WriteFragment(Source);
@@ -235,7 +231,7 @@ namespace Suilder.Core
 
             if (OnValue != null)
             {
-                queryBuilder.Write(" ON ").WriteFragment(OnValue, false);
+                queryBuilder.Write(" ON ").WriteFragment(OnValue);
             }
         }
 
@@ -246,17 +242,7 @@ namespace Suilder.Core
         public override string ToString()
         {
             return ToStringBuilder.Build(b => b.Write(JoinType.ToString().ToUpper()).Write(" JOIN ")
-                .IfNotNull(Source, source =>
-                {
-                    if (source is IAlias alias)
-                    {
-                        return b.WriteFragment(source);
-                    }
-                    else
-                    {
-                        return b.WriteFragment(source).IfNotNull(AliasName, x => b.Write(" AS " + x));
-                    }
-                })
+                .WriteFragment(Source).IfNotNull(AliasName, x => b.Write(" AS " + x))
                 .IfNotNull(OptionsValue, x => b.Write(" ").WriteFragment(x))
                 .IfNotNull(OnValue, x => b.Write(" ON ").WriteFragment(x)));
         }

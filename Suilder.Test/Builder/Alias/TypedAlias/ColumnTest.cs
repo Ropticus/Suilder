@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Exceptions;
@@ -19,8 +20,9 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
 
             Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
                 + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
-                result.Sql);
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
+                + "\"person\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -33,8 +35,9 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
 
             Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
                 + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
-                result.Sql);
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
+                + "\"person\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -46,6 +49,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -57,6 +61,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -68,6 +73,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -79,6 +85,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person2\".\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -90,6 +97,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -102,8 +110,9 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
 
             Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
                 + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
-                result.Sql);
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
+                + "\"person\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -115,6 +124,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -126,6 +136,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -137,6 +148,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -148,6 +160,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person2\".\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -159,6 +172,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -171,8 +185,9 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
 
             Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
                 + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
-                result.Sql);
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
+                + "\"person\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -184,6 +199,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -195,6 +211,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -206,6 +223,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -217,6 +235,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person2\".\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -228,6 +247,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -240,8 +260,9 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
 
             Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
                 + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
-                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\"",
-                result.Sql);
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
+                + "\"person\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -253,6 +274,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -264,6 +286,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -275,6 +298,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -286,6 +310,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person2\".\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -297,6 +322,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"person\".\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -309,7 +335,9 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
 
             Assert.Equal("\"per\".\"Id\", \"per\".\"Active\", \"per\".\"Name\", \"per\".\"SurName\", "
                 + "\"per\".\"AddressStreet\", \"per\".\"AddressNumber\", \"per\".\"AddressCity\", "
-                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\"", result.Sql);
+                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\", "
+                + "\"per\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -322,7 +350,9 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
 
             Assert.Equal("\"per\".\"Id\", \"per\".\"Active\", \"per\".\"Name\", \"per\".\"SurName\", "
                 + "\"per\".\"AddressStreet\", \"per\".\"AddressNumber\", \"per\".\"AddressCity\", "
-                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\"", result.Sql);
+                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\", "
+                + "\"per\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -334,6 +364,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -345,6 +376,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -356,6 +388,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -367,6 +400,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -378,6 +412,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -390,7 +425,9 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
 
             Assert.Equal("\"per\".\"Id\", \"per\".\"Active\", \"per\".\"Name\", \"per\".\"SurName\", "
                 + "\"per\".\"AddressStreet\", \"per\".\"AddressNumber\", \"per\".\"AddressCity\", "
-                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\"", result.Sql);
+                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\", "
+                + "\"per\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -402,6 +439,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -413,6 +451,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -424,6 +463,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -435,6 +475,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -446,6 +487,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -458,7 +500,9 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
 
             Assert.Equal("\"per\".\"Id\", \"per\".\"Active\", \"per\".\"Name\", \"per\".\"SurName\", "
                 + "\"per\".\"AddressStreet\", \"per\".\"AddressNumber\", \"per\".\"AddressCity\", "
-                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\"", result.Sql);
+                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\", "
+                + "\"per\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -470,6 +514,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -481,6 +526,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -492,6 +538,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -503,6 +550,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -514,6 +562,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -526,7 +575,9 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
 
             Assert.Equal("\"per\".\"Id\", \"per\".\"Active\", \"per\".\"Name\", \"per\".\"SurName\", "
                 + "\"per\".\"AddressStreet\", \"per\".\"AddressNumber\", \"per\".\"AddressCity\", "
-                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\"", result.Sql);
+                + "\"per\".\"Salary\", \"per\".\"DateCreated\", \"per\".\"DepartmentId\", \"per\".\"Image\", "
+                + "\"per\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -538,6 +589,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -549,6 +601,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -560,6 +613,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -571,6 +625,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -582,6 +637,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"per\".\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -637,7 +693,187 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
         }
 
         [Fact]
-        public void To_String()
+        public void Name_All()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.All.Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"Id\", \"Active\", \"Name\", \"SurName\", \"AddressStreet\", \"AddressNumber\", "
+                + "\"AddressCity\", \"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\", \"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Column()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Id].Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Column_ForeignKey()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Department.Id].Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Column_Nested()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Address.Street].Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Column_Nested_Deep()
+        {
+            IAlias<Person2> person = sql.Alias<Person2>();
+            IColumn column = person[x => x.Address.City.Country.Name].Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Column_With_Translation()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Created].Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_All_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person.All.Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"Id\", \"Active\", \"Name\", \"SurName\", \"AddressStreet\", \"AddressNumber\", "
+                + "\"AddressCity\", \"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\", \"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Column_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Id].Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Column_ForeignKey_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Department.Id].Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Column_Nested_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Address.Street].Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Column_Nested_Deep_With_Alias_Name()
+        {
+            IAlias<Person2> person = sql.Alias<Person2>("per");
+            IColumn column = person[x => x.Address.City.Country.Name].Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Column_With_Translation_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Created].Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Name_All()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.All.Name.Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"Id\", \"Active\", \"Name\", \"SurName\", \"AddressStreet\", \"AddressNumber\", "
+                + "\"AddressCity\", \"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\", \"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Name_Name_Column()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Id].Name.Name;
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void To_String_All()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.All;
+
+            Assert.Equal("person.*", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Column()
         {
             IAlias<Person> person = sql.Alias<Person>();
             IColumn column = person[x => x.Id];
@@ -646,12 +882,201 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
         }
 
         [Fact]
-        public void To_String_With_Alias_Name()
+        public void To_String_Column_ForeignKey()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Department.Id];
+
+            Assert.Equal("person.Department.Id", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Column_Nested()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Address.Street];
+
+            Assert.Equal("person.Address.Street", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Column_Nested_Deep()
+        {
+            IAlias<Person2> person = sql.Alias<Person2>();
+            IColumn column = person[x => x.Address.City.Country.Name];
+
+            Assert.Equal("person2.Address.City.Country.Name", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Column_With_Translation()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Created];
+
+            Assert.Equal("person.Created", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_All_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person.All;
+
+            Assert.Equal("per.*", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Column_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
             IColumn column = person[x => x.Id];
 
             Assert.Equal("per.Id", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Column_ForeignKey_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Department.Id];
+
+            Assert.Equal("per.Department.Id", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Column_Nested_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Address.Street];
+
+            Assert.Equal("per.Address.Street", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Column_Nested_Deep_With_Alias_Name()
+        {
+            IAlias<Person2> person = sql.Alias<Person2>("per");
+            IColumn column = person[x => x.Address.City.Country.Name];
+
+            Assert.Equal("per.Address.City.Country.Name", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Column_With_Translation_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Created];
+
+            Assert.Equal("per.Created", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_All()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.All.Name;
+
+            Assert.Equal("*", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_Column()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Id].Name;
+
+            Assert.Equal("Id", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_Column_ForeignKey()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Department.Id].Name;
+
+            Assert.Equal("Department.Id", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_Column_Nested()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Address.Street].Name;
+
+            Assert.Equal("Address.Street", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_Column_Nested_Deep()
+        {
+            IAlias<Person2> person = sql.Alias<Person2>();
+            IColumn column = person[x => x.Address.City.Country.Name].Name;
+
+            Assert.Equal("Address.City.Country.Name", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_Column_With_Translation()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => x.Created].Name;
+
+            Assert.Equal("Created", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_All_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person.All.Name;
+
+            Assert.Equal("*", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_Column_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Id].Name;
+
+            Assert.Equal("Id", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_Column_ForeignKey_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Department.Id].Name;
+
+            Assert.Equal("Department.Id", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_Column_Nested_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Address.Street].Name;
+
+            Assert.Equal("Address.Street", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_Column_Nested_Deep_With_Alias_Name()
+        {
+            IAlias<Person2> person = sql.Alias<Person2>("per");
+            IColumn column = person[x => x.Address.City.Country.Name].Name;
+
+            Assert.Equal("Address.City.Country.Name", column.ToString());
+        }
+
+        [Fact]
+        public void To_String_Name_Column_With_Translation_With_Alias_Name()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => x.Created].Name;
+
+            Assert.Equal("Created", column.ToString());
         }
     }
 }

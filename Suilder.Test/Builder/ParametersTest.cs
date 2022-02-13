@@ -60,8 +60,11 @@ namespace Suilder.Test.Builder
 
             QueryResult result = engine.Compile(raw);
 
-            Assert.Equal("NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("@p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
 
@@ -88,13 +91,14 @@ namespace Suilder.Test.Builder
 
             QueryResult result = engine.Compile(raw);
 
-            Assert.Equal("@p0, @p1, NULL, @p2, @p3", result.Sql);
+            Assert.Equal("@p0, @p1, @p2, @p3, @p4", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1,
                 ["@p1"] = 2,
-                ["@p2"] = 4,
-                ["@p3"] = 5
+                ["@p2"] = null,
+                ["@p3"] = 4,
+                ["@p4"] = 5
             }, result.Parameters);
             Assert.Null(result.ParametersList);
         }
@@ -109,8 +113,8 @@ namespace Suilder.Test.Builder
 
             QueryResult result = engine.Compile(raw);
 
-            Assert.Equal("?, ?, NULL, ?, ?", result.Sql);
-            Assert.Equal(new List<object> { 1, 2, 4, 5 }, result.ParametersList);
+            Assert.Equal("?, ?, ?, ?, ?", result.Sql);
+            Assert.Equal(new List<object> { 1, 2, null, 4, 5 }, result.ParametersList);
             Assert.Null(result.Parameters);
         }
     }

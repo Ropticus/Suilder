@@ -14,9 +14,9 @@ namespace Suilder.Core
     public class ValList : QueryFragmentList<object, object>, IValList
     {
         /// <summary>
-        /// Adds a value to the <see cref="IValList"/>.
+        /// Adds a value to the end of the <see cref="IValList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IValList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IValList"/>.</param>
         public override void Add(Expression<Func<object>> value)
         {
             Values.Add(SqlBuilder.Instance.Val(value));
@@ -43,9 +43,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IValList"/>.
+        /// Adds a value to the end of the <see cref="IValList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IValList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IValList"/>.</param>
         /// <returns>The list of values.</returns>
         IValList IValList.Add(object value)
         {
@@ -78,9 +78,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IValList"/>.
+        /// Adds a value to the end of the <see cref="IValList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IValList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IValList"/>.</param>
         /// <returns>The list of values.</returns>
         IValList IValList.Add(Expression<Func<object>> value)
         {

@@ -40,6 +40,7 @@ namespace Suilder.Builder
             {
                 func.Add(SqlBuilder.Instance.Val(expression.Arguments[i]));
             }
+
             if (expression.Arguments.Count > 0)
             {
                 // Last parameter is params argument
@@ -85,10 +86,33 @@ namespace Suilder.Builder
         };
 
         /// <summary>
-        /// Delegate for operators with two params.
+        /// Delegate for unary operators.
         /// </summary>
         /// <value>The delegate.</value>
-        public readonly static Func<MethodCallExpression, Func<object, object, IOperator>, IOperator> Operator
+        public readonly static Func<MethodCallExpression, Func<object, IOperator>, IOperator> UnaryOperator
+            = (expression, op) =>
+        {
+            if (expression.Object == null)
+            {
+                if (expression.Arguments.Count != 1)
+                    throw new ArgumentException("Invalid expression, wrong number of parameters.");
+
+                return op(SqlBuilder.Instance.Val(expression.Arguments[0]));
+            }
+            else
+            {
+                if (expression.Arguments.Count != 0)
+                    throw new ArgumentException("Invalid expression, wrong number of parameters.");
+
+                return op(SqlBuilder.Instance.Val(expression.Object));
+            }
+        };
+
+        /// <summary>
+        /// Delegate for binary operators.
+        /// </summary>
+        /// <value>The delegate.</value>
+        public readonly static Func<MethodCallExpression, Func<object, object, IOperator>, IOperator> BinaryOperator
             = (expression, op) =>
         {
             if (expression.Object == null)
@@ -110,25 +134,29 @@ namespace Suilder.Builder
         };
 
         /// <summary>
-        /// Delegate for operators with one param.
+        /// Delegate for ternary operators.
         /// </summary>
         /// <value>The delegate.</value>
-        public readonly static Func<MethodCallExpression, Func<object, IOperator>, IOperator> SingleOperator
+        public readonly static Func<MethodCallExpression, Func<object, object, object, IOperator>, IOperator> TernaryOperator
             = (expression, op) =>
         {
             if (expression.Object == null)
             {
-                if (expression.Arguments.Count != 1)
+                if (expression.Arguments.Count != 3)
                     throw new ArgumentException("Invalid expression, wrong number of parameters.");
 
-                return op(SqlBuilder.Instance.Val(expression.Arguments[0]));
+                return op(SqlBuilder.Instance.Val(expression.Arguments[0]),
+                    SqlBuilder.Instance.Val(expression.Arguments[1]),
+                    SqlBuilder.Instance.Val(expression.Arguments[2]));
             }
             else
             {
-                if (expression.Arguments.Count != 0)
+                if (expression.Arguments.Count != 2)
                     throw new ArgumentException("Invalid expression, wrong number of parameters.");
 
-                return op(SqlBuilder.Instance.Val(expression.Object));
+                return op(SqlBuilder.Instance.Val(expression.Object),
+                    SqlBuilder.Instance.Val(expression.Arguments[0]),
+                    SqlBuilder.Instance.Val(expression.Arguments[1]));
             }
         };
 
@@ -138,19 +166,31 @@ namespace Suilder.Builder
         /// <value>The delegate.</value>
         public readonly static Func<MethodCallExpression, IOperator> Not = expression =>
         {
+            object value = null;
+
             if (expression.Object == null)
             {
                 if (expression.Arguments.Count != 1)
                     throw new ArgumentException("Invalid expression, wrong number of parameters.");
 
-                return SqlBuilder.Instance.Not(SqlBuilder.Instance.Op(expression.Arguments[0]));
+                value = SqlBuilder.Instance.Val(expression.Arguments[0]);
             }
             else
             {
                 if (expression.Arguments.Count != 0)
                     throw new ArgumentException("Invalid expression, wrong number of parameters.");
 
-                return SqlBuilder.Instance.Not(SqlBuilder.Instance.Val(expression.Object));
+                value = SqlBuilder.Instance.Val(expression.Object);
+            }
+
+            switch (value)
+            {
+                case IOperator op:
+                    return SqlBuilder.Instance.Not(op);
+                case IQueryFragment queryFragment:
+                    return SqlBuilder.Instance.Not(SqlBuilder.Instance.Eq(value, true));
+                default:
+                    return SqlBuilder.Instance.Not(value);
             }
         };
 
@@ -227,7 +267,51 @@ namespace Suilder.Builder
         };
 
         /// <summary>
-        /// Delegate to compile the expression within the method.
+        /// Delegate to create a column without the table name or alias.
+        /// </summary>
+        /// <value>The delegate.</value>
+        public readonly static Func<MethodCallExpression, IColumn> ColName = expression =>
+        {
+            if (expression.Object == null)
+            {
+                if (expression.Arguments.Count != 1)
+                    throw new ArgumentException("Invalid expression, wrong number of parameters.");
+
+                return ExpressionProcessor.ParseColumn(expression.Arguments[0]).Name;
+            }
+            else
+            {
+                if (expression.Arguments.Count != 0)
+                    throw new ArgumentException("Invalid expression, wrong number of parameters.");
+
+                return ExpressionProcessor.ParseColumn(expression.Object).Name;
+            }
+        };
+
+        /// <summary>
+        /// Delegate to change the type of an expression.
+        /// </summary>
+        /// <value>The delegate.</value>
+        public readonly static Func<MethodCallExpression, object> As = expression =>
+        {
+            if (expression.Object == null)
+            {
+                if (expression.Arguments.Count != 1)
+                    throw new ArgumentException("Invalid expression, wrong number of parameters.");
+
+                return ExpressionProcessor.ParseValue(expression.Arguments[0]);
+            }
+            else
+            {
+                if (expression.Arguments.Count != 0)
+                    throw new ArgumentException("Invalid expression, wrong number of parameters.");
+
+                return ExpressionProcessor.ParseValue(expression.Object);
+            }
+        };
+
+        /// <summary>
+        /// Delegate to compile an expression.
         /// </summary>
         /// <value>The delegate.</value>
         public readonly static Func<MethodCallExpression, object> Val = expression =>

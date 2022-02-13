@@ -9,7 +9,7 @@ namespace Suilder.Test.Builder.ArithOperators
     public class ArithOperatorTest : BuilderBaseTest
     {
         [Fact]
-        public void Property_Add_Property_Multiply_Value()
+        public void Add_Multiply()
         {
             Person person = null;
             IOperator op = (IOperator)sql.Val(() => person.Salary + person.Salary * 0.5m);
@@ -24,22 +24,7 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
-        public void Property_Multiply_Value_Add_Property()
-        {
-            Person person = null;
-            IOperator op = (IOperator)sql.Val(() => person.Salary * 0.5m + person.Salary);
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("(\"person\".\"Salary\" * @p0) + \"person\".\"Salary\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = 0.5m
-            }, result.Parameters); ;
-        }
-
-        [Fact]
-        public void Property_Add_Property_Parentheses_Multiply_Value()
+        public void Add_Parentheses_Multiply()
         {
             Person person = null;
             IOperator op = (IOperator)sql.Val(() => (person.Salary + person.Salary) * 0.5m);
@@ -54,7 +39,22 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
-        public void Property_Divide_Value_Add_Property_Multiply_Value_Subtract_Value()
+        public void Multiply_Add()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => person.Salary * 0.5m + person.Salary);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Salary\" * @p0) + \"person\".\"Salary\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 0.5m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Divide_Add_Multiply_Subtract()
         {
             Person person = null;
             IOperator op = (IOperator)sql.Val(() => person.Salary / 2 + person.Salary * 0.5m - 100);
@@ -71,6 +71,51 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
+        public void Negate_Add_Multiply()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => -person.Salary + person.Salary * 0.5m);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(- \"person\".\"Salary\") + (\"person\".\"Salary\" * @p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 0.5m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Negate_Parentheses_Add_Multiply()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => -(person.Salary + person.Salary) * 0.5m);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(- (\"person\".\"Salary\" + \"person\".\"Salary\")) * @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 0.5m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Add_Negate_Parentheses_Negate_Add()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => person.Salary + -(-person.Salary + 0.5m));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Salary\" + (- ((- \"person\".\"Salary\") + @p0))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 0.5m
+            }, result.Parameters);
+        }
+
+        [Fact]
         public void With_Bit_Operator()
         {
             Person person = null;
@@ -83,10 +128,10 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
-        public void With_Bool_Operator()
+        public void With_Comparison_Operator()
         {
             Person person = null;
-            IOperator op = (IOperator)sql.Op(() => person.Salary * 2 > 2000);
+            IOperator op = sql.Op(() => person.Salary * 2 > 3000);
 
             QueryResult result = engine.Compile(op);
 
@@ -94,7 +139,41 @@ namespace Suilder.Test.Builder.ArithOperators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 2m,
-                ["@p1"] = 2000m
+                ["@p1"] = 3000m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void With_Logical_Operator_Left()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Salary * 2 > 3000 & person.Name == "abcd");
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Salary\" * @p0) > @p1 AND \"person\".\"Name\" = @p2", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 2m,
+                ["@p1"] = 3000m,
+                ["@p2"] = "abcd"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void With_Logical_Operator_Right()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Name == "abcd" & (person.Salary * 2) > 3000);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" = @p0 AND (\"person\".\"Salary\" * @p1) > @p2", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "abcd",
+                ["@p1"] = 2m,
+                ["@p2"] = 3000m
             }, result.Parameters);
         }
     }

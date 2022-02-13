@@ -97,9 +97,7 @@ namespace Suilder.Core
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return ToStringBuilder.Build(b => b
-                .Write(Type.Name)
-                .IfNotNull(AliasName, () => b.Write(" AS ").Write(AliasName)));
+            return ToStringBuilder.Build(b => b.Write(Type.Name));
         }
     }
 
@@ -131,7 +129,7 @@ namespace Suilder.Core
         /// <returns>The column.</returns>
         public virtual IColumn Col(Expression<Func<T, object>> column)
         {
-            return SqlBuilder.Instance.Col<T>(AliasName, column);
+            return SqlBuilder.Instance.Col(AliasName, column);
         }
 
         /// <summary>

@@ -50,7 +50,9 @@ namespace Suilder.Test.Builder.Insert
         public void Add()
         {
             IAlias person = sql.Alias("person");
-            IInsert insert = sql.Insert().Into(person).Add(person["Name"]).Add(person["SurName"]);
+            IInsert insert = sql.Insert().Into(person)
+                .Add(person["Name"])
+                .Add(person["SurName"]);
 
             QueryResult result = engine.Compile(insert);
 
@@ -122,6 +124,18 @@ namespace Suilder.Test.Builder.Insert
         }
 
         [Fact]
+        public void Add_One_Value()
+        {
+            IAlias person = sql.Alias("person");
+            IInsert insert = sql.Insert().Into(person).Add(person["Name"]);
+
+            QueryResult result = engine.Compile(insert);
+
+            Assert.Equal("INSERT INTO \"person\" (\"Name\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Into_Null()
         {
             IInsert insert = sql.Insert();
@@ -137,6 +151,26 @@ namespace Suilder.Test.Builder.Insert
             IInsert insert = sql.Insert().Into(person);
 
             Assert.Equal("INSERT INTO person", insert.ToString());
+        }
+
+        [Fact]
+        public void To_String_With_Columns()
+        {
+            IAlias person = sql.Alias("person");
+            IInsert insert = sql.Insert().Into(person)
+                .Add(person["Name"])
+                .Add(person["SurName"]);
+
+            Assert.Equal("INSERT INTO person (person.Name, person.SurName)", insert.ToString());
+        }
+
+        [Fact]
+        public void To_String_With_Columns_One_Value()
+        {
+            IAlias person = sql.Alias("person");
+            IInsert insert = sql.Insert().Into(person).Add(person["Name"]);
+
+            Assert.Equal("INSERT INTO person (person.Name)", insert.ToString());
         }
     }
 }

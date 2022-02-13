@@ -207,240 +207,240 @@ namespace Suilder.Builder
         /// <summary>
         /// Creates an "equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "equal to" operator.</returns>
         IOperator Eq(object left, object right);
 
         /// <summary>
         /// Creates an "equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "equal to" operator.</returns>
         IOperator Eq(Expression<Func<object>> left, object right);
 
         /// <summary>
         /// Creates an "equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "equal to" operator.</returns>
         IOperator Eq(Expression<Func<object>> left, Expression<Func<object>> right);
 
         /// <summary>
         /// Creates a "not equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not equal to" operator.</returns>
         IOperator NotEq(object left, object right);
 
         /// <summary>
         /// Creates a "not equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not equal to" operator.</returns>
         IOperator NotEq(Expression<Func<object>> left, object right);
 
         /// <summary>
         /// Creates a "not equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not equal to" operator.</returns>
         IOperator NotEq(Expression<Func<object>> left, Expression<Func<object>> right);
 
         /// <summary>
         /// Creates a "like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "like" operator.</returns>
         IOperator Like(object left, object right);
 
         /// <summary>
         /// Creates a "like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "like" operator.</returns>
         IOperator Like(Expression<Func<object>> left, object right);
 
         /// <summary>
         /// Creates a "like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "like" operator.</returns>
         IOperator Like(Expression<Func<object>> left, Expression<Func<object>> right);
 
         /// <summary>
         /// Creates a "not like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not like" operator.</returns>
         IOperator NotLike(object left, object right);
 
         /// <summary>
         /// Creates a "not like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not like" operator.</returns>
         IOperator NotLike(Expression<Func<object>> left, object right);
 
         /// <summary>
         /// Creates a "not like" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "not like" operator.</returns>
         IOperator NotLike(Expression<Func<object>> left, Expression<Func<object>> right);
 
         /// <summary>
         /// Creates a "less than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than" operator.</returns>
         IOperator Lt(object left, object right);
 
         /// <summary>
         /// Creates a "less than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than" operator.</returns>
         IOperator Lt(Expression<Func<object>> left, object right);
 
         /// <summary>
         /// Creates a "less than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than" operator.</returns>
         IOperator Lt(Expression<Func<object>> left, Expression<Func<object>> right);
 
         /// <summary>
         /// Creates a "less than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than or equal to" operator.</returns>
         IOperator Le(object left, object right);
 
         /// <summary>
         /// Creates a "less than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than or equal to" operator.</returns>
         IOperator Le(Expression<Func<object>> left, object right);
 
         /// <summary>
         /// Creates a "less than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "less than or equal to" operator.</returns>
         IOperator Le(Expression<Func<object>> left, Expression<Func<object>> right);
 
         /// <summary>
         /// Creates a "greater than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than" operator.</returns>
         IOperator Gt(object left, object right);
 
         /// <summary>
         /// Creates a "greater than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than" operator.</returns>
         IOperator Gt(Expression<Func<object>> left, object right);
 
         /// <summary>
         /// Creates a "greater than" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than" operator.</returns>
         IOperator Gt(Expression<Func<object>> left, Expression<Func<object>> right);
 
         /// <summary>
         /// Creates a "greater than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than or equal to" operator.</returns>
         IOperator Ge(object left, object right);
 
         /// <summary>
         /// Creates a "greater than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than or equal to" operator.</returns>
         IOperator Ge(Expression<Func<object>> left, object right);
 
         /// <summary>
         /// Creates a "greater than or equal to" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "greater than or equal to" operator.</returns>
         IOperator Ge(Expression<Func<object>> left, Expression<Func<object>> right);
 
         /// <summary>
         /// Creates an "in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "in" operator.</returns>
         IOperator In(object left, object right);
 
         /// <summary>
         /// Creates an "in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "in" operator.</returns>
         IOperator In(Expression<Func<object>> left, object right);
 
         /// <summary>
         /// Creates an "in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "in" operator.</returns>
         IOperator In(Expression<Func<object>> left, Expression<Func<object>> right);
 
         /// <summary>
         /// Creates a "not in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "not in" operator.</returns>
         IOperator NotIn(object left, object right);
 
         /// <summary>
         /// Creates a "not in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "not in" operator.</returns>
         IOperator NotIn(Expression<Func<object>> left, object right);
 
         /// <summary>
         /// Creates a "not in" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value. An <see cref="IEnumerable"/> is divided into multiple values.</param>
         /// <returns>The "not in" operator.</returns>
         IOperator NotIn(Expression<Func<object>> left, Expression<Func<object>> right);
 
@@ -487,32 +487,86 @@ namespace Suilder.Builder
         IOperator IsNotNull(Expression<Func<object>> value);
 
         /// <summary>
+        /// Creates a "between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "between" operator.</returns>
+        IOperator Between(object left, object min, object max);
+
+        /// <summary>
+        /// Creates a "between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "between" operator.</returns>
+        IOperator Between(Expression<Func<object>> left, object min, object max);
+
+        /// <summary>
+        /// Creates a "between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "between" operator.</returns>
+        IOperator Between(Expression<Func<object>> left, Expression<Func<object>> min, Expression<Func<object>> max);
+
+        /// <summary>
+        /// Creates a "not between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "not between" operator.</returns>
+        IOperator NotBetween(object left, object min, object max);
+
+        /// <summary>
+        /// Creates a "not between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "not between" operator.</returns>
+        IOperator NotBetween(Expression<Func<object>> left, object min, object max);
+
+        /// <summary>
+        /// Creates a "not between" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="min">The min value.</param>
+        /// <param name="max">The max value.</param>
+        /// <returns>The "not between" operator.</returns>
+        IOperator NotBetween(Expression<Func<object>> left, Expression<Func<object>> min, Expression<Func<object>> max);
+
+        /// <summary>
         /// Creates an "all" operator.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The "all" operator.</returns>
-        IOperator All(object value);
+        IOperator All(IQueryFragment value);
 
         /// <summary>
         /// Creates an "any" operator.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The "any" operator.</returns>
-        IOperator Any(object value);
+        IOperator Any(IQueryFragment value);
 
         /// <summary>
         /// Creates an "exists" operator.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The "exists" operator.</returns>
-        IOperator Exists(object value);
+        IOperator Exists(IQueryFragment value);
 
         /// <summary>
         /// Creates a "some" operator.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The "some" operator.</returns>
-        IOperator Some(object value);
+        IOperator Some(IQueryFragment value);
 
         /// <summary>
         /// Creates an "and" operator.
@@ -557,6 +611,20 @@ namespace Suilder.Builder
         IArithOperator Modulo { get; }
 
         /// <summary>
+        /// Creates a "negate" operator.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The "negate" operator.</returns>
+        IOperator Negate(object value);
+
+        /// <summary>
+        /// Creates a "negate" operator.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>The "negate" operator.</returns>
+        IOperator Negate(Expression<Func<object>> value);
+
+        /// <summary>
         /// Creates a bitwise "and" operator.
         /// </summary>
         /// <value>The bitwise "and" operator.</value>
@@ -575,36 +643,78 @@ namespace Suilder.Builder
         IBitOperator BitXor { get; }
 
         /// <summary>
-        /// Creates an "union" operator.
+        /// Creates a bitwise "not" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
-        /// <returns>The "union" operator.</returns>
-        IOperator Union(IQueryFragment left, IQueryFragment right);
+        /// <param name="value">The value.</param>
+        /// <returns>The bitwise "not" operator.</returns>
+        IOperator BitNot(object value);
 
         /// <summary>
-        /// Creates an "union all" operator.
+        /// Creates a bitwise "not" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="value">The value.</param>
+        /// <returns>The bitwise "not" operator.</returns>
+        IOperator BitNot(Expression<Func<object>> value);
+
+        /// <summary>
+        /// Creates a "left shift" operator.
+        /// </summary>
+        /// <value>The "left shift" operator.</value>
+        IBitOperator LeftShift { get; }
+
+        /// <summary>
+        /// Creates a "right shift" operator.
+        /// </summary>
+        /// <value>The "right shift" operator.</value>
+        IBitOperator RightShift { get; }
+
+        /// <summary>
+        /// Creates a "union" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
+        /// <returns>The "union" operator.</returns>
+        ISetOperator Union(IQueryFragment left, IQueryFragment right);
+
+        /// <summary>
+        /// Creates a "union all" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "union all" operator.</returns>
-        IOperator UnionAll(IQueryFragment left, IQueryFragment right);
+        ISetOperator UnionAll(IQueryFragment left, IQueryFragment right);
 
         /// <summary>
         /// Creates an "except" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "except" operator.</returns>
-        IOperator Except(IQueryFragment left, IQueryFragment right);
+        ISetOperator Except(IQueryFragment left, IQueryFragment right);
+
+        /// <summary>
+        /// Creates an "except all" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
+        /// <returns>The "except all" operator.</returns>
+        ISetOperator ExceptAll(IQueryFragment left, IQueryFragment right);
 
         /// <summary>
         /// Creates an "intersect" operator.
         /// </summary>
-        /// <param name="left">Left value.</param>
-        /// <param name="right">Right value.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
         /// <returns>The "intersect" operator.</returns>
-        IOperator Intersect(IQueryFragment left, IQueryFragment right);
+        ISetOperator Intersect(IQueryFragment left, IQueryFragment right);
+
+        /// <summary>
+        /// Creates an "intersect all" operator.
+        /// </summary>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
+        /// <returns>The "intersect all" operator.</returns>
+        ISetOperator IntersectAll(IQueryFragment left, IQueryFragment right);
 
         /// <summary>
         /// Creates a "case" statement.
@@ -663,6 +773,21 @@ namespace Suilder.Builder
         /// <param name="name">The name of the CTE.</param>
         /// <returns>The CTE.</returns>
         ICte Cte(string name);
+
+        /// <summary>
+        /// Creates a CTE.
+        /// </summary>
+        /// <param name="alias">The alias.</param>
+        /// <returns>The CTE.</returns>
+        ICte Cte(IAlias alias);
+
+        /// <summary>
+        /// Creates a CTE.
+        /// </summary>
+        /// <param name="alias">The alias.</param>
+        /// <typeparam name="T">The type of the table.</typeparam>
+        /// <returns>The CTE.</returns>
+        ICte Cte<T>(Expression<Func<T>> alias);
 
         /// <summary>
         /// Creates a "with" clause.

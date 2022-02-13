@@ -14,9 +14,9 @@ namespace Suilder.Core
     public class ColList : QueryFragmentList<IColumn, object>, IColList
     {
         /// <summary>
-        /// Adds a value to the <see cref="IColList"/>.
+        /// Adds a value to the end of the <see cref="IColList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IColList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IColList"/>.</param>
         public override void Add(Expression<Func<object>> value)
         {
             Values.Add(SqlBuilder.Instance.Col(value));
@@ -43,9 +43,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IColList"/>.
+        /// Adds a value to the end of the <see cref="IColList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IColList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IColList"/>.</param>
         /// <returns>The list of columns.</returns>
         IColList IColList.Add(IColumn value)
         {
@@ -78,9 +78,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IColList"/>.
+        /// Adds a value to the end of the <see cref="IColList"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IColList"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IColList"/>.</param>
         /// <returns>The list of columns.</returns>
         IColList IColList.Add(Expression<Func<object>> value)
         {

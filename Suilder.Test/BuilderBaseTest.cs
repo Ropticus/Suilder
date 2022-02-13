@@ -43,14 +43,15 @@ namespace Suilder.Test
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { true },
                     new object[] { false },
                     new object[] { 1 },
                     new object[] { 'a' },
                     new object[] { "abcd" },
-                    new object[] { new DateTime(2000, 1, 1) }
+                    new object[] { new DateTime(2001, 1, 1) },
+                    new object[] { PersonFlags.ValueA }
                 };
             }
         }
@@ -59,7 +60,7 @@ namespace Suilder.Test
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { new byte[] { 1, 2, 3 } },
                     new object[] { new int[] { 4, 5, 6 } },
@@ -73,7 +74,7 @@ namespace Suilder.Test
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { new List<byte> { 1, 2, 3 } },
                     new object[] { new List<int> { 4, 5, 6 } },
@@ -83,11 +84,23 @@ namespace Suilder.Test
             }
         }
 
+        public static IEnumerable<object[]> DataBool
+        {
+            get
+            {
+                return new object[][]
+                {
+                    new object[] { true },
+                    new object[] { false }
+                };
+            }
+        }
+
         public static IEnumerable<object[]> DataInt
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { 1 },
                     new object[] { 2 },
@@ -100,7 +113,7 @@ namespace Suilder.Test
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { 1.5m },
                     new object[] { 2.5m },
@@ -113,7 +126,7 @@ namespace Suilder.Test
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { "abcd" },
                     new object[] { "efgh" },
@@ -122,14 +135,28 @@ namespace Suilder.Test
             }
         }
 
-        public static IEnumerable<object[]> DataBool
+        public static IEnumerable<object[]> DataEnum
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
-                    new object[] { true },
-                    new object[] { false }
+                    new object[] { PersonFlags.ValueA },
+                    new object[] { PersonFlags.ValueB },
+                    new object[] { PersonFlags.ValueC }
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> DataByteArray
+        {
+            get
+            {
+                return new object[][]
+                {
+                    new object[] { new byte[] { 1, 2, 3 } },
+                    new object[] { new byte[] { 4, 5, 6 } },
+                    new object[] { new byte[] { 7, 8, 9 } }
                 };
             }
         }
@@ -138,7 +165,7 @@ namespace Suilder.Test
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { new int[] { 1, 2, 3 } },
                     new object[] { new int[] { 4, 5, 6 } },
@@ -151,7 +178,7 @@ namespace Suilder.Test
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { new string[] { "ab", "cd", "ef" } },
                     new object[] { new string[] { "gh", "ij", "kl" } },
@@ -160,24 +187,11 @@ namespace Suilder.Test
             }
         }
 
-        public static IEnumerable<object[]> DataByteArray
-        {
-            get
-            {
-                return new List<object[]>
-                {
-                    new object[] { new byte[] { 1, 2, 3 } },
-                    new object[] { new byte[] { 4, 5, 6 } },
-                    new object[] { new byte[] { 7, 8, 9 } }
-                };
-            }
-        }
-
         public static IEnumerable<object[]> DataStringList
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { new List<string> { "ab", "cd", "ef" } },
                     new object[] { new List<string> { "gh", "ij", "kl" } },
@@ -190,7 +204,7 @@ namespace Suilder.Test
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { true },
                     new object[] { false },
@@ -207,7 +221,8 @@ namespace Suilder.Test
                     new object[] { 1.5m },
                     new object[] { 'a' },
                     new object[] { "abcd" },
-                    new object[] { new DateTime(2000, 1, 1) }
+                    new object[] { new DateTime(2001, 1, 1) },
+                    new object[] { PersonFlags.ValueA }
                 };
             }
         }
@@ -216,7 +231,7 @@ namespace Suilder.Test
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { new bool[] { true, false, true } },
                     new object[] { new byte[] { 1, 2, 3 } },
@@ -230,7 +245,10 @@ namespace Suilder.Test
                     new object[] { new double[] { 1.5, 2.5, 3.5 } },
                     new object[] { new decimal[] { 1.5m, 2.5m, 3.5m } },
                     new object[] { new char[] { 'a', 'b', 'c' } },
-                    new object[] { new string[] { "abcd", "efgh", "ijkl" } }
+                    new object[] { new string[] { "abcd", "efgh", "ijkl" } },
+                    new object[] { new DateTime[] { new DateTime(2001, 1, 1), new DateTime(2002, 2, 2),
+                        new DateTime(2003, 3, 3) } },
+                    new object[] { new PersonFlags[] { PersonFlags.ValueA, PersonFlags.ValueB, PersonFlags.ValueC } }
                 };
             }
         }
@@ -239,7 +257,7 @@ namespace Suilder.Test
         {
             get
             {
-                return new List<object[]>
+                return new object[][]
                 {
                     new object[] { new List<bool> { true, false, true } },
                     new object[] { new List<byte> { 1, 2, 3 } },
@@ -253,7 +271,55 @@ namespace Suilder.Test
                     new object[] { new List<double> { 1.5, 2.5, 3.5 } },
                     new object[] { new List<decimal> { 1.5m, 2.5m, 3.5m } },
                     new object[] { new List<char> { 'a', 'b', 'c' } },
-                    new object[] { new List<string> { "abcd", "efgh", "ijkl" } }
+                    new object[] { new List<string> { "abcd", "efgh", "ijkl" } },
+                    new object[] { new List<DateTime> { new DateTime(2001, 1, 1), new DateTime(2002, 2, 2),
+                        new DateTime(2003, 3, 3) } },
+                    new object[] { new List<PersonFlags> { PersonFlags.ValueA, PersonFlags.ValueB, PersonFlags.ValueC } }
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> DataObject2
+        {
+            get
+            {
+                return new object[][]
+                {
+                    new object[] { true, false },
+                    new object[] { false, true },
+                    new object[] { 1, 2 },
+                    new object[] { 'a', 'b' },
+                    new object[] { "abcd", "efgh" },
+                    new object[] { new DateTime(2001, 1, 1), new DateTime(2002, 2, 2) },
+                    new object[] { PersonFlags.ValueA, PersonFlags.ValueB }
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> DataArray2
+        {
+            get
+            {
+                return new object[][]
+                {
+                    new object[] { new byte[] { 1, 2, 3 }, new byte[] { 4, 5, 6 } },
+                    new object[] { new int[] { 4, 5, 6 }, new int[] { 7, 8, 9 } },
+                    new object[] { new char[] { 'a', 'b', 'c' }, new char[] { 'd', 'e', 'f' } },
+                    new object[] { new string[] { "abcd", "efgh", "ijkl" }, new string[] { "mnop", "qrst", "uvwx" } }
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> DataList2
+        {
+            get
+            {
+                return new object[][]
+                {
+                    new object[] { new List<byte> { 1, 2, 3 }, new List<byte> { 1, 2, 3 } },
+                    new object[] { new List<int> { 4, 5, 6 }, new List<int> { 1, 2, 3 } },
+                    new object[] { new List<char> { 'a', 'b', 'c' }, new List<char> { 'd', 'e', 'f' } },
+                    new object[] { new List<string> { "abcd", "efgh", "ijkl" }, new List<string> { "mnop", "qrst", "uvwx" } }
                 };
             }
         }

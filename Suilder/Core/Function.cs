@@ -52,9 +52,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IFunction"/>.
+        /// Adds a value to the end of the <see cref="IFunction"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IFunction"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IFunction"/>.</param>
         /// <returns>The function.</returns>
         IFunction IFunction.Add(object value)
         {
@@ -87,9 +87,9 @@ namespace Suilder.Core
         }
 
         /// <summary>
-        /// Adds a value to the <see cref="IFunction"/>.
+        /// Adds a value to the end of the <see cref="IFunction"/>.
         /// </summary>
-        /// <param name="value">The value to add to the <see cref="IFunction"/>.</param>
+        /// <param name="value">The value to add to the end of the <see cref="IFunction"/>.</param>
         /// <returns>The function.</returns>
         IFunction IFunction.Add(Expression<Func<object>> value)
         {

@@ -65,7 +65,7 @@ namespace Suilder.Reflection.Builder.Processors
             PropertyData propertyData = new PropertyData()
             {
                 FullName = $"{prefix}{propertyInfo.Name}",
-                Info = propertyInfo,
+                Info = propertyInfo
             };
 
             tableConfig.Properties.Add(propertyData);

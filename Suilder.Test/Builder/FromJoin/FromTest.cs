@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Test.Builder.Tables;
@@ -16,6 +17,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -26,6 +28,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -37,6 +40,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -48,6 +52,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -59,6 +64,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"Person\" AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -70,6 +76,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"Person\" AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -81,20 +88,22 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"Person\" AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void From_Subquery_String()
+        public void From_SubQuery_String()
         {
             IFrom from = sql.From(sql.RawQuery("Subquery"), "sub");
 
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM (Subquery) AS \"sub\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void From_Subquery_Alias()
+        public void From_SubQuery_Alias()
         {
             IAlias person = sql.Alias("person");
             IFrom from = sql.From(sql.RawQuery("Subquery"), person);
@@ -102,10 +111,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM (Subquery) AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void From_Subquery_Alias_With_Alias_Name()
+        public void From_SubQuery_Alias_With_Alias_Name()
         {
             IAlias person = sql.Alias("person", "per");
             IFrom from = sql.From(sql.RawQuery("Subquery"), person);
@@ -113,10 +123,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM (Subquery) AS \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void From_Subquery_Expression()
+        public void From_SubQuery_Expression()
         {
             Person person = null;
             IFrom from = sql.From(sql.RawQuery("Subquery"), () => person);
@@ -124,10 +135,11 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM (Subquery) AS \"person\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
-        public void From_Subquery_String_Invalid_Alias_Name()
+        public void From_SubQuery_String_Invalid_Alias_Name()
         {
             string alias = null;
 
@@ -136,7 +148,7 @@ namespace Suilder.Test.Builder.FromJoin
         }
 
         [Fact]
-        public void From_Subquery_Alias_Invalid_Alias_Name()
+        public void From_SubQuery_Alias_Invalid_Alias_Name()
         {
             string alias = null;
             IAlias person = sql.Alias(alias);
@@ -155,6 +167,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"cte\" AS \"personCte\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -168,6 +181,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"cte\" AS \"personCte\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -181,6 +195,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"cte\" AS \"personCte\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -194,6 +209,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"person\" \"per\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -241,6 +257,7 @@ namespace Suilder.Test.Builder.FromJoin
             QueryResult result = engine.Compile(from);
 
             Assert.Equal("FROM \"Person\" AS \"person\" WITH (NO LOCK)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -289,7 +306,7 @@ namespace Suilder.Test.Builder.FromJoin
         }
 
         [Fact]
-        public void To_String_Subquery()
+        public void To_String_SubQuery()
         {
             IAlias person = sql.Alias("person");
             IFrom from = sql.From(sql.RawQuery("Subquery"), person);

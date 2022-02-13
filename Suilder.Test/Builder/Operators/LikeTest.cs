@@ -80,8 +80,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Fact]
@@ -92,8 +95,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("NULL LIKE \"person\".\"Name\"", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("@p0 LIKE \"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -213,8 +219,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -334,8 +343,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -394,8 +406,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -467,8 +482,11 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Theory]
@@ -561,6 +579,93 @@ namespace Suilder.Test.Builder.Operators
 
             Assert.Equal("\"person\".\"DepartmentGuid\" LIKE \"dept\".\"Guid\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        public void Expression_Null(string value)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Name.Like(value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Name.Like(SqlExp.Trim(person.SurName)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" LIKE TRIM(\"person\".\"SurName\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Name.Like(SqlExp.As<string>(person.Id)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" LIKE \"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As_SubQuery()
+        {
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => person.Name.Like(SqlExp.As<string>(query)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" LIKE (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast()
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Name.Like(SqlExp.Cast<string>(person.Id, sql.Type("VARCHAR"))));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" LIKE CAST(\"person\".\"Id\" AS VARCHAR)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast_SubQuery()
+        {
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => person.Name.Like(SqlExp.Cast<string>(query, sql.Type("VARCHAR"))));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" LIKE CAST((Subquery) AS VARCHAR)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Invalid_Call()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<NotSupportedException>(() => person.Name.Like("%abcd%"));
+            Assert.Equal("Only for expressions.", ex.Message);
         }
 
         [Theory]
@@ -725,17 +830,24 @@ namespace Suilder.Test.Builder.Operators
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" LIKE NULL", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+            Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = null
+            }, result.Parameters);
         }
 
         [Fact]
-        public void Expression_Invalid_Call()
+        public void Expression_Method_SubQuery()
         {
-            Person person = new Person();
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = sql.Op(() => SqlExp.Like(person.Name, query));
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => person.Name.Like("%abcd%"));
-            Assert.Equal("Only for expressions.", ex.Message);
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" LIKE (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -743,19 +855,81 @@ namespace Suilder.Test.Builder.Operators
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<InvalidOperationException>(() => SqlExp.Like(person.Name, "%abcd%"));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Like(person.Name, "%abcd%"));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
-        [Fact]
-        public void Subquery()
+        [Theory]
+        [MemberData(nameof(DataString))]
+        public void Expression_Val_Method(string value)
         {
-            IAlias person = sql.Alias("person");
-            IOperator op = sql.Like(person["Name"], sql.RawQuery("Subquery"));
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => person.Name.Like(value));
 
             QueryResult result = engine.Compile(op);
 
+            Assert.Equal("\"person\".\"Name\" LIKE @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Like(sql.Gt(person["Id"], 10), sql.Lt(person["Id"], 20));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Id\" > @p0) LIKE (\"person\".\"Id\" < @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Like(sql.Add.Add(person["Salary"], 1000m), sql.Multiply.Add(person["Salary"], 2m));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("(\"person\".\"Salary\" + @p0) LIKE (\"person\".\"Salary\" * @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1000m,
+                ["@p1"] = 2m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void SubQuery()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op1 = sql.Like(person["Name"], sql.RawQuery("Subquery"));
+            IOperator op2 = sql.Like(sql.RawQuery("Subquery"), person["Name"]);
+            IOperator op3 = sql.Like(sql.RawQuery("Subquery1"), sql.RawQuery("Subquery2"));
+
+            QueryResult result;
+
+            result = engine.Compile(op1);
+
             Assert.Equal("\"person\".\"Name\" LIKE (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+
+            result = engine.Compile(op2);
+
+            Assert.Equal("(Subquery) LIKE \"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+
+            result = engine.Compile(op3);
+
+            Assert.Equal("(Subquery1) LIKE (Subquery2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -784,6 +958,37 @@ namespace Suilder.Test.Builder.Operators
             IOperator op = sql.Like(dept["Tags"], new List<string> { "abcd", "efgh", "ijkl" });
 
             Assert.Equal("dept.Tags LIKE [\"abcd\", \"efgh\", \"ijkl\"]", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubOperator()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Like(sql.Gt(person["Id"], 10), sql.Lt(person["Id"], 20));
+
+            Assert.Equal("(person.Id > 10) LIKE (person.Id < 20)", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubOperator_List()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Like(sql.Add.Add(person["Salary"], 1000m), sql.Multiply.Add(person["Salary"], 2m));
+
+            Assert.Equal("(person.Salary + 1000) LIKE (person.Salary * 2)", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_SubQuery()
+        {
+            IAlias person = sql.Alias("person");
+            IOperator op1 = sql.Like(person["Name"], sql.RawQuery("Subquery"));
+            IOperator op2 = sql.Like(sql.RawQuery("Subquery"), person["Name"]);
+            IOperator op3 = sql.Like(sql.RawQuery("Subquery1"), sql.RawQuery("Subquery2"));
+
+            Assert.Equal("person.Name LIKE (Subquery)", op1.ToString());
+            Assert.Equal("(Subquery) LIKE person.Name", op2.ToString());
+            Assert.Equal("(Subquery1) LIKE (Subquery2)", op3.ToString());
         }
     }
 }

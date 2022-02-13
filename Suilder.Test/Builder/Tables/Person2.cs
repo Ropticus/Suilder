@@ -31,6 +31,8 @@ namespace Suilder.Test.Builder.Tables
 
         public byte[] Image { get; set; }
 
+        public PersonFlags Flags { get; set; }
+
         [Ignore]
         public string Ignore { get; set; }
     }
