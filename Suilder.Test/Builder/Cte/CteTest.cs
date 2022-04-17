@@ -326,6 +326,23 @@ namespace Suilder.Test.Builder.Cte
         }
 
         [Fact]
+        public void Count_List()
+        {
+            IAlias person = sql.Alias("person");
+            ICte cte = sql.Cte("cte");
+            IColumn[] values = new IColumn[] { person["Id"], person["Name"], person["SurName"] };
+
+            int i = 0;
+            Assert.Equal(i, cte.Count);
+
+            foreach (IColumn value in values)
+            {
+                cte.Add(value);
+                Assert.Equal(++i, cte.Count);
+            }
+        }
+
+        [Fact]
         public void To_String()
         {
             IAlias person = sql.Alias("person");
@@ -341,6 +358,14 @@ namespace Suilder.Test.Builder.Cte
             ICte cte = sql.Cte("cte").As(sql.Query.Select(person["Id"]).From(person));
 
             Assert.Equal("cte AS (SELECT person.Id FROM person)", cte.ToString());
+        }
+
+        [Fact]
+        public void To_String_Empty()
+        {
+            ICte cte = sql.Cte("cte");
+
+            Assert.Equal("cte", cte.ToString());
         }
 
         [Fact]

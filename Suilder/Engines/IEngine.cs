@@ -3,6 +3,7 @@ using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Exceptions;
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Reflection.Builder;
 
 namespace Suilder.Engines
@@ -26,30 +27,70 @@ namespace Suilder.Engines
         QueryResult Compile(IQueryFragment query);
 
         /// <summary>
-        /// Register a function in the engine.
+        /// Registers an operator in the engine.
+        /// </summary>
+        /// <param name="op">The operator.</param>
+        /// <param name="opSql">The translated operator.</param>
+        void AddOperator(string op, string opSql);
+
+        /// <summary>
+        /// Registers an operator in the engine.
+        /// </summary>
+        /// <param name="op">The operator.</param>
+        /// <param name="opSql">The translated operator.</param>
+        /// <param name="isFunction">If the operator is a function.</param>
+        void AddOperator(string op, string opSql, bool isFunction);
+
+        /// <summary>
+        /// Removes a registered operator.
+        /// </summary>
+        /// <param name="op">The operator.</param>
+        void RemoveOperator(string op);
+
+        /// <summary>
+        ///  Determines if the operator is registered.
+        /// </summary>
+        /// <param name="op">The operator.</param>
+        /// <returns><see langword="true"/> if the operator is registered, otherwise, <see langword="false"/>.</returns>
+        bool ContainsOperator(string op);
+
+        /// <summary>
+        /// Removes all registered operators.
+        /// </summary>
+        void ClearOperators();
+
+        /// <summary>
+        /// Gets the operator information.
+        /// </summary>
+        /// <param name="op">The operator.</param>
+        /// <returns>The operator information.</returns>
+        IOperatorInfo GetOperator(string op);
+
+        /// <summary>
+        /// Registers a function in the engine.
         /// </summary>
         /// <param name="name">The name of the function.</param>
         void AddFunction(string name);
 
         /// <summary>
-        /// Register a function in the engine.
+        /// Registers a function in the engine.
         /// </summary>
         /// <param name="name">The name of the function.</param>
-        /// <param name="nameSql">The tranlated name of the function.</param>
+        /// <param name="nameSql">The translated name of the function.</param>
         void AddFunction(string name, string nameSql);
 
         /// <summary>
-        /// Register a function in the engine.
+        /// Registers a function in the engine.
         /// </summary>
         /// <param name="name">The name of the function.</param>
         /// <param name="func">A custom delegate to compile the function.</param>
         void AddFunction(string name, FunctionCompile func);
 
         /// <summary>
-        /// Register a function in the engine.
+        /// Registers a function in the engine.
         /// </summary>
         /// <param name="name">The name of the function.</param>
-        /// <param name="nameSql">The tranlated name of the function.</param>
+        /// <param name="nameSql">The translated name of the function.</param>
         /// <param name="func">A custom delegate to compile the function.</param>
         void AddFunction(string name, string nameSql, FunctionCompile func);
 
@@ -72,11 +113,11 @@ namespace Suilder.Engines
         void ClearFunctions();
 
         /// <summary>
-        /// Gets the function data.
+        /// Gets the function information.
         /// </summary>
         /// <param name="name">The name of the function.</param>
-        /// <returns>The function data.</returns>
-        IFunctionData GetFunction(string name);
+        /// <returns>The function information.</returns>
+        IFunctionInfo GetFunction(string name);
 
         /// <summary>
         /// Escape a name.

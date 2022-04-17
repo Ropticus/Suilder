@@ -129,18 +129,18 @@ namespace Suilder.Core
 
         public override void Compile(QueryBuilder queryBuilder, IEngine engine)
         {
-            IFunctionData funcData = engine.GetFunction(Name);
+            IFunctionInfo funcInfo = engine.GetFunction(Name);
 
-            if (engine.Options.FunctionsOnlyRegistered && funcData == null)
+            if (engine.Options.FunctionsOnlyRegistered && funcInfo == null)
                 throw new InvalidConfigurationException($"Function \"{Name}\" is not registered.");
 
-            if (funcData?.Compile != null)
+            if (funcInfo?.Compile != null)
             {
-                funcData.Compile(queryBuilder, engine, funcData.Name ?? Name, this);
+                funcInfo.Compile(queryBuilder, engine, funcInfo.Name ?? Name, this);
             }
             else
             {
-                queryBuilder.Write(funcData?.Name ?? Name).Write("(");
+                queryBuilder.Write(funcInfo?.Name ?? Name).Write("(");
 
                 if (BeforeArgs != null)
                     queryBuilder.WriteFragment(BeforeArgs).Write(" ");

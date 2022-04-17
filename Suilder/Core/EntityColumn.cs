@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Suilder.Builder;
 using Suilder.Engines;
@@ -44,16 +45,20 @@ namespace Suilder.Core
         {
             if (SelectAll)
             {
-                string sep = ", ";
-                foreach (string columnName in engine.GetInfo(Type).ColumnNames)
+                IList<string> columnNames = engine.GetInfo(Type).ColumnNames;
+
+                string separator = ", ";
+                for (int i = 0; i < columnNames.Count; i++)
                 {
+                    if (i != 0)
+                        queryBuilder.Write(separator);
+
                     if (withTableName && TableName != null)
                     {
                         queryBuilder.WriteName(TableName).Write(".");
                     }
-                    queryBuilder.WriteName(columnName).Write(sep);
+                    queryBuilder.WriteName(columnNames[i]);
                 }
-                queryBuilder.RemoveLast(sep.Length);
             }
             else
             {

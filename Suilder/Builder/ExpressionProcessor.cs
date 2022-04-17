@@ -1065,10 +1065,9 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="type">The type of the class of the method.</param>
         /// <param name="methodName">The method name.</param>
-        /// <param name="isParams">If the method contains a params argument.</param>
-        public static void AddFunction(Type type, string methodName, bool isParams = false)
+        public static void AddFunction(Type type, string methodName)
         {
-            AddFunction(type, methodName, methodName, isParams);
+            AddFunction(type, methodName, methodName);
         }
 
         /// <summary>
@@ -1077,19 +1076,10 @@ namespace Suilder.Builder
         /// <param name="type">The type of the class of the method.</param>
         /// <param name="methodName">The method name.</param>
         /// <param name="nameSql">The method name in SQL</param>
-        /// <param name="isParams">If the method contains a params argument.</param>
-        public static void AddFunction(Type type, string methodName, string nameSql, bool isParams = false)
+        public static void AddFunction(Type type, string methodName, string nameSql)
         {
-            if (!isParams)
-            {
-                Functions[GetMethodFullName(type, methodName)] =
-                    x => ExpressionHelper.Function(x, nameSql.ToUpperInvariant());
-            }
-            else
-            {
-                Functions[GetMethodFullName(type, methodName)] =
-                    x => ExpressionHelper.FunctionParams(x, nameSql.ToUpperInvariant());
-            }
+            Functions[GetMethodFullName(type, methodName)] =
+                x => ExpressionHelper.Function(x, nameSql.ToUpperInvariant());
         }
 
         /// <summary>

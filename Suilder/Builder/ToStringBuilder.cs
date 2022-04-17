@@ -195,22 +195,28 @@ namespace Suilder.Builder
                     break;
                 case IEnumerable list:
                     Builder.Append("[");
-                    string separator = ", ";
-                    int i = 0, max = 5;
-                    foreach (object item in list)
+                    IEnumerator enumerator = list.GetEnumerator();
+                    if (enumerator.MoveNext())
                     {
-                        if (i < max)
-                            WriteParameter(item);
-                        else
-                            Builder.Append("...");
+                        int i = 1, max = 5;
+                        string separator = ", ";
+                        WriteParameter(enumerator.Current);
 
-                        Builder.Append(separator);
+                        while (enumerator.MoveNext())
+                        {
+                            Builder.Append(separator);
 
-                        if (i++ >= max)
-                            break;
+                            if (i++ < max)
+                            {
+                                WriteParameter(enumerator.Current);
+                            }
+                            else
+                            {
+                                Builder.Append("...");
+                                break;
+                            }
+                        }
                     }
-                    if (i > 1)
-                        RemoveLast(separator.Length);
                     Builder.Append("]");
                     break;
                 case null:
@@ -324,15 +330,19 @@ namespace Suilder.Builder
         /// <returns>The string builder.</returns>
         public ToStringBuilder Join<T>(string separator, IEnumerable<T> values, Func<T, ToStringBuilder> func)
         {
-            bool any = false;
-            foreach (T value in values)
+            using (IEnumerator<T> enumerator = values.GetEnumerator())
             {
-                func(value);
-                Builder.Append(separator);
-                any = true;
+                if (!enumerator.MoveNext())
+                    return this;
+
+                func(enumerator.Current);
+
+                while (enumerator.MoveNext())
+                {
+                    Builder.Append(separator);
+                    func(enumerator.Current);
+                }
             }
-            if (any)
-                RemoveLast(separator.Length);
 
             return this;
         }
@@ -347,16 +357,20 @@ namespace Suilder.Builder
         /// <returns>The string builder.</returns>
         public ToStringBuilder Join<T>(string separator, IEnumerable<T> values, Func<T, int, ToStringBuilder> func)
         {
-            bool any = false;
             int index = 0;
-            foreach (T value in values)
+            using (IEnumerator<T> enumerator = values.GetEnumerator())
             {
-                func(value, index++);
-                Builder.Append(separator);
-                any = true;
+                if (!enumerator.MoveNext())
+                    return this;
+
+                func(enumerator.Current, index++);
+
+                while (enumerator.MoveNext())
+                {
+                    Builder.Append(separator);
+                    func(enumerator.Current, index++);
+                }
             }
-            if (any)
-                RemoveLast(separator.Length);
 
             return this;
         }

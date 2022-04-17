@@ -206,11 +206,13 @@ namespace Suilder.Core
                 queryBuilder.Write(" ");
 
                 string separator = ", ";
-                foreach (IAlias value in Values)
+                for (int i = 0; i < Values.Count; i++)
                 {
-                    queryBuilder.WriteName(value.AliasOrTableName).Write(separator);
+                    if (i != 0)
+                        queryBuilder.Write(separator);
+
+                    queryBuilder.WriteName(Values[i].AliasOrTableName);
                 }
-                queryBuilder.RemoveLast(separator.Length);
             }
         }
 

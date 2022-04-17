@@ -122,6 +122,17 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void Empty()
+        {
+            IFunction func = sql.Function("NOW");
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("NOW()", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Expression()
         {
             Person person = null;
@@ -134,6 +145,17 @@ namespace Suilder.Test.Builder
             {
                 ["@p0"] = ", "
             }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Empty()
+        {
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Function("NOW"));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("NOW()", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
         [Fact]
@@ -331,6 +353,14 @@ namespace Suilder.Test.Builder
             IFunction func = sql.Function("CONCAT").Add(person["Name"]);
 
             Assert.Equal("CONCAT(person.Name)", func.ToString());
+        }
+
+        [Fact]
+        public void To_String_Empty()
+        {
+            IFunction func = sql.Function("NOW");
+
+            Assert.Equal("NOW()", func.ToString());
         }
 
         [Fact]

@@ -3,6 +3,7 @@ using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Extensions;
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
@@ -291,6 +292,34 @@ namespace Suilder.Test.Builder.BitOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("~ CAST((Subquery) AS BIGINT)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Translation()
+        {
+            engine.AddOperator(OperatorName.BitNot, "TRANSLATED");
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.BitNot(person["Flags"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED \"person\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function()
+        {
+            engine.AddOperator(OperatorName.BitNot, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.BitNot(person["Flags"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED(\"person\".\"Flags\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

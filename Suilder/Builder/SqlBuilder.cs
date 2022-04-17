@@ -3,6 +3,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Suilder.Core;
+using Suilder.Operators;
 
 namespace Suilder.Builder
 {
@@ -334,7 +335,7 @@ namespace Suilder.Builder
             if (left == null || right == null)
                 return IsNull(left ?? right);
 
-            return new Operator("=", left, right);
+            return new Operator(OperatorName.Eq, left, right);
         }
 
         /// <summary>
@@ -373,7 +374,7 @@ namespace Suilder.Builder
             if (left == null || right == null)
                 return IsNotNull(left ?? right);
 
-            return new Operator("<>", left, right);
+            return new Operator(OperatorName.NotEq, left, right);
         }
 
         /// <summary>
@@ -409,7 +410,7 @@ namespace Suilder.Builder
         /// <returns>The "like" operator.</returns>
         public virtual IOperator Like(object left, object right)
         {
-            return new Operator("LIKE", left, right);
+            return new Operator(OperatorName.Like, left, right);
         }
 
         /// <summary>
@@ -445,7 +446,7 @@ namespace Suilder.Builder
         /// <returns>The "not like" operator.</returns>
         public virtual IOperator NotLike(object left, object right)
         {
-            return new Operator("NOT LIKE", left, right);
+            return new Operator(OperatorName.NotLike, left, right);
         }
 
         /// <summary>
@@ -481,7 +482,7 @@ namespace Suilder.Builder
         /// <returns>The "less than" operator.</returns>
         public virtual IOperator Lt(object left, object right)
         {
-            return new Operator("<", left, right);
+            return new Operator(OperatorName.Lt, left, right);
         }
 
         /// <summary>
@@ -517,7 +518,7 @@ namespace Suilder.Builder
         /// <returns>The "less than or equal to" operator.</returns>
         public virtual IOperator Le(object left, object right)
         {
-            return new Operator("<=", left, right);
+            return new Operator(OperatorName.Le, left, right);
         }
 
         /// <summary>
@@ -553,7 +554,7 @@ namespace Suilder.Builder
         /// <returns>The "greater than" operator.</returns>
         public virtual IOperator Gt(object left, object right)
         {
-            return new Operator(">", left, right);
+            return new Operator(OperatorName.Gt, left, right);
         }
 
         /// <summary>
@@ -589,7 +590,7 @@ namespace Suilder.Builder
         /// <returns>The "greater than or equal to" operator.</returns>
         public virtual IOperator Ge(object left, object right)
         {
-            return new Operator(">=", left, right);
+            return new Operator(OperatorName.Ge, left, right);
         }
 
         /// <summary>
@@ -625,7 +626,7 @@ namespace Suilder.Builder
         /// <returns>The "in" operator.</returns>
         public virtual IOperator In(object left, object right)
         {
-            return new ListOperator("IN", left, right);
+            return new ListOperator(OperatorName.In, left, right);
         }
 
         /// <summary>
@@ -661,7 +662,7 @@ namespace Suilder.Builder
         /// <returns>The "not in" operator.</returns>
         public virtual IOperator NotIn(object left, object right)
         {
-            return new ListOperator("NOT IN", left, right);
+            return new ListOperator(OperatorName.NotIn, left, right);
         }
 
         /// <summary>
@@ -696,7 +697,7 @@ namespace Suilder.Builder
         /// <returns>The "not" operator.</returns>
         public virtual IOperator Not(object value)
         {
-            return new LeftOperator("NOT", value);
+            return new LeftOperator(OperatorName.Not, value);
         }
 
         /// <summary>
@@ -719,7 +720,7 @@ namespace Suilder.Builder
         /// <returns>The "is null" operator.</returns>
         public virtual IOperator IsNull(object value)
         {
-            return new RightOperator("IS NULL", value);
+            return new RightOperator(OperatorName.IsNull, value);
         }
 
         /// <summary>
@@ -742,7 +743,7 @@ namespace Suilder.Builder
         /// <returns>The "is not null" operator.</returns>
         public virtual IOperator IsNotNull(object value)
         {
-            return new RightOperator("IS NOT NULL", value);
+            return new RightOperator(OperatorName.IsNotNull, value);
         }
 
         /// <summary>
@@ -767,7 +768,7 @@ namespace Suilder.Builder
         /// <returns>The "between" operator.</returns>
         public virtual IOperator Between(object left, object min, object max)
         {
-            return new RangeOperator("BETWEEN", left, min, max);
+            return new TernaryOperator(OperatorName.Between, OperatorName.And, left, min, max);
         }
 
         /// <summary>
@@ -807,7 +808,7 @@ namespace Suilder.Builder
         /// <returns>The "not between" operator.</returns>
         public virtual IOperator NotBetween(object left, object min, object max)
         {
-            return new RangeOperator("NOT BETWEEN", left, min, max);
+            return new TernaryOperator(OperatorName.NotBetween, OperatorName.And, left, min, max);
         }
 
         /// <summary>
@@ -845,7 +846,7 @@ namespace Suilder.Builder
         /// <returns>The "all" operator.</returns>
         public virtual IOperator All(IQueryFragment value)
         {
-            return new LeftQueryOperator("ALL", value);
+            return new LeftQueryOperator(OperatorName.All, value);
         }
 
         /// <summary>
@@ -855,7 +856,7 @@ namespace Suilder.Builder
         /// <returns>The "any" operator.</returns>
         public virtual IOperator Any(IQueryFragment value)
         {
-            return new LeftQueryOperator("ANY", value);
+            return new LeftQueryOperator(OperatorName.Any, value);
         }
 
         /// <summary>
@@ -865,7 +866,7 @@ namespace Suilder.Builder
         /// <returns>The "exists" operator.</returns>
         public virtual IOperator Exists(IQueryFragment value)
         {
-            return new LeftQueryOperator("EXISTS", value);
+            return new LeftQueryOperator(OperatorName.Exists, value);
         }
 
         /// <summary>
@@ -875,7 +876,7 @@ namespace Suilder.Builder
         /// <returns>The "some" operator.</returns>
         public virtual IOperator Some(IQueryFragment value)
         {
-            return new LeftQueryOperator("SOME", value);
+            return new LeftQueryOperator(OperatorName.Some, value);
         }
 
         /// <summary>
@@ -883,49 +884,49 @@ namespace Suilder.Builder
         /// </summary>
         /// <value>The "and" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual ILogicalOperator And => new LogicalOperator("AND");
+        public virtual ILogicalOperator And => new LogicalOperator(OperatorName.And);
 
         /// <summary>
         /// Creates an "or" operator.
         /// </summary>
         /// <value>The "or" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual ILogicalOperator Or => new LogicalOperator("OR");
+        public virtual ILogicalOperator Or => new LogicalOperator(OperatorName.Or);
 
         /// <summary>
         /// Creates an "add" operator.
         /// </summary>
         /// <value>The "add" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual IArithOperator Add => new ArithOperator("+");
+        public virtual IArithOperator Add => new ArithOperator(OperatorName.Add);
 
         /// <summary>
         /// Creates a "subtract" operator.
         /// </summary>
         /// <value>The "subtract" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual IArithOperator Subtract => new ArithOperator("-");
+        public virtual IArithOperator Subtract => new ArithOperator(OperatorName.Subtract);
 
         /// <summary>
         /// Creates a "multiply" operator.
         /// </summary>
         /// <value>The "multiply" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual IArithOperator Multiply => new ArithOperator("*");
+        public virtual IArithOperator Multiply => new ArithOperator(OperatorName.Multiply);
 
         /// <summary>
         /// Creates a "divide" operator.
         /// </summary>
         /// <value>The "divide" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual IArithOperator Divide => new ArithOperator("/");
+        public virtual IArithOperator Divide => new ArithOperator(OperatorName.Divide);
 
         /// <summary>
         /// Creates a "modulo" operator.
         /// </summary>
         /// <value>The "modulo" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual IArithOperator Modulo => new ArithOperator("%");
+        public virtual IArithOperator Modulo => new ArithOperator(OperatorName.Modulo);
 
         /// <summary>
         /// Creates a "negate" operator.
@@ -934,7 +935,7 @@ namespace Suilder.Builder
         /// <returns>The "negate" operator.</returns>
         public virtual IOperator Negate(object value)
         {
-            return new LeftOperator("-", value);
+            return new LeftOperator(OperatorName.Negate, value);
         }
 
         /// <summary>
@@ -955,21 +956,21 @@ namespace Suilder.Builder
         /// </summary>
         /// <value>The bitwise "and" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual IBitOperator BitAnd => new BitOperator("&");
+        public virtual IBitOperator BitAnd => new BitOperator(OperatorName.BitAnd);
 
         /// <summary>
         /// Creates a bitwise "or" operator.
         /// </summary>
         /// <value>The bitwise "or" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual IBitOperator BitOr => new BitOperator("|");
+        public virtual IBitOperator BitOr => new BitOperator(OperatorName.BitOr);
 
         /// <summary>
         /// Creates a bitwise "xor" operator.
         /// </summary>
         /// <value>The bitwise "xor" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual IBitOperator BitXor => new BitOperator("^");
+        public virtual IBitOperator BitXor => new BitOperator(OperatorName.BitXor);
 
         /// <summary>
         /// Creates a bitwise "not" operator.
@@ -978,7 +979,7 @@ namespace Suilder.Builder
         /// <returns>The bitwise "not" operator.</returns>
         public virtual IOperator BitNot(object value)
         {
-            return new LeftOperator("~", value);
+            return new LeftOperator(OperatorName.BitNot, value);
         }
 
         /// <summary>
@@ -999,14 +1000,14 @@ namespace Suilder.Builder
         /// </summary>
         /// <value>The "left shift" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual IBitOperator LeftShift => new BitOperator("<<");
+        public virtual IBitOperator LeftShift => new BitOperator(OperatorName.LeftShift);
 
         /// <summary>
         /// Creates a "right shift" operator.
         /// </summary>
         /// <value>The "right shift" operator.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public virtual IBitOperator RightShift => new BitOperator(">>");
+        public virtual IBitOperator RightShift => new BitOperator(OperatorName.RightShift);
 
         /// <summary>
         /// Creates an "union" operator.
@@ -1016,7 +1017,7 @@ namespace Suilder.Builder
         /// <returns>The "union" operator.</returns>
         public virtual ISetOperator Union(IQueryFragment left, IQueryFragment right)
         {
-            return new SetOperator("UNION", left, right);
+            return new SetOperator(OperatorName.Union, left, right);
         }
 
         /// <summary>
@@ -1027,7 +1028,7 @@ namespace Suilder.Builder
         /// <returns>The "union all" operator.</returns>
         public virtual ISetOperator UnionAll(IQueryFragment left, IQueryFragment right)
         {
-            return new SetOperator("UNION ALL", left, right);
+            return new SetOperator(OperatorName.UnionAll, left, right);
         }
 
         /// <summary>
@@ -1038,7 +1039,7 @@ namespace Suilder.Builder
         /// <returns>The "except" operator.</returns>
         public virtual ISetOperator Except(IQueryFragment left, IQueryFragment right)
         {
-            return new SetOperator("EXCEPT", left, right);
+            return new SetOperator(OperatorName.Except, left, right);
         }
 
         /// <summary>
@@ -1049,7 +1050,7 @@ namespace Suilder.Builder
         /// <returns>The "except all" operator.</returns>
         public virtual ISetOperator ExceptAll(IQueryFragment left, IQueryFragment right)
         {
-            return new SetOperator("EXCEPT ALL", left, right);
+            return new SetOperator(OperatorName.ExceptAll, left, right);
         }
 
         /// <summary>
@@ -1060,7 +1061,7 @@ namespace Suilder.Builder
         /// <returns>The "intersect" operator.</returns>
         public virtual ISetOperator Intersect(IQueryFragment left, IQueryFragment right)
         {
-            return new SetOperator("INTERSECT", left, right);
+            return new SetOperator(OperatorName.Intersect, left, right);
         }
 
         /// <summary>
@@ -1071,7 +1072,7 @@ namespace Suilder.Builder
         /// <returns>The "intersect all" operator.</returns>
         public virtual ISetOperator IntersectAll(IQueryFragment left, IQueryFragment right)
         {
-            return new SetOperator("INTERSECT ALL", left, right);
+            return new SetOperator(OperatorName.IntersectAll, left, right);
         }
 
         /// <summary>

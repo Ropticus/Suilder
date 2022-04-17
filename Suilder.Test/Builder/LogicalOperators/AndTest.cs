@@ -6,6 +6,7 @@ using Suilder.Core;
 using Suilder.Exceptions;
 using Suilder.Extensions;
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
@@ -497,6 +498,106 @@ namespace Suilder.Test.Builder.LogicalOperators
         }
 
         [Fact]
+        public void Translation()
+        {
+            engine.AddOperator(OperatorName.And, "TRANSLATED");
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.And
+                .Add(person["Id"].Eq(1))
+                .Add(person["Active"].Eq(true))
+                .Add(person["Name"].Like("%abcd%"));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = @p0 TRANSLATED \"person\".\"Active\" = @p1 TRANSLATED \"person\".\"Name\" "
+                + "LIKE @p2", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%abcd%"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_One_Value()
+        {
+            engine.AddOperator(OperatorName.And, "TRANSLATED");
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.And.Add(person["Id"].Eq(1));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function()
+        {
+            engine.AddOperator(OperatorName.And, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.And
+                .Add(person["Id"].Eq(1))
+                .Add(person["Active"].Eq(true))
+                .Add(person["Name"].Like("%abcd%"));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED(TRANSLATED(\"person\".\"Id\" = @p0, \"person\".\"Active\" = @p1), "
+                + "\"person\".\"Name\" LIKE @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%abcd%"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function_Two_Values()
+        {
+            engine.AddOperator(OperatorName.And, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.And
+                .Add(person["Id"].Eq(1))
+                .Add(person["Active"].Eq(true));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED(\"person\".\"Id\" = @p0, \"person\".\"Active\" = @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function_One_Value()
+        {
+            engine.AddOperator(OperatorName.And, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.And.Add(person["Id"].Eq(1));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
+        }
+
+        [Fact]
         public void SubOperator_List()
         {
             IAlias person = sql.Alias("person");
@@ -573,6 +674,14 @@ namespace Suilder.Test.Builder.LogicalOperators
             IOperator op = sql.And.Add(person["Id"].Eq(1));
 
             Assert.Equal("person.Id = 1", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_Empty()
+        {
+            IOperator op = sql.And;
+
+            Assert.Equal("", op.ToString());
         }
 
         [Fact]

@@ -5,6 +5,8 @@ using System.Linq.Expressions;
 using Suilder.Builder;
 using Suilder.Engines;
 using Suilder.Exceptions;
+using Suilder.Functions;
+using Suilder.Operators;
 
 namespace Suilder.Core
 {
@@ -137,12 +139,24 @@ namespace Suilder.Core
             if (Values.Count == 0)
                 throw new CompileException("List is empty.");
 
-            string separator = " " + Op + " ";
-            foreach (IQueryFragment value in Values)
+            IOperatorInfo opInfo = engine.GetOperator(Op);
+
+            if (opInfo?.Function == true)
             {
-                queryBuilder.WriteFragment(value, value is ILogicalOperator || value is ISubQuery).Write(separator);
+                FunctionHelper.BinaryOperator(queryBuilder, engine, opInfo.Op, Values);
             }
-            queryBuilder.RemoveLast(separator.Length);
+            else
+            {
+                string separator = " " + (opInfo?.Op ?? Op) + " ";
+                for (int i = 0; i < Values.Count; i++)
+                {
+                    if (i != 0)
+                        queryBuilder.Write(separator);
+
+                    IQueryFragment value = Values[i];
+                    queryBuilder.WriteFragment(value, value is ILogicalOperator || value is ISubQuery);
+                }
+            }
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Reflection.Builder;
 
 namespace Suilder.Engines
@@ -48,6 +49,21 @@ namespace Suilder.Engines
             options.InsertWithUnion = true;
 
             return options;
+        }
+
+        /// <summary>
+        /// Initializes the operators of the engine.
+        /// </summary>
+        protected override void InitOperators()
+        {
+            AddOperator(OperatorName.Except, "MINUS");
+            AddOperator(OperatorName.ExceptAll, "MINUS ALL");
+            AddOperator(OperatorName.BitAnd, "BITAND", true);
+            AddOperator(OperatorName.BitOr, "BITOR", true);
+            AddOperator(OperatorName.BitXor, "BITXOR", true);
+            AddOperator(OperatorName.BitNot, "BITNOT", true);
+            AddOperator(OperatorName.LeftShift, "LEFTSHIFT", true);
+            AddOperator(OperatorName.RightShift, "RIGHTSHIFT", true);
         }
 
         /// <summary>

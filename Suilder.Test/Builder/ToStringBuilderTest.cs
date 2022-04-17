@@ -451,11 +451,27 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void WriteParameter_Enumerable_One_Value()
+        {
+            string result = ToStringBuilder.Build(b => b.WriteParameter(new object[] { "abcd" }));
+
+            Assert.Equal("[\"abcd\"]", result);
+        }
+
+        [Fact]
         public void WriteParameter_Enumerable_Max_Length()
         {
             string result = ToStringBuilder.Build(b => b.WriteParameter(Enumerable.Range(1, 20)));
 
             Assert.Equal("[1, 2, 3, 4, 5, ...]", result);
+        }
+
+        [Fact]
+        public void WriteParameter_Enumerable_Empty()
+        {
+            string result = ToStringBuilder.Build(b => b.WriteParameter(new object[] { }));
+
+            Assert.Equal("[]", result);
         }
 
         [Fact]
@@ -557,6 +573,16 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void ForEach_Empty()
+        {
+            string[] values = new string[0];
+            string result = ToStringBuilder.Build(b => b
+                .ForEach(values, (x) => b.Write(x)));
+
+            Assert.Equal("", result);
+        }
+
+        [Fact]
         public void ForEach_Delegate_With_Index()
         {
             string[] values = new string[] { "a", "b", "c" };
@@ -564,6 +590,16 @@ namespace Suilder.Test.Builder
                 .ForEach(values, (x, i) => b.Write(x).Write(i.ToString())));
 
             Assert.Equal("a0b1c2", result);
+        }
+
+        [Fact]
+        public void ForEach_Delegate_With_Index_Empty()
+        {
+            string[] values = new string[0];
+            string result = ToStringBuilder.Build(b => b
+                .ForEach(values, (x, i) => b.Write(x).Write(i.ToString())));
+
+            Assert.Equal("", result);
         }
 
         [Fact]
@@ -577,6 +613,26 @@ namespace Suilder.Test.Builder
         }
 
         [Fact]
+        public void Join_One_Value()
+        {
+            string[] values = new string[] { "a" };
+            string result = ToStringBuilder.Build(b => b
+                .Join(", ", values, (x) => b.Write(x)));
+
+            Assert.Equal("a", result);
+        }
+
+        [Fact]
+        public void Join_Empty()
+        {
+            string[] values = new string[0];
+            string result = ToStringBuilder.Build(b => b
+                .Join(", ", values, (x) => b.Write(x)));
+
+            Assert.Equal("", result);
+        }
+
+        [Fact]
         public void Join_Delegate_With_Index()
         {
             string[] values = new string[] { "a", "b", "c" };
@@ -584,6 +640,26 @@ namespace Suilder.Test.Builder
                 .Join(", ", values, (x, i) => b.Write(x).Write(i.ToString())));
 
             Assert.Equal("a0, b1, c2", result);
+        }
+
+        [Fact]
+        public void Join_Delegate_With_Index_One_Value()
+        {
+            string[] values = new string[] { "a" };
+            string result = ToStringBuilder.Build(b => b
+                .Join(", ", values, (x, i) => b.Write(x).Write(i.ToString())));
+
+            Assert.Equal("a0", result);
+        }
+
+        [Fact]
+        public void Join_Delegate_With_Index_Empty()
+        {
+            string[] values = new string[0];
+            string result = ToStringBuilder.Build(b => b
+                .Join(", ", values, (x, i) => b.Write(x).Write(i.ToString())));
+
+            Assert.Equal("", result);
         }
     }
 }

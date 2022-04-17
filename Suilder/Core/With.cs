@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Engines;
+using Suilder.Exceptions;
 
 namespace Suilder.Core
 {
@@ -51,17 +52,22 @@ namespace Suilder.Core
         /// <param name="engine">The engine.</param>
         public override void Compile(QueryBuilder queryBuilder, IEngine engine)
         {
+            if (Values.Count == 0)
+                throw new CompileException("List is empty.");
+
             queryBuilder.Write("WITH ");
 
             if (engine.Options.WithRecursive)
                 queryBuilder.Write("RECURSIVE ");
 
             string separator = ", ";
-            foreach (IQueryFragment value in Values)
+            for (int i = 0; i < Values.Count; i++)
             {
-                queryBuilder.WriteFragment(value).Write(separator);
+                if (i != 0)
+                    queryBuilder.Write(separator);
+
+                queryBuilder.WriteFragment(Values[i]);
             }
-            queryBuilder.RemoveLast(separator.Length);
         }
 
         /// <summary>
@@ -70,7 +76,8 @@ namespace Suilder.Core
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return ToStringBuilder.Build(b => b.Write("WITH ").Join(", ", Values, (x) => b.WriteValue(x)));
+            return ToStringBuilder.Build(b => b.Write("WITH")
+                .If(Values.Count > 0, () => b.Write(" ").Join(", ", Values, (x) => b.WriteValue(x))));
         }
     }
 }

@@ -220,5 +220,13 @@ namespace Suilder.Test.Builder.Lists
 
             Assert.Equal("person.Id", list.ToString());
         }
+
+        [Fact]
+        public void To_String_Empty()
+        {
+            IValList list = sql.ValList;
+
+            Assert.Equal("", list.ToString());
+        }
     }
 }

@@ -77,7 +77,7 @@ IJoin join = sql.Join(dept).On(op);
 ### Lambda expressions
 Lambda expressions are compiled to an `IQueryFragment`. When you use your **entity classes** in an expression, they are compiled to an `IAlias` or an `IColumn`.
 
-Any member of a class that is not registered as a table, is invoked and the result is added as a query parameter. Functions are also executed, if you want to compile a function to SQL, you can [register your functions](https://suilder.readthedocs.io/en/latest/general/builder/#expressionprocessor).
+Any member of a class that is not registered as a table, is invoked and the result is added as a query parameter. Functions are also executed, if you want to compile a function to SQL, you can [register your functions](https://suilder.readthedocs.io/en/latest/general/builder/#register-functions).
 
 The following methods of the builder allow you to compile a lambda expression:
 

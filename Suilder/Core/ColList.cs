@@ -134,12 +134,13 @@ namespace Suilder.Core
                 throw new CompileException("List is empty.");
 
             string separator = ", ";
-            foreach (IColumn value in Values)
+            for (int i = 0; i < Values.Count; i++)
             {
-                value.Compile(queryBuilder, engine, withTableName);
-                queryBuilder.Write(separator);
+                if (i != 0)
+                    queryBuilder.Write(separator);
+
+                Values[i].Compile(queryBuilder, engine, withTableName);
             }
-            queryBuilder.RemoveLast(separator.Length);
         }
 
         /// <summary>

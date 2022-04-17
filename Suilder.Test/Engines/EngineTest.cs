@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Suilder.Engines;
 using Suilder.Exceptions;
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Reflection.Builder;
 using Suilder.Test.Reflection;
 using Suilder.Test.Reflection.Builder.TablePerType.Tables;
@@ -70,42 +72,161 @@ namespace Suilder.Test.Engines
             Assert.Equal("\";DELETE FROM person\"", engine.EscapeName("\";DELETE FROM person"));
         }
 
-        [Fact]
-        public void Add_Function()
+        public static IEnumerable<object[]> DataRegister
         {
-            engine.AddFunction("CONCAT");
+            get
+            {
+                return new List<object[]>
+                {
+                    new object[] { "Name", "Name" },
+                    new object[] { "Name", "NAME" },
+                    new object[] { "Name", "name" },
+                    new object[] { "UPPER_NAME", "Upper_Name" },
+                    new object[] { "UPPER_NAME", "UPPER_NAME" },
+                    new object[] { "UPPER_NAME", "upper_name" },
+                    new object[] { "lower_name", "Lower_Name" },
+                    new object[] { "lower_name", "LOWER_NAME" },
+                    new object[] { "lower_name", "lower_name" }
+                };
+            }
+        }
 
-            Assert.True(engine.ContainsFunction("CONCAT"));
+        public static IEnumerable<object[]> DataRegisterTranslation
+        {
+            get
+            {
+                return new List<object[]>
+                {
+                    new object[] { "Name", "Name", "Name_Sql" },
+                    new object[] { "Name", "NAME", "UPPER_NAME_SQL" },
+                    new object[] { "Name", "name", "lower_name_sql" },
+                    new object[] { "UPPER_NAME", "Upper_Name", "Name_Sql" },
+                    new object[] { "UPPER_NAME", "UPPER_NAME", "UPPER_NAME_SQL" },
+                    new object[] { "UPPER_NAME", "upper_name","lower_name_sql" },
+                    new object[] { "lower_name", "Lower_Name", "Name_Sql" },
+                    new object[] { "lower_name", "LOWER_NAME", "UPPER_NAME_SQL" },
+                    new object[] { "lower_name", "lower_name", "lower_name_sql" }
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(DataRegisterTranslation))]
+        public void Add_Operator(string op, string opKey, string opSql)
+        {
+            engine.AddOperator(op, opSql);
+            Assert.True(engine.ContainsOperator(opKey));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataRegisterTranslation))]
+        public void Add_Operator_Function(string op, string opKey, string opSql)
+        {
+            engine.AddOperator(op, opSql, true);
+            Assert.True(engine.ContainsOperator(opKey));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataRegisterTranslation))]
+        public void Remove_Operator(string op, string opKey, string opSql)
+        {
+            engine.AddOperator(op, opSql);
+            engine.RemoveOperator(opKey);
+
+            Assert.False(engine.ContainsOperator(op));
         }
 
         [Fact]
-        public void Remove_Function()
+        public void Clear_Operators()
         {
-            engine.AddFunction("CONCAT");
-            engine.RemoveFunction("CONCAT");
+            engine.AddOperator("Name", "Name_Sql");
+            engine.AddOperator("UPPER_NAME", "UPPER_NAME_SQL");
+            engine.AddOperator("lower_name", "lower_name_sql");
+            engine.ClearOperators();
 
-            Assert.False(engine.ContainsFunction("CONCAT"));
+            Assert.False(engine.ContainsOperator("Name"));
+            Assert.False(engine.ContainsOperator("UPPER_NAME"));
+            Assert.False(engine.ContainsOperator("lower_name"));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataRegisterTranslation))]
+        public void Get_Operator(string op, string opKey, string opSql)
+        {
+            engine.AddOperator(op, opSql);
+
+            IOperatorInfo opInfo = engine.GetOperator(opKey);
+            Assert.Equal(opSql, opInfo.Op);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataRegisterTranslation))]
+        public void Get_Operator_Function(string op, string opKey, string opSql)
+        {
+            engine.AddOperator(op, opSql, true);
+
+            IOperatorInfo opInfo = engine.GetOperator(opKey);
+            Assert.Equal(opSql, opInfo.Op);
+            Assert.True(opInfo.Function);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataRegister))]
+        public void Add_Function(string name, string nameKey)
+        {
+            engine.AddFunction(name);
+            Assert.True(engine.ContainsFunction(nameKey));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataRegisterTranslation))]
+        public void Add_Function_With_Translation(string name, string nameKey, string nameSql)
+        {
+            engine.AddFunction(name, nameSql);
+            Assert.True(engine.ContainsFunction(nameKey));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataRegister))]
+        public void Remove_Function(string name, string nameKey)
+        {
+            engine.AddFunction(name);
+            engine.RemoveFunction(nameKey);
+
+            Assert.False(engine.ContainsFunction(name));
         }
 
         [Fact]
         public void Clear_Functions()
         {
-            engine.AddFunction("CONCAT");
-            engine.AddFunction("SUBSTRING");
+            engine.AddFunction("Name");
+            engine.AddFunction("UPPER_NAME");
+            engine.AddFunction("lower_name");
             engine.ClearFunctions();
 
-            Assert.False(engine.ContainsFunction("CONCAT"));
-            Assert.False(engine.ContainsFunction("SUBSTRING"));
+            Assert.False(engine.ContainsFunction("Name"));
+            Assert.False(engine.ContainsFunction("UPPER_NAME"));
+            Assert.False(engine.ContainsFunction("lower_name"));
         }
 
-        [Fact]
-        public void Get_Function()
+        [Theory]
+        [MemberData(nameof(DataRegister))]
+        public void Get_Function(string name, string nameKey)
         {
-            engine.AddFunction("CONCAT");
+            engine.AddFunction(name);
 
-            IFunctionData funcData = engine.GetFunction("CONCAT");
+            IFunctionInfo funcInfo = engine.GetFunction(nameKey);
+            Assert.Equal(name, funcInfo.Name);
+        }
 
-            Assert.Equal("CONCAT", funcData.Name);
+        [Theory]
+        [MemberData(nameof(DataRegisterTranslation))]
+        public void Get_Function_With_Translation(string name, string nameKey, string nameSql)
+        {
+            engine.AddFunction(name, nameSql);
+
+            IFunctionInfo funcInfo = engine.GetFunction(nameKey);
+            Assert.Equal(nameSql, funcInfo.Name);
         }
 
         [Fact]

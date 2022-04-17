@@ -16,40 +16,53 @@ namespace Suilder.Builder
         public readonly static Func<MethodCallExpression, string, IFunction> Function = (expression, name) =>
         {
             IFunction func = SqlBuilder.Instance.Function(name);
+
             if (expression.Object != null)
                 func.Add(SqlBuilder.Instance.Val(expression.Object));
-
-            foreach (var arg in expression.Arguments)
-            {
-                func.Add(SqlBuilder.Instance.Val(arg));
-            }
-            return func;
-        };
-
-        /// <summary>
-        /// Delegate for functions with params arg.
-        /// </summary>
-        /// <value>The delegate.</value>
-        public readonly static Func<MethodCallExpression, string, IFunction> FunctionParams = (expression, name) =>
-        {
-            IFunction func = SqlBuilder.Instance.Function(name);
-            if (expression.Object != null)
-                func.Add(SqlBuilder.Instance.Val(expression.Object));
-
-            for (int i = 0; i < expression.Arguments.Count - 1; i++)
-            {
-                func.Add(SqlBuilder.Instance.Val(expression.Arguments[i]));
-            }
 
             if (expression.Arguments.Count > 0)
             {
-                // Last parameter is params argument
-                if (expression.Arguments[expression.Arguments.Count - 1] is NewArrayExpression expParams)
+                for (int i = 0; i < expression.Arguments.Count - 1; i++)
                 {
-                    foreach (var arg in expParams.Expressions)
+                    func.Add(SqlBuilder.Instance.Val(expression.Arguments[i]));
+                }
+
+                Expression lastArgument = expression.Arguments[expression.Arguments.Count - 1];
+
+                if (lastArgument.Type.IsArray)
+                {
+                    var parameters = expression.Method.GetParameters();
+
+                    if (parameters[parameters.Length - 1].IsDefined(typeof(ParamArrayAttribute), false))
                     {
-                        func.Add(SqlBuilder.Instance.Val(arg));
+                        if (lastArgument is NewArrayExpression expParams)
+                        {
+                            foreach (var arg in expParams.Expressions)
+                            {
+                                func.Add(SqlBuilder.Instance.Val(arg));
+                            }
+                        }
+                        else
+                        {
+                            object[] lastValue = (object[])SqlBuilder.Instance.Val(lastArgument);
+
+                            if (lastValue != null)
+                            {
+                                foreach (var value in lastValue)
+                                {
+                                    func.Add(value);
+                                }
+                            }
+                        }
                     }
+                    else
+                    {
+                        func.Add(SqlBuilder.Instance.Val(lastArgument));
+                    }
+                }
+                else
+                {
+                    func.Add(SqlBuilder.Instance.Val(lastArgument));
                 }
             }
 

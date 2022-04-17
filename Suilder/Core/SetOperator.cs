@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Engines;
+using Suilder.Exceptions;
+using Suilder.Operators;
 
 namespace Suilder.Core
 {
@@ -278,7 +280,12 @@ namespace Suilder.Core
                 queryBuilder.WriteFragment(Left, engine.Options.SetOperatorWrapQuery || Left is ISetOperator);
             }
 
-            queryBuilder.Write(" " + Op + " ");
+            IOperatorInfo opInfo = engine.GetOperator(Op);
+
+            if (opInfo?.Function == true)
+                throw new InvalidConfigurationException("The set operator cannot be a function.");
+
+            queryBuilder.Write(" " + (opInfo?.Op ?? Op) + " ");
 
             if (engine.Options.SetOperatorWithSubQuery)
             {

@@ -4,6 +4,7 @@ using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Extensions;
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
@@ -716,6 +717,44 @@ namespace Suilder.Test.Builder.Operators
 
             Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.NotBetween(person.Id, 10, 20));
             Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Fact]
+        public void Translation()
+        {
+            engine.AddOperator(OperatorName.NotBetween, "TRANSLATED1");
+            engine.AddOperator(OperatorName.And, "TRANSLATED2");
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotBetween(person["Id"], 10, 20);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" TRANSLATED1 @p0 TRANSLATED2 @p1", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function()
+        {
+            engine.AddOperator(OperatorName.NotBetween, "TRANSLATED1", true);
+            engine.AddOperator(OperatorName.And, "TRANSLATED2", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotBetween(person["Id"], 10, 20);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED1(\"person\".\"Id\", @p0, @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
         }
 
         [Fact]

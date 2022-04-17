@@ -28,6 +28,8 @@ namespace Suilder.Test.Engines.Tables
 
         public byte[] Image { get; set; }
 
+        public ulong Flags { get; set; }
+
         [Ignore]
         public string Ignore { get; set; }
     }

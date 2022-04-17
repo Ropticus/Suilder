@@ -6,6 +6,7 @@ using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Exceptions;
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Reflection.Builder;
 
 namespace Suilder.Engines
@@ -28,10 +29,16 @@ namespace Suilder.Engines
         protected IDictionary<string, ITableInfo> Tables { get; set; }
 
         /// <summary>
+        /// The registered operators.
+        /// </summary>
+        /// <value>The registered operators.</value>
+        protected IDictionary<string, IOperatorInfo> Operators { get; set; } = new Dictionary<string, IOperatorInfo>();
+
+        /// <summary>
         /// The registered functions.
         /// </summary>
         /// <value>The registered functions.</value>
-        protected IDictionary<string, IFunctionData> Functions { get; set; } = new Dictionary<string, IFunctionData>();
+        protected IDictionary<string, IFunctionInfo> Functions { get; set; } = new Dictionary<string, IFunctionInfo>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Engine"/> class.
@@ -40,6 +47,7 @@ namespace Suilder.Engines
         {
             Tables = new Dictionary<string, ITableInfo>();
             Options = InitOptions();
+            InitOperators();
             InitFunctions();
         }
 
@@ -70,6 +78,13 @@ namespace Suilder.Engines
         }
 
         /// <summary>
+        /// Initializes the operators of the engine.
+        /// </summary>
+        protected virtual void InitOperators()
+        {
+        }
+
+        /// <summary>
         /// Initializes the functions of the engine.
         /// </summary>
         protected virtual void InitFunctions()
@@ -90,7 +105,70 @@ namespace Suilder.Engines
         }
 
         /// <summary>
-        /// Register a function in the engine.
+        /// Registers an operator in the engine.
+        /// </summary>
+        /// <param name="op">The operator.</param>
+        /// <param name="opSql">The translated operator.</param>
+        public virtual void AddOperator(string op, string opSql)
+        {
+            AddOperator(op, opSql, false);
+        }
+
+        /// <summary>
+        /// Registers an operator in the engine.
+        /// </summary>
+        /// <param name="op">The operator.</param>
+        /// <param name="opSql">The translated operator.</param>
+        /// <param name="isFunction">If the operator is a function.</param>
+        public virtual void AddOperator(string op, string opSql, bool isFunction)
+        {
+            Operators[op.ToUpperInvariant()] = new OperatorInfo()
+            {
+                Op = opSql,
+                Function = isFunction
+            };
+        }
+
+        /// <summary>
+        /// Removes a registered operator.
+        /// </summary>
+        /// <param name="op">The operator.</param>
+        public virtual void RemoveOperator(string op)
+        {
+            Operators.Remove(op.ToUpperInvariant());
+        }
+
+        /// <summary>
+        ///  Determines if the operator is registered.
+        /// </summary>
+        /// <param name="op">The operator.</param>
+        /// <returns><see langword="true"/> if the operator is registered, otherwise, <see langword="false"/>.</returns>
+        public virtual bool ContainsOperator(string op)
+        {
+            return Operators.ContainsKey(op.ToUpperInvariant());
+        }
+
+        /// <summary>
+        /// Removes all registered operators.
+        /// </summary>
+        public virtual void ClearOperators()
+        {
+            Operators.Clear();
+        }
+
+        /// <summary>
+        /// Gets the operator information.
+        /// </summary>
+        /// <param name="op">The operator.</param>
+        /// <returns>The operator information.</returns>
+        public virtual IOperatorInfo GetOperator(string op)
+        {
+            Operators.TryGetValue(op.ToUpperInvariant(), out IOperatorInfo func);
+            return func;
+        }
+
+        /// <summary>
+        /// Registers a function in the engine.
         /// </summary>
         /// <param name="name">The name of the function.</param>
         public virtual void AddFunction(string name)
@@ -99,17 +177,17 @@ namespace Suilder.Engines
         }
 
         /// <summary>
-        /// Register a function in the engine.
+        /// Registers a function in the engine.
         /// </summary>
         /// <param name="name">The name of the function.</param>
-        /// <param name="nameSql">The tranlated name of the function.</param>
+        /// <param name="nameSql">The translated name of the function.</param>
         public virtual void AddFunction(string name, string nameSql)
         {
             AddFunction(name, nameSql, null);
         }
 
         /// <summary>
-        /// Register a function in the engine.
+        /// Registers a function in the engine.
         /// </summary>
         /// <param name="name">The name of the function.</param>
         /// <param name="func">A custom delegate to compile the function.</param>
@@ -119,14 +197,14 @@ namespace Suilder.Engines
         }
 
         /// <summary>
-        /// Register a function in the engine.
+        /// Registers a function in the engine.
         /// </summary>
         /// <param name="name">The name of the function.</param>
-        /// <param name="nameSql">The tranlated name of the function.</param>
+        /// <param name="nameSql">The translated name of the function.</param>
         /// <param name="func">A custom delegate to compile the function.</param>
         public virtual void AddFunction(string name, string nameSql, FunctionCompile func)
         {
-            Functions[name.ToUpperInvariant()] = new FunctionData()
+            Functions[name.ToUpperInvariant()] = new FunctionInfo()
             {
                 Name = nameSql,
                 Compile = func
@@ -161,14 +239,13 @@ namespace Suilder.Engines
         }
 
         /// <summary>
-        /// Gets the function data.
+        /// Gets the function information.
         /// </summary>
         /// <param name="name">The name of the function.</param>
-        /// <returns>The function data.</returns>
-        public virtual IFunctionData GetFunction(string name)
+        /// <returns>The function information.</returns>
+        public virtual IFunctionInfo GetFunction(string name)
         {
-            name = name.ToUpperInvariant();
-            Functions.TryGetValue(name, out IFunctionData func);
+            Functions.TryGetValue(name.ToUpperInvariant(), out IFunctionInfo func);
             return func;
         }
 

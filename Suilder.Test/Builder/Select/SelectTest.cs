@@ -556,6 +556,14 @@ namespace Suilder.Test.Builder.Select
         }
 
         [Fact]
+        public void To_String_Empty()
+        {
+            ISelect select = sql.Select();
+
+            Assert.Equal("SELECT", select.ToString());
+        }
+
+        [Fact]
         public void To_String_Alias()
         {
             IAlias person = sql.Alias("person");

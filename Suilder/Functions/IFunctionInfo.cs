@@ -5,9 +5,9 @@ using Suilder.Engines;
 namespace Suilder.Functions
 {
     /// <summary>
-    /// The data of a function.
+    /// Contains the information of a function.
     /// </summary>
-    public interface IFunctionData
+    public interface IFunctionInfo
     {
         /// <summary>
         /// The function name.

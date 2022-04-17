@@ -1,9 +1,9 @@
 namespace Suilder.Functions
 {
     /// <summary>
-    /// Implementation of <see cref="IFunctionData"/>.
+    /// Implementation of <see cref="IFunctionInfo"/>.
     /// </summary>
-    public class FunctionData : IFunctionData
+    public class FunctionInfo : IFunctionInfo
     {
         /// <summary>
         /// The function name.

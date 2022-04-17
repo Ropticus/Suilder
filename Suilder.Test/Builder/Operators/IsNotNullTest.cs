@@ -4,6 +4,7 @@ using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Extensions;
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
@@ -211,6 +212,34 @@ namespace Suilder.Test.Builder.Operators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Name\" IS NOT NULL", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Translation()
+        {
+            engine.AddOperator(OperatorName.IsNotNull, "TRANSLATED");
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.IsNotNull(person["Name"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" TRANSLATED", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function()
+        {
+            engine.AddOperator(OperatorName.IsNotNull, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.IsNotNull(person["Name"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED(\"person\".\"Name\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

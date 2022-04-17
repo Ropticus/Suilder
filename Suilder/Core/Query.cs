@@ -1334,36 +1334,57 @@ namespace Suilder.Core
         /// <param name="engine">The engine.</param>
         public virtual void Compile(QueryBuilder queryBuilder, IEngine engine)
         {
+            bool empty = true;
+
             if (BeforeValue != null)
+            {
                 queryBuilder.WriteFragment(BeforeValue).Write(" ");
+                empty = false;
+            }
 
             if (WithValue != null)
+            {
                 queryBuilder.WriteFragment(WithValue).Write(" ");
+                empty = false;
+            }
 
             if (InsertValue != null)
+            {
                 WriteInsert(queryBuilder, engine);
+                empty = false;
+            }
 
             if (SelectValue != null)
             {
                 queryBuilder.WriteFragment(SelectValue).Write(" ");
+                empty = false;
             }
             else if (DeleteValue != null)
             {
                 WriteDelete(queryBuilder, engine);
+                empty = false;
             }
 
             if (UpdateValue != null)
             {
                 WriteUpdate(queryBuilder, engine);
+                empty = false;
             }
             else
             {
                 if (FromValue != null)
-                    queryBuilder.WriteFragment(FromValue).Write(" ");
-
-                foreach (IQueryFragment join in Joins)
                 {
-                    queryBuilder.WriteFragment(join).Write(" ");
+                    queryBuilder.WriteFragment(FromValue).Write(" ");
+                    empty = false;
+                }
+
+                if (Joins.Count != 0)
+                {
+                    foreach (IQueryFragment join in Joins)
+                    {
+                        queryBuilder.WriteFragment(join).Write(" ");
+                    }
+                    empty = false;
                 }
             }
 
@@ -1373,6 +1394,7 @@ namespace Suilder.Core
                     queryBuilder.Write("WHERE ");
 
                 queryBuilder.WriteFragment(WhereValue).Write(" ");
+                empty = false;
             }
 
             if (GroupByValue != null)
@@ -1381,6 +1403,7 @@ namespace Suilder.Core
                     queryBuilder.Write("GROUP BY ");
 
                 queryBuilder.WriteFragment(GroupByValue).Write(" ");
+                empty = false;
             }
 
             if (HavingValue != null)
@@ -1389,16 +1412,29 @@ namespace Suilder.Core
                     queryBuilder.Write("HAVING ");
 
                 queryBuilder.WriteFragment(HavingValue).Write(" ");
+                empty = false;
             }
 
             if (OrderByValue != null)
+            {
                 queryBuilder.WriteFragment(OrderByValue).Write(" ");
+                empty = false;
+            }
 
             if (OffsetValue != null)
+            {
                 queryBuilder.WriteFragment(OffsetValue).Write(" ");
+                empty = false;
+            }
 
             if (AfterValue != null)
+            {
                 queryBuilder.WriteFragment(AfterValue).Write(" ");
+                empty = false;
+            }
+
+            if (empty)
+                throw new CompileException("Query is empty.");
 
             queryBuilder.RemoveLast(1);
         }
@@ -1417,26 +1453,31 @@ namespace Suilder.Core
                 if (InsertValues.Count > 1 && engine.Options.InsertWithUnion)
                 {
                     string separator = " UNION ALL ";
-                    foreach (IValList row in InsertValues)
+                    for (int i = 0; i < InsertValues.Count; i++)
                     {
-                        queryBuilder.Write("SELECT ").WriteFragment(row);
+                        if (i != 0)
+                            queryBuilder.Write(separator);
+
+                        queryBuilder.Write("SELECT ").WriteFragment(InsertValues[i]);
 
                         if (engine.Options.FromDummyName != null)
                             queryBuilder.Write(" ").WriteFragment(SqlBuilder.Instance.FromDummy);
-
-                        queryBuilder.Write(separator);
                     }
-                    queryBuilder.RemoveLast(separator.Length).Write(" ");
+                    queryBuilder.Write(" ");
                 }
                 else
                 {
                     queryBuilder.Write("VALUES ");
+
                     string separator = ", ";
-                    foreach (IValList row in InsertValues)
+                    for (int i = 0; i < InsertValues.Count; i++)
                     {
-                        queryBuilder.WriteFragment(row, true).Write(separator);
+                        if (i != 0)
+                            queryBuilder.Write(separator);
+
+                        queryBuilder.WriteFragment(InsertValues[i], true);
                     }
-                    queryBuilder.RemoveLast(separator.Length).Write(" ");
+                    queryBuilder.Write(" ");
                 }
             }
         }
@@ -1506,12 +1547,16 @@ namespace Suilder.Core
             queryBuilder.Write("SET ");
 
             string separator = ", ";
-            foreach (var value in SetValues)
+            for (int i = 0; i < SetValues.Count; i++)
             {
+                if (i != 0)
+                    queryBuilder.Write(separator);
+
+                var value = SetValues[i];
                 value.Item1.Compile(queryBuilder, engine, engine.Options.UpdateSetWithTableName);
-                queryBuilder.Write(" = ").WriteValue(value.Item2).Write(separator);
+                queryBuilder.Write(" = ").WriteValue(value.Item2);
             }
-            queryBuilder.RemoveLast(separator.Length).Write(" ");
+            queryBuilder.Write(" ");
         }
 
         /// <summary>

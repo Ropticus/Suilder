@@ -204,6 +204,22 @@ namespace Suilder.Test.Builder.Delete
         }
 
         [Fact]
+        public void Count_List()
+        {
+            IDelete delete = sql.Delete();
+            IAlias[] values = new IAlias[] { sql.Alias("person"), sql.Alias("dept"), sql.Alias("person") };
+
+            int i = 0;
+            Assert.Equal(i, delete.Count);
+
+            foreach (IAlias value in values)
+            {
+                delete.Add(value);
+                Assert.Equal(++i, delete.Count);
+            }
+        }
+
+        [Fact]
         public void To_String()
         {
             IDelete delete = sql.Delete().Top(10);
@@ -230,6 +246,14 @@ namespace Suilder.Test.Builder.Delete
             IDelete delete = sql.Delete().Add(person);
 
             Assert.Equal("DELETE person", delete.ToString());
+        }
+
+        [Fact]
+        public void To_String_Empty()
+        {
+            IDelete delete = sql.Delete();
+
+            Assert.Equal("DELETE", delete.ToString());
         }
     }
 }

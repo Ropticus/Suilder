@@ -180,11 +180,33 @@ namespace Suilder.Functions
         }
 
         /// <summary>
+        /// Creates an "all" operator.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
+        public static T All<T>(IQueryFragment value)
+        {
+            throw new NotSupportedException("Only for expressions.");
+        }
+
+        /// <summary>
         /// Creates an "any" operator.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Any(IQueryFragment value)
+        {
+            throw new NotSupportedException("Only for expressions.");
+        }
+
+        /// <summary>
+        /// Creates an "any" operator.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
+        public static T Any<T>(IQueryFragment value)
         {
             throw new NotSupportedException("Only for expressions.");
         }
@@ -205,6 +227,17 @@ namespace Suilder.Functions
         /// <param name="value">The value.</param>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Some(IQueryFragment value)
+        {
+            throw new NotSupportedException("Only for expressions.");
+        }
+
+        /// <summary>
+        /// Creates a "some" operator.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
+        public static T Some<T>(IQueryFragment value)
         {
             throw new NotSupportedException("Only for expressions.");
         }

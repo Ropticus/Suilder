@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Engines;
@@ -10,6 +11,77 @@ namespace Suilder.Functions
     /// </summary>
     public class FunctionHelper
     {
+        /// <summary>
+        /// Writes a function for a unary operator.
+        /// </summary>
+        /// <param name="queryBuilder">The query builder.</param>
+        /// <param name="engine">The engine.</param>
+        /// <param name="name">The SQL function name.</param>
+        /// <param name="value">The value.</param>
+        public static void UnaryOperator(QueryBuilder queryBuilder, IEngine engine, string name, object value)
+        {
+            queryBuilder.Write(name + "(").WriteValue(value).Write(")");
+        }
+
+        /// <summary>
+        /// Writes a function for a binary operator.
+        /// </summary>
+        /// <param name="queryBuilder">The query builder.</param>
+        /// <param name="engine">The engine.</param>
+        /// <param name="name">The SQL function name.</param>
+        /// <param name="left">The left value.</param>
+        /// <param name="right">The right value.</param>
+        public static void BinaryOperator(QueryBuilder queryBuilder, IEngine engine, string name, object left, object right)
+        {
+            queryBuilder.Write(name + "(").WriteValue(left).Write(", ").WriteValue(right).Write(")");
+        }
+
+        /// <summary>
+        /// Writes a function for a ternary operator.
+        /// </summary>
+        /// <param name="queryBuilder">The query builder.</param>
+        /// <param name="engine">The engine.</param>
+        /// <param name="name">The SQL function name.</param>
+        /// <param name="value1">The first value.</param>
+        /// <param name="value2">The second value.</param>
+        /// <param name="value3">The third value.</param>
+        public static void TernaryOperator(QueryBuilder queryBuilder, IEngine engine, string name, object value1,
+            object value2, object value3)
+        {
+            queryBuilder.Write(name + "(").WriteValue(value1).Write(", ").WriteValue(value2).Write(", ").WriteValue(value3)
+                .Write(")");
+        }
+
+        /// <summary>
+        /// Writes functions for a binary operator with a list of values.
+        /// </summary>
+        /// <param name="queryBuilder">The query builder.</param>
+        /// <param name="engine">The engine.</param>
+        /// <param name="name">The SQL function name.</param>
+        /// <param name="values">The values.</param>
+        /// <typeparam name="T">The type of the values.</typeparam>
+        public static void BinaryOperator<T>(QueryBuilder queryBuilder, IEngine engine, string name, IEnumerable<T> values)
+        {
+            using (IEnumerator<T> enumerator = values.GetEnumerator())
+            {
+                enumerator.MoveNext();
+
+                while (enumerator.MoveNext())
+                {
+                    queryBuilder.Write(name + "(");
+                }
+
+                enumerator.Reset();
+                enumerator.MoveNext();
+                queryBuilder.WriteValue(enumerator.Current);
+
+                while (enumerator.MoveNext())
+                {
+                    queryBuilder.Write(", ").WriteValue(enumerator.Current).Write(")");
+                }
+            }
+        }
+
         /// <summary>
         /// Throws a <see cref="ClauseNotSupportedException"/> exception.
         /// </summary>
@@ -67,11 +139,15 @@ namespace Suilder.Functions
             queryBuilder.Write("(");
 
             string separator = " || ";
-            foreach (object value in func.Args)
+            for (int i = 0; i < func.Args.Count; i++)
             {
-                queryBuilder.WriteValue(value).Write(separator);
+                if (i != 0)
+                    queryBuilder.Write(separator);
+
+                queryBuilder.WriteValue(func.Args[i]);
             }
-            queryBuilder.RemoveLast(separator.Length).Write(")");
+
+            queryBuilder.Write(")");
         }
 
         /// <summary>

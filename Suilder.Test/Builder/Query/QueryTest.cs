@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
 using Suilder.Extensions;
 using Suilder.Functions;
 using Xunit;
@@ -386,6 +388,15 @@ namespace Suilder.Test.Builder.Query
 
             Assert.Equal("(SELECT \"person\".* FROM \"person\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Empty_Query()
+        {
+            IQuery query = sql.Query;
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(query));
+            Assert.Equal("Query is empty.", ex.Message);
         }
 
         [Fact]

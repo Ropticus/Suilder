@@ -832,5 +832,13 @@ namespace Suilder.Test.Builder.Case
 
             Assert.Equal("CASE person.Active WHEN true THEN \"Active\" ELSE \"Inactive\" END", caseWhen.ToString());
         }
+
+        [Fact]
+        public void To_String_Empty()
+        {
+            ICase caseWhen = sql.Case();
+
+            Assert.Equal("CASE END", caseWhen.ToString());
+        }
     }
 }

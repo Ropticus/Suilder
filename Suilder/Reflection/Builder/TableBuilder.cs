@@ -359,6 +359,36 @@ namespace Suilder.Reflection.Builder
             if (string.IsNullOrEmpty(tableInfo.TableName))
                 throw new InvalidConfigurationException($"Empty table name for type \"{tableInfo.Type}\".");
 
+            if (tableInfo.PrimaryKeys == null)
+                throw new InvalidConfigurationException($"Null primary keys for type \"{tableInfo.Type}\".");
+
+            if (tableInfo.Columns == null)
+                throw new InvalidConfigurationException($"Null columns for type \"{tableInfo.Type}\".");
+
+            if (tableInfo.Columns.Count == 0)
+                throw new InvalidConfigurationException($"Empty columns for type \"{tableInfo.Type}\".");
+
+            if (tableInfo.ColumnNames == null)
+                throw new InvalidConfigurationException($"Null column names for type \"{tableInfo.Type}\".");
+
+            if (tableInfo.ColumnNames.Count == 0)
+                throw new InvalidConfigurationException($"Empty column names for type \"{tableInfo.Type}\".");
+
+            if (tableInfo.ColumnNamesDic == null)
+                throw new InvalidConfigurationException($"Null column names dictionary for type \"{tableInfo.Type}\".");
+
+            if (tableInfo.ColumnNamesDic.Count == 0)
+                throw new InvalidConfigurationException($"Empty column names dictionary for type \"{tableInfo.Type}\".");
+
+            foreach (var column in tableInfo.Columns)
+            {
+                if (!tableInfo.ColumnNamesDic.ContainsKey(column))
+                {
+                    throw new InvalidConfigurationException($"Empty column name for property \"{column}\" of the type "
+                        + $"\"{tableInfo.Type}\".");
+                }
+            }
+
             foreach (var item in tableInfo.ColumnNamesDic)
             {
                 if (string.IsNullOrEmpty(item.Value))
@@ -367,6 +397,15 @@ namespace Suilder.Reflection.Builder
                         + $"\"{tableInfo.Type}\".");
                 }
             }
+
+            if (tableInfo.ForeignKeys == null)
+                throw new InvalidConfigurationException($"Null foreign keys for type \"{tableInfo.Type}\".");
+
+            if (tableInfo.TableMetadata == null)
+                throw new InvalidConfigurationException($"Null table metadata for type \"{tableInfo.Type}\".");
+
+            if (tableInfo.MemberMetadata == null)
+                throw new InvalidConfigurationException($"Null member metadata for type \"{tableInfo.Type}\".");
         }
 
         /// <summary>

@@ -336,5 +336,13 @@ namespace Suilder.Test.Builder.Order
 
             Assert.Equal("ORDER BY person.Name ASC", orderBy.ToString());
         }
+
+        [Fact]
+        public void To_String_Empty()
+        {
+            IOrderBy orderBy = sql.OrderBy();
+
+            Assert.Equal("ORDER BY", orderBy.ToString());
+        }
     }
 }

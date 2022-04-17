@@ -387,6 +387,9 @@ namespace Suilder.Core
             string separator = ", ";
             for (int i = 0; i < Values.Count; i++)
             {
+                if (i != 0)
+                    queryBuilder.Write(separator);
+
                 queryBuilder.WriteValue(Values[i]);
                 if (Alias.TryGetValue(i, out string alias))
                 {
@@ -396,9 +399,7 @@ namespace Suilder.Core
                 {
                     queryBuilder.Write(" ").WriteFragment(over);
                 }
-                queryBuilder.Write(separator);
             }
-            queryBuilder.RemoveLast(separator.Length);
         }
 
         /// <summary>
@@ -407,13 +408,13 @@ namespace Suilder.Core
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return ToStringBuilder.Build(b => b.Write("SELECT ")
-                .If(IsDistinct, () => b.Write("DISTINCT ")
-                    .IfNotNull(DistinctOnValues, x => b.Write("ON(").WriteFragment(x).Write(") ")))
-                .IfNotNull(TopValue, x => b.WriteFragment(x).Write(" "))
-                .Join(", ", Values, (x, i) => b.WriteValue(x)
+            return ToStringBuilder.Build(b => b.Write("SELECT")
+                .If(IsDistinct, () => b.Write(" DISTINCT")
+                    .IfNotNull(DistinctOnValues, x => b.Write(" ON(").WriteFragment(x).Write(")")))
+                .IfNotNull(TopValue, x => b.Write(" ").WriteFragment(x))
+                .If(Values.Count > 0, () => b.Write(" ").Join(", ", Values, (x, i) => b.WriteValue(x)
                     .If(Alias.TryGetValue(i, out string alias), () => b.Write(" AS " + alias))
-                    .If(OverValues.TryGetValue(i, out var over), () => b.Write(" ").WriteFragment(over))));
+                    .If(OverValues.TryGetValue(i, out var over), () => b.Write(" ").WriteFragment(over)))));
         }
     }
 }

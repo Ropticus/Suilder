@@ -4,6 +4,7 @@ using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Extensions;
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
@@ -922,6 +923,78 @@ namespace Suilder.Test.Builder.Operators
                 ["@p0"] = value[0],
                 ["@p1"] = value[1],
                 ["@p2"] = value[2]
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation()
+        {
+            engine.AddOperator(OperatorName.NotIn, "TRANSLATED");
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotIn(person["Id"], 1);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" TRANSLATED (@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Array()
+        {
+            engine.AddOperator(OperatorName.NotIn, "TRANSLATED");
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotIn(person["Id"], new int[] { 1, 2, 3 });
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" TRANSLATED (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2,
+                ["@p2"] = 3
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function()
+        {
+            engine.AddOperator(OperatorName.NotIn, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotIn(person["Id"], 1);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED(\"person\".\"Id\", @p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function_Array()
+        {
+            engine.AddOperator(OperatorName.NotIn, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotIn(person["Id"], new int[] { 1, 2, 3 });
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED(\"person\".\"Id\", @p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2,
+                ["@p2"] = 3
             }, result.Parameters);
         }
 

@@ -123,11 +123,13 @@ namespace Suilder.Core
                 throw new CompileException("List is empty.");
 
             string separator = ", ";
-            foreach (object value in Values)
+            for (int i = 0; i < Values.Count; i++)
             {
-                queryBuilder.WriteValue(value).Write(separator);
+                if (i != 0)
+                    queryBuilder.Write(separator);
+
+                queryBuilder.WriteValue(Values[i]);
             }
-            queryBuilder.RemoveLast(separator.Length);
         }
 
         /// <summary>

@@ -1,5 +1,7 @@
 using Suilder.Builder;
 using Suilder.Engines;
+using Suilder.Functions;
+using Suilder.Operators;
 
 namespace Suilder.Core
 {
@@ -46,8 +48,17 @@ namespace Suilder.Core
         /// <param name="engine">The engine.</param>
         public virtual void Compile(QueryBuilder queryBuilder, IEngine engine)
         {
-            queryBuilder.WriteValue(Left, Parentheses.SubFragment)
-                .Write(" " + Op + " ").WriteValue(Right, Parentheses.SubFragment);
+            IOperatorInfo opInfo = engine.GetOperator(Op);
+
+            if (opInfo?.Function == true)
+            {
+                FunctionHelper.BinaryOperator(queryBuilder, engine, opInfo.Op, Left, Right);
+            }
+            else
+            {
+                queryBuilder.WriteValue(Left, Parentheses.SubFragment)
+                    .Write(" " + (opInfo?.Op ?? Op) + " ").WriteValue(Right, Parentheses.SubFragment);
+            }
         }
 
         /// <summary>

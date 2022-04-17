@@ -48,7 +48,7 @@ namespace Suilder.Test.Builder.Expressions
             Expression<Func<object>> expression = () => string.Concat(new string[] { "abcd", "efgh", "ijkl" });
             MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
 
-            QueryResult result = engine.Compile(ExpressionHelper.FunctionParams(methodExpression, "CONCAT"));
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
 
             Assert.Equal("CONCAT(@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
@@ -65,7 +65,7 @@ namespace Suilder.Test.Builder.Expressions
             Expression<Func<object>> expression = () => new Custom("abcd").Concat("efgh", "ijkl");
             MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
 
-            QueryResult result = engine.Compile(ExpressionHelper.FunctionParams(methodExpression, "CONCAT"));
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
 
             Assert.Equal("CONCAT(@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
@@ -77,12 +77,160 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Fact]
+        public void Function_Params_Static_Empty()
+        {
+            Expression<Func<object>> expression = () => Custom.ConcatStatic();
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
+
+            Assert.Equal("CONCAT()", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Function_Params_Instance_Empty()
+        {
+            Expression<Func<object>> expression = () => new Custom("abcd").Concat();
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
+
+            Assert.Equal("CONCAT(@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new Custom("abcd")
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Function_Params_Static_Null()
+        {
+            Expression<Func<object>> expression = () => string.Concat((string[])null);
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
+
+            Assert.Equal("CONCAT()", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Function_Params_Instance_Null()
+        {
+            Expression<Func<object>> expression = () => new Custom("abcd").Concat((string[])null);
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
+
+            Assert.Equal("CONCAT(@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new Custom("abcd")
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Function_Params_Static_Local_Value()
+        {
+            string[] values = new string[] { "abcd", "efgh", "ijkl" };
+            Expression<Func<object>> expression = () => string.Concat(values);
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
+
+            Assert.Equal("CONCAT(@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "abcd",
+                ["@p1"] = "efgh",
+                ["@p2"] = "ijkl"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Function_Params_Instance_Local_Value()
+        {
+            string[] values = new string[] { "efgh", "ijkl" };
+            Expression<Func<object>> expression = () => new Custom("abcd").Concat(values);
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
+
+            Assert.Equal("CONCAT(@p0, @p1, @p2)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new Custom("abcd"),
+                ["@p1"] = "efgh",
+                ["@p2"] = "ijkl"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Function_Params_Static_Local_Value_Empty()
+        {
+            string[] values = new string[0];
+            Expression<Func<object>> expression = () => string.Concat(values);
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
+
+            Assert.Equal("CONCAT()", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Function_Params_Instance_Local_Value_Empty()
+        {
+            string[] values = new string[0];
+            Expression<Func<object>> expression = () => new Custom("abcd").Concat(values);
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
+
+            Assert.Equal("CONCAT(@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new Custom("abcd")
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Function_Params_Static_Local_Value_Null()
+        {
+            string[] values = null;
+            Expression<Func<object>> expression = () => string.Concat(values);
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
+
+            Assert.Equal("CONCAT()", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Function_Params_Instance_Local_Value_Null()
+        {
+            string[] values = null;
+            Expression<Func<object>> expression = () => new Custom("abcd").Concat(values);
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
+
+            Assert.Equal("CONCAT(@p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new Custom("abcd")
+            }, result.Parameters);
+        }
+
+        [Fact]
         public void Function_Params_Multiple()
         {
             Expression<Func<object>> expression = () => new Custom("abcd").Concat('a', "efgh", "ijkl");
             MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
 
-            QueryResult result = engine.Compile(ExpressionHelper.FunctionParams(methodExpression, "CONCAT"));
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
 
             Assert.Equal("CONCAT(@p0, @p1, @p2, @p3)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
@@ -91,6 +239,23 @@ namespace Suilder.Test.Builder.Expressions
                 ["@p1"] = 'a',
                 ["@p2"] = "efgh",
                 ["@p3"] = "ijkl"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Function_Array()
+        {
+            Expression<Func<object>> expression = () => Custom.ConcatArray(new string[] { "abcd", "efgh" },
+                new string[] { "ijkl", "mnop" });
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Function(methodExpression, "CONCAT"));
+
+            Assert.Equal("CONCAT(@p0, @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = new string[] { "abcd", "efgh" },
+                ["@p1"] = new string[] { "ijkl", "mnop" }
             }, result.Parameters);
         }
 
@@ -680,6 +845,10 @@ namespace Suilder.Test.Builder.Expressions
             public Custom Concat(params string[] values) => null;
 
             public Custom Concat(char value1, params string[] values) => null;
+
+            public static string ConcatStatic(params string[] values) => null;
+
+            public static string ConcatArray(string[] value1, string[] value2) => null;
 
             public bool IsNull() => false;
 

@@ -1,4 +1,5 @@
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Reflection.Builder;
 
 namespace Suilder.Engines
@@ -43,6 +44,14 @@ namespace Suilder.Engines
             options.OffsetStyle = OffsetStyle.Offset;
 
             return options;
+        }
+
+        /// <summary>
+        /// Initializes the operators of the engine.
+        /// </summary>
+        protected override void InitOperators()
+        {
+            AddOperator(OperatorName.BitXor, "#");
         }
 
         /// <summary>

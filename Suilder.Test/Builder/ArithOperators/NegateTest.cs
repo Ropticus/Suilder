@@ -3,6 +3,7 @@ using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Extensions;
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
@@ -291,6 +292,34 @@ namespace Suilder.Test.Builder.ArithOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("- CAST((Subquery) AS DECIMAL(10, 2))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Translation()
+        {
+            engine.AddOperator(OperatorName.Negate, "TRANSLATED");
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Negate(person["Salary"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED \"person\".\"Salary\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function()
+        {
+            engine.AddOperator(OperatorName.Negate, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.Negate(person["Salary"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED(\"person\".\"Salary\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

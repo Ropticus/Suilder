@@ -211,14 +211,15 @@ namespace Suilder.Core
             string separator = ", ";
             for (int i = 0; i < Values.Count; i++)
             {
+                if (i != 0)
+                    queryBuilder.Write(separator);
+
                 queryBuilder.WriteValue(Values[i]);
                 if (OrderValues.TryGetValue(i, out bool asc))
                 {
                     queryBuilder.Write(asc ? " ASC" : " DESC");
                 }
-                queryBuilder.Write(separator);
             }
-            queryBuilder.RemoveLast(separator.Length);
         }
 
         /// <summary>
@@ -227,9 +228,9 @@ namespace Suilder.Core
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return ToStringBuilder.Build(b => b.Write("ORDER BY ")
-                .Join(", ", Values, (x, i) => b.WriteValue(x)
-                    .If(OrderValues.TryGetValue(i, out bool asc), () => b.Write(asc ? " ASC" : " DESC"))));
+            return ToStringBuilder.Build(b => b.Write("ORDER BY")
+                .If(Values.Count > 0, () => b.Write(" ").Join(", ", Values, (x, i) => b.WriteValue(x)
+                    .If(OrderValues.TryGetValue(i, out bool asc), () => b.Write(asc ? " ASC" : " DESC")))));
         }
     }
 }

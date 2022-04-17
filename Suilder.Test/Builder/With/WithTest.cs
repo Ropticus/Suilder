@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
+using Suilder.Exceptions;
 using Xunit;
 
 namespace Suilder.Test.Builder.With
@@ -87,6 +89,31 @@ namespace Suilder.Test.Builder.With
         }
 
         [Fact]
+        public void Count_List()
+        {
+            IWith with = sql.With;
+            IQueryFragment[] values = new IQueryFragment[] { sql.Cte("cte1"), sql.Cte("cte2"), sql.Cte("cte3") };
+
+            int i = 0;
+            Assert.Equal(i, with.Count);
+
+            foreach (IQueryFragment value in values)
+            {
+                with.Add(value);
+                Assert.Equal(++i, with.Count);
+            }
+        }
+
+        [Fact]
+        public void Empty_List()
+        {
+            IWith with = sql.With;
+
+            Exception ex = Assert.Throws<CompileException>(() => engine.Compile(with));
+            Assert.Equal("List is empty.", ex.Message);
+        }
+
+        [Fact]
         public void To_String()
         {
             IAlias person = sql.Alias("person");
@@ -106,6 +133,14 @@ namespace Suilder.Test.Builder.With
             IWith with = sql.With.Add(cte);
 
             Assert.Equal("WITH cte1 AS (SELECT person.* FROM person)", with.ToString());
+        }
+
+        [Fact]
+        public void To_String_Empty()
+        {
+            IWith with = sql.With;
+
+            Assert.Equal("WITH", with.ToString());
         }
     }
 }

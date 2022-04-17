@@ -108,6 +108,16 @@ namespace Suilder.Performance.Builder
 
         [Benchmark]
         [BenchmarkCategory("Operator")]
+        public object Concat_Operator()
+        {
+            string value = "abcd";
+
+            Person person = null;
+            return sql.Val(() => person.Name + value);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Operator")]
         public object Coalesce_Operator()
         {
             string name = "abcd";
@@ -139,6 +149,14 @@ namespace Suilder.Performance.Builder
         {
             Person person = null;
             return sql.Val(() => SqlExp.Sum(person.Salary));
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Method")]
+        public object Method_Args_Params()
+        {
+            Person person = null;
+            return sql.Val(() => SqlExp.Concat(person.Name, person.SurName));
         }
 
         [Benchmark]

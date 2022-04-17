@@ -97,8 +97,8 @@ namespace Suilder.Functions
             });
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Cast));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Ceiling));
-            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Coalesce), true);
-            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Concat), true);
+            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Coalesce));
+            ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Concat));
             ExpressionProcessor.AddFunction(typeof(SqlExp), nameof(SqlExp.Count), (expression, name) =>
             {
                 IFunction func = ExpressionHelper.Function(expression, name);

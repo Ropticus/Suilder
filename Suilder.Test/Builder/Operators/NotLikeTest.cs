@@ -4,6 +4,7 @@ using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Extensions;
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
@@ -873,6 +874,40 @@ namespace Suilder.Test.Builder.Operators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation()
+        {
+            engine.AddOperator(OperatorName.NotLike, "TRANSLATED");
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotLike(person["Name"], "%abcd%");
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Name\" TRANSLATED @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "%abcd%"
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function()
+        {
+            engine.AddOperator(OperatorName.NotLike, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.NotLike(person["Name"], "%abcd%");
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED(\"person\".\"Name\", @p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = "%abcd%"
             }, result.Parameters);
         }
 

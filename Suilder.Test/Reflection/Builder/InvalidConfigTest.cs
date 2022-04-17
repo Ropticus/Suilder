@@ -1,5 +1,7 @@
 using System;
 using Suilder.Exceptions;
+using Suilder.Reflection.Builder;
+using Suilder.Reflection.Builder.Processors;
 using Suilder.Test.Reflection.Builder.TablePerType.Tables;
 using Xunit;
 
@@ -97,6 +99,19 @@ namespace Suilder.Test.Reflection.Builder
         }
 
         [Fact]
+        public void Columns_Empty()
+        {
+            tableBuilder.Add<Person>()
+                .InheritColumns(false)
+                .Ignore(x => x.Id)
+                .Ignore(x => x.SurName)
+                .Ignore(x => x.Address);
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Empty columns for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        [Fact]
         public void Column_Name_Empty()
         {
             tableBuilder.Add<Person>()
@@ -105,6 +120,249 @@ namespace Suilder.Test.Reflection.Builder
             Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
             Assert.Equal($"Empty column name for property \"{nameof(Person.Name)}\" of the type \"{typeof(Person)}\".",
                 ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Primary_Keys_Null()
+        {
+            tableBuilder.AddProcessor(new InvalidPrimaryKeysNullProcessor());
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Null primary keys for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Columns_Null()
+        {
+            tableBuilder.AddProcessor(new InvalidColumnsNullProcessor());
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Null columns for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Columns_Empty()
+        {
+            tableBuilder.AddProcessor(new InvalidColumnsEmptyProcessor());
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Empty columns for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Column_Names_Null()
+        {
+            tableBuilder.AddProcessor(new InvalidColumnNamesNullProcessor());
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Null column names for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Column_Names_Empty()
+        {
+            tableBuilder.AddProcessor(new InvalidColumnNamesEmptyProcessor());
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Empty column names for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Column_Names_Dic_Null()
+        {
+            tableBuilder.AddProcessor(new InvalidColumnNamesDicNullProcessor());
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Null column names dictionary for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Column_Names_Dic_Empty()
+        {
+            tableBuilder.AddProcessor(new InvalidColumnNamesDicEmptyProcessor());
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Empty column names dictionary for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Column_Names_Dic_Key()
+        {
+            tableBuilder.AddProcessor(new InvalidColumnNamesDicKeyProcessor());
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Empty column name for property \"{nameof(Person.Name)}\" of the type \"{typeof(Person)}\".",
+                ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Foreign_Keys_Null()
+        {
+            tableBuilder.AddProcessor(new InvalidForeignKeysNullProcessor());
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Null foreign keys for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Table_Metadata_Null()
+        {
+            tableBuilder.AddProcessor(new InvalidTableMetadataNullProcessor());
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Null table metadata for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Member_Metadata_Null()
+        {
+            tableBuilder.AddProcessor(new InvalidMemberMetadataNullProcessor());
+
+            tableBuilder.Add<Person>();
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Null member metadata for type \"{typeof(Person)}\".", ex.Message);
+        }
+
+        private class InvalidPrimaryKeysNullProcessor : BaseConfigProcessor
+        {
+            protected override void ProcessData()
+            {
+                foreach (TableInfo tableInfo in ResultData.ResultTypes.Values)
+                {
+                    tableInfo.PrimaryKeys = null;
+                }
+            }
+        }
+
+        private class InvalidColumnsNullProcessor : BaseConfigProcessor
+        {
+            protected override void ProcessData()
+            {
+                foreach (TableInfo tableInfo in ResultData.ResultTypes.Values)
+                {
+                    tableInfo.Columns = null;
+                }
+            }
+        }
+
+        private class InvalidColumnsEmptyProcessor : BaseConfigProcessor
+        {
+            protected override void ProcessData()
+            {
+                foreach (TableInfo tableInfo in ResultData.ResultTypes.Values)
+                {
+                    tableInfo.Columns.Clear();
+                }
+            }
+        }
+
+        private class InvalidColumnNamesNullProcessor : BaseConfigProcessor
+        {
+            protected override void ProcessData()
+            {
+                foreach (TableInfo tableInfo in ResultData.ResultTypes.Values)
+                {
+                    tableInfo.ColumnNames = null;
+                }
+            }
+        }
+
+        private class InvalidColumnNamesEmptyProcessor : BaseConfigProcessor
+        {
+            protected override void ProcessData()
+            {
+                foreach (TableInfo tableInfo in ResultData.ResultTypes.Values)
+                {
+                    tableInfo.ColumnNames.Clear();
+                }
+            }
+        }
+
+        private class InvalidColumnNamesDicNullProcessor : BaseConfigProcessor
+        {
+            protected override void ProcessData()
+            {
+                foreach (TableInfo tableInfo in ResultData.ResultTypes.Values)
+                {
+                    tableInfo.ColumnNamesDic = null;
+                }
+            }
+        }
+
+        private class InvalidColumnNamesDicEmptyProcessor : BaseConfigProcessor
+        {
+            protected override void ProcessData()
+            {
+                foreach (TableInfo tableInfo in ResultData.ResultTypes.Values)
+                {
+                    tableInfo.ColumnNamesDic.Clear();
+                }
+            }
+        }
+
+        private class InvalidColumnNamesDicKeyProcessor : BaseConfigProcessor
+        {
+            protected override void ProcessData()
+            {
+                foreach (TableInfo tableInfo in ResultData.ResultTypes.Values)
+                {
+                    tableInfo.ColumnNamesDic.Remove(nameof(Person.Name));
+                }
+            }
+        }
+
+        private class InvalidForeignKeysNullProcessor : BaseConfigProcessor
+        {
+            protected override void ProcessData()
+            {
+                foreach (TableInfo tableInfo in ResultData.ResultTypes.Values)
+                {
+                    tableInfo.ForeignKeys = null;
+                }
+            }
+        }
+
+        private class InvalidTableMetadataNullProcessor : BaseConfigProcessor
+        {
+            protected override void ProcessData()
+            {
+                foreach (TableInfo tableInfo in ResultData.ResultTypes.Values)
+                {
+                    tableInfo.TableMetadata = null;
+                }
+            }
+        }
+
+        private class InvalidMemberMetadataNullProcessor : BaseConfigProcessor
+        {
+            protected override void ProcessData()
+            {
+                foreach (TableInfo tableInfo in ResultData.ResultTypes.Values)
+                {
+                    tableInfo.MemberMetadata = null;
+                }
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using Suilder.Core;
 using Suilder.Exceptions;
 using Suilder.Extensions;
 using Suilder.Functions;
+using Suilder.Operators;
 using Suilder.Test.Builder.Tables;
 using Xunit;
 
@@ -464,6 +465,95 @@ namespace Suilder.Test.Builder.BitOperators
         }
 
         [Fact]
+        public void Translation()
+        {
+            engine.AddOperator(OperatorName.LeftShift, "TRANSLATED");
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.LeftShift
+                .Add(person["Flags"])
+                .Add(1)
+                .Add(2);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Flags\" TRANSLATED @p0 TRANSLATED @p1", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_One_Value()
+        {
+            engine.AddOperator(OperatorName.LeftShift, "TRANSLATED");
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.LeftShift.Add(person["Flags"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function()
+        {
+            engine.AddOperator(OperatorName.LeftShift, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.LeftShift
+                .Add(person["Flags"])
+                .Add(1)
+                .Add(2);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED(TRANSLATED(\"person\".\"Flags\", @p0), @p1)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = 2
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function_Two_Values()
+        {
+            engine.AddOperator(OperatorName.LeftShift, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.LeftShift
+                .Add(person["Flags"])
+                .Add(1);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("TRANSLATED(\"person\".\"Flags\", @p0)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Translation_Function_One_Value()
+        {
+            engine.AddOperator(OperatorName.LeftShift, "TRANSLATED", true);
+
+            IAlias person = sql.Alias("person");
+            IOperator op = sql.LeftShift.Add(person["Flags"]);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void SubOperator()
         {
             IAlias person = sql.Alias("person");
@@ -545,12 +635,20 @@ namespace Suilder.Test.Builder.BitOperators
         }
 
         [Fact]
-        public void To_String_One_value()
+        public void To_String_One_Value()
         {
             IAlias person = sql.Alias("person");
             IOperator op = sql.LeftShift.Add(person["Flags"]);
 
             Assert.Equal("person.Flags", op.ToString());
+        }
+
+        [Fact]
+        public void To_String_Empty()
+        {
+            IOperator op = sql.LeftShift;
+
+            Assert.Equal("", op.ToString());
         }
 
         [Fact]

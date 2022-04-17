@@ -270,7 +270,7 @@ namespace Suilder.Reflection.Builder.Processors
             }
 
             tableInfo.ColumnNamesDic = tableInfo.Columns.ToDictionary(x => x, x => tableInfo.ColumnNamesDic[x]);
-            tableInfo.ColumnNames = tableInfo.Columns.Select(x => tableInfo.ColumnNamesDic[x]).Distinct().ToArray();
+            tableInfo.ColumnNames = tableInfo.Columns.Select(x => tableInfo.ColumnNamesDic[x]).Distinct().ToList();
         }
 
         /// <summary>
