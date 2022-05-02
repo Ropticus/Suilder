@@ -116,7 +116,7 @@ namespace Suilder.Core
         public virtual IJoin Join(IQueryFragment value, string aliasName)
         {
             Source = value is ICte cte ? cte.Alias : value;
-            AliasName = aliasName ?? throw new ArgumentNullException(nameof(aliasName), "Alias name is null.");
+            AliasName = aliasName ?? throw new ArgumentNullException(nameof(aliasName), "Alias name cannot be null.");
 
             return this;
         }
@@ -130,7 +130,7 @@ namespace Suilder.Core
         public virtual IJoin Join(IQueryFragment value, IAlias alias)
         {
             Source = value is ICte cte ? cte.Alias : value;
-            AliasName = alias.AliasOrTableName ?? throw new ArgumentException("Alias name is null.", nameof(alias));
+            AliasName = alias.AliasOrTableName ?? throw new ArgumentException("Alias name cannot be null.", nameof(alias));
 
             return this;
         }

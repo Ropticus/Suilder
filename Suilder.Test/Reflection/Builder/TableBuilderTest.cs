@@ -1,12 +1,12 @@
 using System;
-using Nested = Suilder.Test.Reflection.Builder.TableNested.Tables;
-using Suilder.Exceptions;
-using Suilder.Reflection.Builder;
-using Suilder.Test.Reflection.Builder.TablePerType.Tables;
 using System.Collections.Generic;
-using Suilder.Reflection.Builder.Processors;
+using Suilder.Exceptions;
 using Suilder.Reflection;
+using Suilder.Reflection.Builder;
+using Suilder.Reflection.Builder.Processors;
+using Suilder.Test.Reflection.Builder.TablePerType.Tables;
 using Xunit;
+using Nested = Suilder.Test.Reflection.Builder.TableNested.Tables;
 
 namespace Suilder.Test.Reflection.Builder
 {
@@ -199,7 +199,7 @@ namespace Suilder.Test.Reflection.Builder
             tableBuilder.GetConfig();
 
             Exception ex = Assert.Throws<InvalidOperationException>(() => tableBuilder.Add<Department>());
-            Assert.Equal($"The builder is already initialized.", ex.Message);
+            Assert.Equal("The builder is already initialized.", ex.Message);
         }
 
         [Fact]

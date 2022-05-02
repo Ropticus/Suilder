@@ -69,8 +69,8 @@ namespace Suilder.Core
         public SetOperator(string op, IQueryFragment left, IQueryFragment right)
         {
             Op = op;
-            Left = left ?? throw new ArgumentNullException(nameof(left), "Left value is null.");
-            Right = right ?? throw new ArgumentNullException(nameof(right), "Right value is null.");
+            Left = left ?? throw new ArgumentNullException(nameof(left));
+            Right = right ?? throw new ArgumentNullException(nameof(right));
         }
 
         /// <summary>

@@ -119,6 +119,29 @@ namespace Suilder.Test.Builder.Raw
         }
 
         [Fact]
+        public void Invalid_Sql_Null()
+        {
+            Exception ex = Assert.Throws<ArgumentNullException>(() => sql.Raw(null));
+            Assert.Equal("Value cannot be null. (Parameter 'sql')", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Format_Sql_Null()
+        {
+            IAlias person = sql.Alias("person");
+
+            Exception ex = Assert.Throws<ArgumentNullException>(() => sql.Raw(null, person["Name"]));
+            Assert.Equal("Value cannot be null. (Parameter 'sql')", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Format_Values_Null()
+        {
+            Exception ex = Assert.Throws<ArgumentNullException>(() => sql.Raw("SELECT {0} FROM", null));
+            Assert.Equal("Value cannot be null. (Parameter 'values')", ex.Message);
+        }
+
+        [Fact]
         public void Invalid_Index_Out_Range()
         {
             IAlias person = sql.Alias("person");
@@ -303,10 +326,18 @@ namespace Suilder.Test.Builder.Raw
         [Fact]
         public void To_String()
         {
-            IAlias person = sql.Alias("person");
-            IRawSql raw = sql.Raw("SELECT {0} FROM {1}", person["Name"], person);
+            IRawSql raw = sql.Raw("SELECT * FROM person");
 
-            Assert.Equal("SELECT person.Name FROM person", raw.ToString());
+            Assert.Equal("SELECT * FROM person", raw.ToString());
+        }
+
+        [Fact]
+        public void To_String_Format()
+        {
+            IAlias person = sql.Alias("person");
+            IRawSql raw = sql.Raw("SELECT {0}, {1} FROM {2}", person["Name"], "abcd", person);
+
+            Assert.Equal("SELECT person.Name, \"abcd\" FROM person", raw.ToString());
         }
     }
 }

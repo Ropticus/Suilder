@@ -107,6 +107,56 @@ namespace Suilder.Test.Builder.Functions
         }
 
         [Fact]
+        public void Concat_With_Or_SubOperator()
+        {
+            engine.AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);
+
+            IAlias person = sql.Alias("person");
+            IFunction func = sql.Function("CONCAT").Add(sql.Gt(person["Id"], 10), sql.Lt(person["Id"], 20));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("((\"person\".\"Id\" > @p0) || (\"person\".\"Id\" < @p1))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 10,
+                ["@p1"] = 20
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Concat_With_Or_SubOperator_List()
+        {
+            engine.AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);
+
+            IAlias person = sql.Alias("person");
+            IFunction func = sql.Function("CONCAT").Add(sql.Add.Add(person["Salary"], 1000m),
+                sql.Multiply.Add(person["Salary"], 2m));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("((\"person\".\"Salary\" + @p0) || (\"person\".\"Salary\" * @p1))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1000m,
+                ["@p1"] = 2m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Concat_With_Or_SubQuery()
+        {
+            engine.AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);
+
+            IFunction func = sql.Function("CONCAT").Add(sql.RawQuery("Subquery1"), sql.RawQuery("Subquery2"));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("((Subquery1) || (Subquery2))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Count()
         {
             IFunction func = SqlFn.Count();

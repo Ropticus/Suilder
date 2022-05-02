@@ -75,6 +75,15 @@ namespace Suilder.Test.Builder.Raw
         }
 
         [Fact]
+        public void To_String_Format()
+        {
+            IAlias person = sql.Alias("person");
+            IRawQuery rawQuery = sql.RawQuery("SELECT {0}, {1} FROM {2}", person["Name"], "abcd", person);
+
+            Assert.Equal("SELECT person.Name, \"abcd\" FROM person", rawQuery.ToString());
+        }
+
+        [Fact]
         public void To_String_Offset()
         {
             IRawQuery rawQuery = sql.RawQuery("SELECT * FROM person").Offset(10).Fetch(20);

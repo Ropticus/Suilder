@@ -144,7 +144,7 @@ namespace Suilder.Functions
                 if (i != 0)
                     queryBuilder.Write(separator);
 
-                queryBuilder.WriteValue(func.Args[i]);
+                queryBuilder.WriteValue(func.Args[i], Parentheses.SubFragment);
             }
 
             queryBuilder.Write(")");

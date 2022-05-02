@@ -113,8 +113,9 @@ namespace Suilder.Core
         public override string ToString()
         {
             return ToStringBuilder.Build(b => b
-                .IfNotNull(OffsetValue, x => b.Write("OFFSET ").WriteValue(x).Write(" "))
-                .IfNotNull(FetchValue, x => b.Write("FETCH ").WriteValue(x)).Write(" ")
+                .IfNotNull(OffsetValue, x => b.Write("OFFSET ").WriteValue(x))
+                .IfNotNull(FetchValue, x => b.IfNotNull(OffsetValue, () => b.Write(" "))
+                    .Write("FETCH ").WriteValue(x)).Write(" ")
                 .RemoveLast(1));
         }
     }

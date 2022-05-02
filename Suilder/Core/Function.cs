@@ -159,7 +159,7 @@ namespace Suilder.Core
         public override string ToString()
         {
             return ToStringBuilder.Build(b => b.Write(Name).Write("(")
-                .IfNotNull(BeforeArgs, () => b.WriteFragment(BeforeArgs).Write(" "))
+                .IfNotNull(BeforeArgs, x => b.WriteFragment(x).Write(" "))
                 .Join(", ", Values, x => b.WriteValue(x)).Write(")"));
         }
     }

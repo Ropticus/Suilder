@@ -29,6 +29,9 @@ namespace Suilder.Core
         /// <param name="sql">The raw SQL.</param>
         public RawSql(string sql)
         {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql));
+
             Sql = new string[] { sql };
             Values = Array.Empty<object>();
         }
@@ -45,6 +48,12 @@ namespace Suilder.Core
         /// is less than zero, or greater than or equal to the length of the <paramref name="values"/>  array.</exception>
         public RawSql(string sql, params object[] values)
         {
+            if (sql == null)
+                throw new ArgumentNullException(nameof(sql));
+
+            if (values == null)
+                throw new ArgumentNullException(nameof(values));
+
             List<string> sqlList = new List<string>();
             List<object> valuesList = new List<object>();
 

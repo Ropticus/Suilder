@@ -1,3 +1,4 @@
+using System.Globalization;
 using Suilder.Builder;
 using Suilder.Engines;
 
@@ -49,10 +50,10 @@ namespace Suilder.Core
             queryBuilder.Write(Name);
             if (Length != null)
             {
-                queryBuilder.Write("(").Write(Length.ToString());
+                queryBuilder.Write("(").Write(Length.Value.ToString(CultureInfo.InvariantCulture));
                 if (Scale != null)
                 {
-                    queryBuilder.Write(", ").Write(Scale.ToString());
+                    queryBuilder.Write(", ").Write(Scale.Value.ToString(CultureInfo.InvariantCulture));
                 }
                 queryBuilder.Write(")");
             }
@@ -65,8 +66,9 @@ namespace Suilder.Core
         public override string ToString()
         {
             return ToStringBuilder.Build(b => b.Write(Name)
-                .IfNotNull(Length, x => b.Write("(").WriteParameter(x))
-                    .IfNotNull(Scale, s => b.Write(", ").WriteParameter(s)).Write(")"));
+                .IfNotNull(Length, x => b.Write("(").Write(x.ToString())
+                    .IfNotNull(Scale, s => b.Write(", ").Write(s.ToString()))
+                    .Write(")")));
         }
     }
 }

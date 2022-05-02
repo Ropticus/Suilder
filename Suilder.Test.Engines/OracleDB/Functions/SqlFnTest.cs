@@ -147,7 +147,7 @@ namespace Suilder.Test.Engines.OracleDB.Functions
             IFunction func = SqlFn.LastInsertId();
 
             Exception ex = Assert.Throws<ClauseNotSupportedException>(() => engine.Compile(func));
-            Assert.Equal($"Function \"LASTINSERTID\" is not supported in this engine.", ex.Message);
+            Assert.Equal("Function \"LASTINSERTID\" is not supported in this engine.", ex.Message);
         }
 
         [Fact]

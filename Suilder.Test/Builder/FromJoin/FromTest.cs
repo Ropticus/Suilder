@@ -144,7 +144,7 @@ namespace Suilder.Test.Builder.FromJoin
             string alias = null;
 
             Exception ex = Assert.Throws<ArgumentNullException>(() => sql.From(sql.RawQuery("Subquery"), alias));
-            Assert.Equal($"Alias name is null. (Parameter 'aliasName')", ex.Message);
+            Assert.Equal("Alias name cannot be null. (Parameter 'aliasName')", ex.Message);
         }
 
         [Fact]
@@ -154,7 +154,7 @@ namespace Suilder.Test.Builder.FromJoin
             IAlias person = sql.Alias(alias);
 
             Exception ex = Assert.Throws<ArgumentException>(() => sql.From(sql.RawQuery("Subquery"), person));
-            Assert.Equal($"Alias name is null. (Parameter 'alias')", ex.Message);
+            Assert.Equal("Alias name cannot be null. (Parameter 'alias')", ex.Message);
         }
 
         [Fact]

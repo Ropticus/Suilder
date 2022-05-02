@@ -110,6 +110,14 @@ namespace Suilder.Test.Builder.Update
         [Fact]
         public void To_String()
         {
+            IUpdate update = sql.Update();
+
+            Assert.Equal("UPDATE", update.ToString());
+        }
+
+        [Fact]
+        public void To_String_Top()
+        {
             IUpdate update = sql.Update().Top(10);
 
             Assert.Equal("UPDATE TOP(10)", update.ToString());

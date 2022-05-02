@@ -163,7 +163,7 @@ namespace Suilder.Test.Builder
 
             Exception ex = Assert.Throws<ArgumentException>(() =>
                 ToStringBuilder.Build(b => b.WriteFragment(from, (Parentheses)int.MaxValue)));
-            Assert.Equal($"Invalid value. (Parameter 'parentheses')", ex.Message);
+            Assert.Equal("Invalid value. (Parameter 'parentheses')", ex.Message);
         }
 
         [Fact]
@@ -341,7 +341,7 @@ namespace Suilder.Test.Builder
 
             Exception ex = Assert.Throws<ArgumentException>(() =>
                 ToStringBuilder.Build(b => b.WriteValue(from, (Parentheses)int.MaxValue)));
-            Assert.Equal($"Invalid value. (Parameter 'parentheses')", ex.Message);
+            Assert.Equal("Invalid value. (Parameter 'parentheses')", ex.Message);
         }
 
         [Fact]
@@ -405,7 +405,7 @@ namespace Suilder.Test.Builder
         {
             Exception ex = Assert.Throws<ArgumentException>(() =>
                 ToStringBuilder.Build(b => b.WriteParameter("abcd", (Parentheses)int.MaxValue)));
-            Assert.Equal($"Invalid value. (Parameter 'parentheses')", ex.Message);
+            Assert.Equal("Invalid value. (Parameter 'parentheses')", ex.Message);
         }
 
         [Fact]

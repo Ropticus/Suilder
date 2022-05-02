@@ -322,7 +322,7 @@ namespace Suilder.Test.Builder.Cte
             IAlias person = sql.Alias(alias);
 
             Exception ex = Assert.Throws<ArgumentException>(() => sql.Cte(person));
-            Assert.Equal($"Alias name is null. (Parameter 'alias')", ex.Message);
+            Assert.Equal("Alias name cannot be null. (Parameter 'alias')", ex.Message);
         }
 
         [Fact]

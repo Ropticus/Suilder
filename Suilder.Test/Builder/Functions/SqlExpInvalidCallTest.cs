@@ -144,6 +144,7 @@ namespace Suilder.Test.Builder.Functions
         public void Count_Column()
         {
             Person person = new Person();
+
             Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Count(person.Name));
             Assert.Equal("Only for expressions.", ex.Message);
         }
@@ -151,8 +152,6 @@ namespace Suilder.Test.Builder.Functions
         [Fact]
         public void Count_Distinct()
         {
-            engine.AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);
-
             Person person = new Person();
 
             Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.CountDistinct(person.Name));

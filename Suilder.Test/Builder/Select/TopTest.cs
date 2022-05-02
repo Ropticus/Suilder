@@ -92,6 +92,30 @@ namespace Suilder.Test.Builder.Select
         [Fact]
         public void To_String()
         {
+            ITop top = sql.Top(10);
+
+            Assert.Equal("TOP(10)", top.ToString());
+        }
+
+        [Fact]
+        public void To_String_Percent()
+        {
+            ITop top = sql.Top(10).Percent();
+
+            Assert.Equal("TOP(10) PERCENT", top.ToString());
+        }
+
+        [Fact]
+        public void To_String_With_Ties()
+        {
+            ITop top = sql.Top(10).WithTies();
+
+            Assert.Equal("TOP(10) WITH TIES", top.ToString());
+        }
+
+        [Fact]
+        public void To_String_Percent_With_Ties()
+        {
             ITop top = sql.Top(10).Percent().WithTies();
 
             Assert.Equal("TOP(10) PERCENT WITH TIES", top.ToString());

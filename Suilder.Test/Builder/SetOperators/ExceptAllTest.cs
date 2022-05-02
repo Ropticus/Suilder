@@ -36,7 +36,7 @@ namespace Suilder.Test.Builder.SetOperators
             {
                 sql.ExceptAll(null, sql.Query.Select(() => person.Name).From(() => person));
             });
-            Assert.Equal($"Left value is null. (Parameter 'left')", ex.Message);
+            Assert.Equal("Value cannot be null. (Parameter 'left')", ex.Message);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace Suilder.Test.Builder.SetOperators
             {
                 sql.ExceptAll(sql.Query.Select(() => person.Name).From(() => person), null);
             });
-            Assert.Equal($"Right value is null. (Parameter 'right')", ex.Message);
+            Assert.Equal("Value cannot be null. (Parameter 'right')", ex.Message);
         }
 
         [Fact]

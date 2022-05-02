@@ -641,7 +641,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
         }
 
         [Fact]
-        public void Ignored_Property()
+        public void Invalid_Ignored_Property()
         {
             IAlias<Person> person = sql.Alias<Person>();
             IColumn column = person[x => x.Ignore];
@@ -661,7 +661,7 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
         }
 
         [Fact]
-        public void Not_Exists_Property()
+        public void Invalid_Not_Exists_Property()
         {
             IAlias<Person> person = sql.Alias<Person>();
             IColumn column = person["Other"];

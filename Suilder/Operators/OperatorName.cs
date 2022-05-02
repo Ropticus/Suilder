@@ -3,7 +3,7 @@ namespace Suilder.Operators
     /// <summary>
     /// Contains the name of the operators.
     /// </summary>
-    public class OperatorName
+    public static class OperatorName
     {
         /// <summary>
         /// The "equal to" operator.

@@ -115,6 +115,14 @@ namespace Suilder.Test.Builder.Select
         [Fact]
         public void To_String()
         {
+            IOver over = sql.Over;
+
+            Assert.Equal("OVER()", over.ToString());
+        }
+
+        [Fact]
+        public void To_String_PartitionBy()
+        {
             IAlias person = sql.Alias("person");
             IOver over = sql.Over
                 .PartitionBy(x => x.Add(person["DepartmentId"]));

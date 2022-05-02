@@ -174,6 +174,22 @@ namespace Suilder.Test.Builder.Offset
         [Fact]
         public void To_String()
         {
+            IOffset offset = sql.Offset(10);
+
+            Assert.Equal("OFFSET 10", offset.ToString());
+        }
+
+        [Fact]
+        public void To_String_Fetch()
+        {
+            IOffset offset = sql.Fetch(20);
+
+            Assert.Equal("FETCH 20", offset.ToString());
+        }
+
+        [Fact]
+        public void To_String_Offset_Fetch()
+        {
             IOffset offset = sql.Offset(10).Fetch(20);
 
             Assert.Equal("OFFSET 10 FETCH 20", offset.ToString());

@@ -45,7 +45,7 @@ namespace Suilder.Core
         public Cte(IAlias alias)
         {
             Alias = SqlBuilder.Instance.Alias(alias.AliasOrTableName
-                ?? throw new ArgumentException("Alias name is null.", nameof(alias)));
+                ?? throw new ArgumentException("Alias name cannot be null.", nameof(alias)));
         }
 
         /// <summary>
