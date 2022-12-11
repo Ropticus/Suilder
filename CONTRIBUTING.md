@@ -13,13 +13,16 @@ The documentation is built with [MkDocs](https://www.mkdocs.org/) and is in the 
 ## Contributing to the code
 Look for issues with the label ["help wanted"](https://github.com/Ropticus/Suilder/issues/?q=label%3A"help+wanted"+is%3Aissue+is%3Aopen) and submit a [pull request](https://github.com/Ropticus/Suilder/pulls).
 
-### Coding guidelines
-The following apply to **C#** code:
+### Requirements
+You will need the following tools:
 
-- Use 4 spaces for indentation.
-- Max line length of 125 characters.
-- Format correctly the code and trim trailing spaces.
-- Follow language conventions.
+- [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
+
+### Install dependencies
+To download and install the dependencies:
+```sh
+dotnet restore
+```
 
 ### Run unit tests
 We use [xUnit](https://xunit.net/) for unit testing.
@@ -62,8 +65,21 @@ We use [BenchmarkDotNet](https://benchmarkdotnet.org/) for benchmarking.
 
 Run all benchmarks:
 ```sh
-dotnet run -p "./Suilder.Performance" -c Release -- -f *
+dotnet run --project "./Suilder.Performance" -c Release -- -f *
 ```
+
+### Coding guidelines
+
+#### C#
+
+- Use 4 spaces for indentation.
+- Trim trailing spaces.
+- Max line length of 125 characters.
+
+#### Markdown
+
+- Use 4 spaces for indentation.
+- Trim trailing spaces.
 
 ## License
 By contributing to **Suilder**, you agree that your contributions will be licensed under the [MIT license](LICENSE.txt).

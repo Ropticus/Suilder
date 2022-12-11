@@ -8,6 +8,6 @@ namespace Suilder.Test.Reflection.Builder.TablePerType.Tables
 
         public virtual Department Department { get; set; }
 
-        public byte[] Image { get; set; }
+        public virtual byte[] Image { get; set; }
     }
 }

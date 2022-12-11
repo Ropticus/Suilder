@@ -100,7 +100,7 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             public virtual List<Person> Employees { get; set; }
 
             [Ignore]
-            public List<string> Tags { get; set; }
+            public virtual List<string> Tags { get; set; }
         }
 
         [Nested]
@@ -115,7 +115,7 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             public virtual Department Department { get; set; }
 
             [Ignore]
-            public byte[] Image { get; set; }
+            public virtual byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig

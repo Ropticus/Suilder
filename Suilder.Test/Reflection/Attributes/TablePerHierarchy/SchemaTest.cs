@@ -66,7 +66,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
 
             public virtual List<Employee> Employees { get; set; }
 
-            public List<string> Tags { get; set; }
+            public virtual List<string> Tags { get; set; }
         }
 
         [Table(Schema = "schema_Employee")]
@@ -78,7 +78,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerHierarchy
 
             public virtual Department Department { get; set; }
 
-            public byte[] Image { get; set; }
+            public virtual byte[] Image { get; set; }
         }
 
         [Table(Schema = "schema_Person")]

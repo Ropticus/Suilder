@@ -125,11 +125,11 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
             [PrimaryKey]
             public override string Guid { get; set; }
 
-            public Employee Boss { get; set; }
+            public virtual Employee Boss { get; set; }
 
-            public List<Employee> Employees { get; set; }
+            public virtual List<Employee> Employees { get; set; }
 
-            public List<string> Tags { get; set; }
+            public virtual List<string> Tags { get; set; }
         }
 
         public class Employee : Person
@@ -137,13 +137,13 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
             [PrimaryKey]
             public override int Id { get; set; }
 
-            public decimal Salary { get; set; }
+            public virtual decimal Salary { get; set; }
 
             public virtual int DepartmentId { get; set; }
 
             public virtual Department Department { get; set; }
 
-            public byte[] Image { get; set; }
+            public virtual byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig
@@ -151,11 +151,11 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
             [PrimaryKey]
             public override string Guid { get; set; }
 
-            public string SurName { get; set; }
+            public virtual string SurName { get; set; }
 
             public virtual string FullName => $"{Name} {SurName}".TrimEnd();
 
-            public Address Address { get; set; }
+            public virtual Address Address { get; set; }
         }
     }
 }

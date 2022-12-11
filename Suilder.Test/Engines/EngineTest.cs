@@ -69,7 +69,7 @@ namespace Suilder.Test.Engines
             Assert.Equal("\"Id\"", engine.EscapeName("\"Id\""));
             Assert.Equal("\"person\".\"Id\"", engine.EscapeName("\"person\".\"Id\""));
             Assert.Equal("\"dbo\".\"person\".\"Id\"", engine.EscapeName("\"dbo\".\"person\".\"Id\""));
-            Assert.Equal("\";DELETE FROM person\"", engine.EscapeName("\";DELETE FROM person"));
+            Assert.Equal("\"Id = 1; DELETE FROM person; -- \"", engine.EscapeName("Id\" = 1; DELETE FROM person; -- "));
         }
 
         public static IEnumerable<object[]> DataRegister

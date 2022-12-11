@@ -3,6 +3,7 @@
 *.code-workspace
 
 # Visual Studio
+.vs/*
 *.suo
 *.user
 

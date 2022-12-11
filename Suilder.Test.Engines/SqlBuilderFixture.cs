@@ -1,4 +1,3 @@
-using System;
 using Suilder.Builder;
 using Suilder.Functions;
 using Xunit;

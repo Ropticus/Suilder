@@ -133,7 +133,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
             public virtual List<Employee> Employees { get; set; }
 
             [Column("Tags3")]
-            public List<string> Tags { get; set; }
+            public virtual List<string> Tags { get; set; }
         }
 
         public class Employee : Person
@@ -148,7 +148,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
             public virtual Department Department { get; set; }
 
             [Column("Image2")]
-            public byte[] Image { get; set; }
+            public virtual byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig

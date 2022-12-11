@@ -221,7 +221,11 @@ namespace Suilder.Test
                     new object[] { 1.5m },
                     new object[] { 'a' },
                     new object[] { "abcd" },
+                    new object[] { new TimeSpan(1, 1, 1) },
+                    new object[] { new TimeOnly(1, 1, 1) },
+                    new object[] { new DateOnly(2001, 1, 1) },
                     new object[] { new DateTime(2001, 1, 1) },
+                    new object[] { new DateTimeOffset(2001, 1, 1, 0, 0, 0, new TimeSpan(1, 0, 0)) },
                     new object[] { PersonFlags.ValueA }
                 };
             }
@@ -240,14 +244,22 @@ namespace Suilder.Test
                     new object[] { new ushort[] { 1, 2, 3 } },
                     new object[] { new int[] { 1, 2, 3 } },
                     new object[] { new uint[] { 1, 2, 3 } },
+                    new object[] { new long[] { 1, 2, 3 } },
                     new object[] { new ulong[] { 1, 2, 3 } },
                     new object[] { new float[] { 1.5f, 2.5f, 3.5f } },
                     new object[] { new double[] { 1.5, 2.5, 3.5 } },
                     new object[] { new decimal[] { 1.5m, 2.5m, 3.5m } },
                     new object[] { new char[] { 'a', 'b', 'c' } },
                     new object[] { new string[] { "abcd", "efgh", "ijkl" } },
+                    new object[] { new TimeSpan[] { new TimeSpan(1, 1, 1), new TimeSpan(2, 2, 2), new TimeSpan(3, 3, 3) } },
+                    new object[] { new TimeOnly[] { new TimeOnly(1, 1, 1), new TimeOnly(2, 2, 2), new TimeOnly(3, 3, 3) } },
+                    new object[] { new DateOnly[] { new DateOnly(2001, 1, 1), new DateOnly(2002, 2, 2),
+                        new DateOnly(2003, 3, 3) } },
                     new object[] { new DateTime[] { new DateTime(2001, 1, 1), new DateTime(2002, 2, 2),
                         new DateTime(2003, 3, 3) } },
+                    new object[] { new DateTimeOffset[] { new DateTimeOffset(2001, 1, 1, 0, 0, 0, new TimeSpan(1, 0, 0)),
+                        new DateTimeOffset(2002, 2, 2, 0, 0, 0, new TimeSpan(2, 0, 0)),
+                        new DateTimeOffset(2003, 3, 3, 0, 0, 0, new TimeSpan(3, 0, 0)) } },
                     new object[] { new PersonFlags[] { PersonFlags.ValueA, PersonFlags.ValueB, PersonFlags.ValueC } }
                 };
             }
@@ -266,14 +278,24 @@ namespace Suilder.Test
                     new object[] { new List<ushort> { 1, 2, 3 } },
                     new object[] { new List<int> { 1, 2, 3 } },
                     new object[] { new List<uint> { 1, 2, 3 } },
+                    new object[] { new List<long> { 1, 2, 3 } },
                     new object[] { new List<ulong> { 1, 2, 3 } },
                     new object[] { new List<float> { 1.5f, 2.5f, 3.5f } },
                     new object[] { new List<double> { 1.5, 2.5, 3.5 } },
                     new object[] { new List<decimal> { 1.5m, 2.5m, 3.5m } },
                     new object[] { new List<char> { 'a', 'b', 'c' } },
                     new object[] { new List<string> { "abcd", "efgh", "ijkl" } },
+                    new object[] { new List<TimeSpan> { new TimeSpan(1, 1, 1), new TimeSpan(2, 2, 2),
+                        new TimeSpan(3, 3, 3) } },
+                    new object[] { new List<TimeOnly> { new TimeOnly(1, 1, 1), new TimeOnly(2, 2, 2),
+                        new TimeOnly(3, 3, 3) } },
+                    new object[] { new List<DateOnly> { new DateOnly(2001, 1, 1), new DateOnly(2002, 2, 2),
+                        new DateOnly(2003, 3, 3) } },
                     new object[] { new List<DateTime> { new DateTime(2001, 1, 1), new DateTime(2002, 2, 2),
                         new DateTime(2003, 3, 3) } },
+                    new object[] { new List<DateTimeOffset> { new DateTimeOffset(2001, 1, 1, 0, 0, 0, new TimeSpan(1, 0, 0)),
+                        new DateTimeOffset(2002, 2, 2, 0, 0, 0, new TimeSpan(2, 0, 0)),
+                        new DateTimeOffset(2003, 3, 3, 0, 0, 0, new TimeSpan(3, 0, 0)) } },
                     new object[] { new List<PersonFlags> { PersonFlags.ValueA, PersonFlags.ValueB, PersonFlags.ValueC } }
                 };
             }

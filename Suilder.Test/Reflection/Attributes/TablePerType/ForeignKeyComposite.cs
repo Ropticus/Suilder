@@ -131,7 +131,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
 
             public virtual List<Employee> Employees { get; set; }
 
-            public List<string> Tags { get; set; }
+            public virtual List<string> Tags { get; set; }
         }
 
         public class Employee : Person
@@ -144,7 +144,7 @@ namespace Suilder.Test.Reflection.Attributes.TablePerType
             [ForeignKey(PropertyName = "Id")]
             public virtual Department Department { get; set; }
 
-            public byte[] Image { get; set; }
+            public virtual byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig

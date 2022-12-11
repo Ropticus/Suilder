@@ -115,7 +115,7 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
 
             public virtual List<Person> Employees { get; set; }
 
-            public List<string> Tags { get; set; }
+            public virtual List<string> Tags { get; set; }
         }
 
         [Nested]
@@ -131,7 +131,7 @@ namespace Suilder.Test.Reflection.Attributes.TableNested
             [ForeignKey(PropertyName = "Id")]
             public virtual Department Department { get; set; }
 
-            public byte[] Image { get; set; }
+            public virtual byte[] Image { get; set; }
         }
 
         public class Person : BaseConfig
