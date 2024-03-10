@@ -1,5 +1,5 @@
 using Suilder.Reflection.Builder;
-using Suilder.Test.Reflection.Builder.TablePerType.Tables;
+using Suilder.Test.Reflection.TablePerType.Tables;
 using Xunit;
 
 namespace Suilder.Test.Reflection.Builder

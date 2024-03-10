@@ -700,9 +700,9 @@ namespace Suilder.Test.Builder.Expressions
         [InlineData(null, "efgh")]
         public void Conditional_Operator_Value(string name, string value)
         {
-            Person person = new Person() { Name = name, SurName = name };
-            Assert.Equal(person.Name != null ? person.SurName : value,
-                sql.Val(() => SqlExp.Val(person.Name != null ? person.SurName : value)));
+            Person person = new Person() { Name = name, Surname = name };
+            Assert.Equal(person.Name != null ? person.Surname : value,
+                sql.Val(() => SqlExp.Val(person.Name != null ? person.Surname : value)));
         }
 
         public class TestValue

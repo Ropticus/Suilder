@@ -4,7 +4,7 @@ using Suilder.Engines;
 using Suilder.Exceptions;
 using Suilder.Reflection.Builder;
 using Suilder.Reflection.Builder.Processors;
-using Suilder.Test.Reflection.Builder.NoInherit.Tables;
+using Suilder.Test.Reflection.NoInherit.Tables;
 using Xunit;
 
 namespace Suilder.Test.Reflection.Builder

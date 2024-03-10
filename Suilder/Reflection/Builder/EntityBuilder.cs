@@ -118,10 +118,11 @@ namespace Suilder.Reflection.Builder
         /// </summary>
         /// <param name="propertyName">The property name.</param>
         /// <param name="columnName">The column name.</param>
-        protected internal void AddForeignKey(string propertyName, string columnName)
+        /// <param name="partialName">If it is a partial column name.</param>
+        protected internal void AddForeignKey(string propertyName, string columnName, bool partialName)
         {
             AddForeignKey(propertyName);
-            AddColumnName(propertyName, columnName);
+            AddColumnName(propertyName, columnName, partialName);
         }
 
         /// <summary>
@@ -145,7 +146,21 @@ namespace Suilder.Reflection.Builder
         /// <returns>The entity builder.</returns>
         public IEntityBuilder ForeignKey(string propertyName, string columnName)
         {
-            AddForeignKey(GetProperty(propertyName), columnName);
+            AddForeignKey(GetProperty(propertyName), columnName, false);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the property as foreign key and its column name.
+        /// <para>Call multiple times for composite keys.</para>
+        /// </summary>
+        /// <param name="propertyName">The property name.</param>
+        /// <param name="columnName">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        /// <returns>The entity builder.</returns>
+        public IEntityBuilder ForeignKey(string propertyName, string columnName, bool partialName)
+        {
+            AddForeignKey(GetProperty(propertyName), columnName, partialName);
             return this;
         }
 
@@ -154,9 +169,15 @@ namespace Suilder.Reflection.Builder
         /// </summary>
         /// <param name="propertyName">The property name.</param>
         /// <param name="columnName">The column name.</param>
-        protected internal void AddColumnName(string propertyName, string columnName)
+        /// <param name="partialName">If it is a partial column name.</param>
+        protected internal void AddColumnName(string propertyName, string columnName, bool partialName)
         {
             Config.ColumnNames[propertyName] = columnName;
+
+            if (partialName)
+                Config.PartialNames.Add(propertyName);
+            else
+                Config.PartialNames.Remove(propertyName);
         }
 
         /// <summary>
@@ -167,7 +188,20 @@ namespace Suilder.Reflection.Builder
         /// <returns>The entity builder.</returns>
         public IEntityBuilder ColumnName(string propertyName, string columnName)
         {
-            AddColumnName(GetProperty(propertyName), columnName);
+            AddColumnName(GetProperty(propertyName), columnName, false);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the column name of the property.
+        /// </summary>
+        /// <param name="propertyName">The property name.</param>
+        /// <param name="columnName">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        /// <returns>The entity builder.</returns>
+        public IEntityBuilder ColumnName(string propertyName, string columnName, bool partialName)
+        {
+            AddColumnName(GetProperty(propertyName), columnName, partialName);
             return this;
         }
 
@@ -254,7 +288,7 @@ namespace Suilder.Reflection.Builder
         /// <returns>The property builder.</returns>
         public IPropertyBuilder Property(string propertyName)
         {
-            return new PropertyBuilder(this, propertyName);
+            return new PropertyBuilder(this, GetProperty(propertyName));
         }
 
         /// <summary>
@@ -270,7 +304,7 @@ namespace Suilder.Reflection.Builder
         }
 
         /// <summary>
-        /// Checks if a property exists and return it.
+        /// Checks if a property exists and returns it.
         /// </summary>
         /// <param name="propertyName">The property name.</param>
         /// <returns>The property name.</returns>
@@ -409,6 +443,20 @@ namespace Suilder.Reflection.Builder
         }
 
         /// <summary>
+        /// Sets the property as foreign key and its column name.
+        /// <para>Call multiple times for composite keys.</para>
+        /// </summary>
+        /// <param name="propertyName">The property name.</param>
+        /// <param name="columnName">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        /// <returns>The entity builder.</returns>
+        public new IEntityBuilder<TTable> ForeignKey(string propertyName, string columnName, bool partialName)
+        {
+            base.ForeignKey(propertyName, columnName, partialName);
+            return this;
+        }
+
+        /// <summary>
         /// Sets the property as foreign key.
         /// <para>Call multiple times for composite keys.</para>
         /// </summary>
@@ -432,7 +480,23 @@ namespace Suilder.Reflection.Builder
         public IEntityBuilder<TTable> ForeignKey<TProperty>(Expression<Func<TTable, TProperty>> expression,
             string columnName)
         {
-            AddForeignKey(ExpressionProcessor.GetPropertyPath(expression), columnName);
+            AddForeignKey(ExpressionProcessor.GetPropertyPath(expression), columnName, false);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the property as foreign key and its column name.
+        /// <para>Call multiple times for composite keys.</para>
+        /// </summary>
+        /// <param name="expression">The property.</param>
+        /// <param name="columnName">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        /// <typeparam name="TProperty">The type of the property.</typeparam>
+        /// <returns>The entity builder.</returns>
+        public IEntityBuilder<TTable> ForeignKey<TProperty>(Expression<Func<TTable, TProperty>> expression,
+            string columnName, bool partialName)
+        {
+            AddForeignKey(ExpressionProcessor.GetPropertyPath(expression), columnName, partialName);
             return this;
         }
 
@@ -451,6 +515,19 @@ namespace Suilder.Reflection.Builder
         /// <summary>
         /// Sets the column name of the property.
         /// </summary>
+        /// <param name="propertyName">The property name.</param>
+        /// <param name="columnName">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        /// <returns>The entity builder.</returns>
+        public new IEntityBuilder<TTable> ColumnName(string propertyName, string columnName, bool partialName)
+        {
+            base.ColumnName(propertyName, columnName, partialName);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the column name of the property.
+        /// </summary>
         /// <param name="expression">The property.</param>
         /// <param name="columnName">The column name.</param>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
@@ -458,7 +535,22 @@ namespace Suilder.Reflection.Builder
         public IEntityBuilder<TTable> ColumnName<TProperty>(Expression<Func<TTable, TProperty>> expression,
             string columnName)
         {
-            AddColumnName(ExpressionProcessor.GetPropertyPath(expression), columnName);
+            AddColumnName(ExpressionProcessor.GetPropertyPath(expression), columnName, false);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the column name of the property.
+        /// </summary>
+        /// <param name="expression">The property.</param>
+        /// <param name="columnName">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        /// <typeparam name="TProperty">The type of the property.</typeparam>
+        /// <returns>The entity builder.</returns>
+        public IEntityBuilder<TTable> ColumnName<TProperty>(Expression<Func<TTable, TProperty>> expression,
+            string columnName, bool partialName)
+        {
+            AddColumnName(ExpressionProcessor.GetPropertyPath(expression), columnName, partialName);
             return this;
         }
 

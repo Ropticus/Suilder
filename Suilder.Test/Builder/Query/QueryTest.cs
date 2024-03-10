@@ -428,10 +428,10 @@ namespace Suilder.Test.Builder.Query
             IAlias person = sql.Alias("person");
 
             IQuery query = sql.Query.Insert(x => x.Into(person)
-                .Add(person["Name"], person["SurName"]))
-                .Values("Name1", "SurName1");
+                .Add(person["Name"], person["Surname"]))
+                .Values("Name1", "Surname1");
 
-            Assert.Equal("INSERT INTO person (person.Name, person.SurName) VALUES (\"Name1\", \"SurName1\")",
+            Assert.Equal("INSERT INTO person (person.Name, person.Surname) VALUES (\"Name1\", \"Surname1\")",
                 query.ToString());
         }
 

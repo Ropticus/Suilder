@@ -13,14 +13,6 @@ namespace Suilder.Reflection.Builder
     public class TableInfo : ITableInfo
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TableInfo{T}"/> class.
-        /// </summary>
-        public TableInfo(Type type)
-        {
-            Type = type;
-        }
-
-        /// <summary>
         /// The type of the table.
         /// </summary>
         /// <value>The type of the table.</value>
@@ -89,6 +81,14 @@ namespace Suilder.Reflection.Builder
         /// <value>Cached empty metadata.</value>
         protected static IDictionary<string, object> MetadataEmpty { get; set; }
             = new ReadOnlyDictionary<string, object>(new Dictionary<string, object>());
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TableInfo"/> class.
+        /// </summary>
+        public TableInfo(Type type)
+        {
+            Type = type;
+        }
 
         /// <summary>
         /// Gets the column name of the property.

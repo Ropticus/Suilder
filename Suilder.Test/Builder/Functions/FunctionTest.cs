@@ -19,11 +19,11 @@ namespace Suilder.Test.Builder
             IFunction func = sql.Function("CONCAT")
                 .Add(person["Name"])
                 .Add(", ")
-                .Add(person["SurName"]);
+                .Add(person["Surname"]);
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", "
@@ -34,11 +34,11 @@ namespace Suilder.Test.Builder
         public void Add_Params()
         {
             IAlias person = sql.Alias("person");
-            IFunction func = sql.Function("CONCAT").Add(person["Name"], ", ", person["SurName"]);
+            IFunction func = sql.Function("CONCAT").Add(person["Name"], ", ", person["Surname"]);
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", "
@@ -49,11 +49,11 @@ namespace Suilder.Test.Builder
         public void Add_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IFunction func = sql.Function("CONCAT").Add(new List<object> { person["Name"], ", ", person["SurName"] });
+            IFunction func = sql.Function("CONCAT").Add(new List<object> { person["Name"], ", ", person["Surname"] });
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", "
@@ -67,11 +67,11 @@ namespace Suilder.Test.Builder
             IFunction func = sql.Function("CONCAT")
                 .Add(() => person.Name)
                 .Add(() => ", ")
-                .Add(() => person.SurName);
+                .Add(() => person.Surname);
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", "
@@ -82,11 +82,11 @@ namespace Suilder.Test.Builder
         public void Add_Expression_Params()
         {
             Person person = null;
-            IFunction func = sql.Function("CONCAT").Add(() => person.Name, () => ", ", () => person.SurName);
+            IFunction func = sql.Function("CONCAT").Add(() => person.Name, () => ", ", () => person.Surname);
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", "
@@ -98,11 +98,11 @@ namespace Suilder.Test.Builder
         {
             Person person = null;
             IFunction func = sql.Function("CONCAT").Add(new List<Expression<Func<object>>> { () => person.Name, () => ", ",
-                () => person.SurName });
+                () => person.Surname });
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", "
@@ -136,11 +136,11 @@ namespace Suilder.Test.Builder
         public void Expression()
         {
             Person person = null;
-            IFunction func = (IFunction)sql.Val(() => SqlExp.Function("CONCAT", person.Name, ", ", person.SurName));
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Function("CONCAT", person.Name, ", ", person.Surname));
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", "
@@ -178,7 +178,7 @@ namespace Suilder.Test.Builder
             engine.Options.FunctionsOnlyRegistered = true;
 
             Person person = null;
-            IFunction func = (IFunction)sql.Val(() => SqlExp.Function("CONCAT", person.Name, ", ", person.SurName));
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Function("CONCAT", person.Name, ", ", person.Surname));
 
             Exception ex = Assert.Throws<InvalidConfigurationException>(() => engine.Compile(func));
             Assert.Equal("Function \"CONCAT\" is not registered.", ex.Message);
@@ -186,7 +186,7 @@ namespace Suilder.Test.Builder
             engine.AddFunction("CONCAT");
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("CONCAT(\"person\".\"Name\", @p0, \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", "
@@ -199,11 +199,11 @@ namespace Suilder.Test.Builder
             engine.AddFunction("CUSTOM", "TRANSLATED");
 
             Person person = null;
-            IFunction func = (IFunction)sql.Val(() => SqlExp.Function("CUSTOM", person.Name, ", ", person.SurName));
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Function("CUSTOM", person.Name, ", ", person.Surname));
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("TRANSLATED(\"person\".\"Name\", @p0, \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("TRANSLATED(\"person\".\"Name\", @p0, \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", "
@@ -322,7 +322,7 @@ namespace Suilder.Test.Builder
         {
             IAlias person = sql.Alias("person");
             IFunction func = sql.Function("CONCAT");
-            object[] values = new object[] { person["Name"], ", ", person["SurName"] };
+            object[] values = new object[] { person["Name"], ", ", person["Surname"] };
 
             int i = 0;
             Assert.Equal(i, func.Count);
@@ -341,9 +341,9 @@ namespace Suilder.Test.Builder
             IFunction func = sql.Function("CONCAT")
                 .Add(person["Name"])
                 .Add(", ")
-                .Add(person["SurName"]);
+                .Add(person["Surname"]);
 
-            Assert.Equal("CONCAT(person.Name, \", \", person.SurName)", func.ToString());
+            Assert.Equal("CONCAT(person.Name, \", \", person.Surname)", func.ToString());
         }
 
         [Fact]

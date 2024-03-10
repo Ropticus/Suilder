@@ -133,7 +133,7 @@ namespace Suilder.Performance.Builder
             string name = "abcd";
 
             Person person = null;
-            return sql.Val(() => person.Name != null ? person.SurName : name);
+            return sql.Val(() => person.Name != null ? person.Surname : name);
         }
 
         [Benchmark]
@@ -156,7 +156,7 @@ namespace Suilder.Performance.Builder
         public object Method_Args_Params()
         {
             Person person = null;
-            return sql.Val(() => SqlExp.Concat(person.Name, person.SurName));
+            return sql.Val(() => SqlExp.Concat(person.Name, person.Surname));
         }
 
         [Benchmark]
@@ -428,8 +428,8 @@ namespace Suilder.Performance.Builder
         [BenchmarkCategory("Value", "OperatorValue")]
         public object Conditional_Operator_Value()
         {
-            Person person = new Person() { Name = null, SurName = "efgh" };
-            return sql.Val(() => SqlExp.Val(person.Name != null ? person.SurName : "abcd"));
+            Person person = new Person() { Name = null, Surname = "efgh" };
+            return sql.Val(() => SqlExp.Val(person.Name != null ? person.Surname : "abcd"));
         }
 
         public class TestValue

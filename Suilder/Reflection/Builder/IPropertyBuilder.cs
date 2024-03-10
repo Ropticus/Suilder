@@ -28,11 +28,28 @@ namespace Suilder.Reflection.Builder
         IPropertyBuilder ForeignKey(string columnName);
 
         /// <summary>
+        /// Sets the property as foreign key and its column name.
+        /// <para>Call multiple times for composite keys.</para>
+        /// </summary>
+        /// <param name="columnName">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        /// <returns>The property builder.</returns>
+        IPropertyBuilder ForeignKey(string columnName, bool partialName);
+
+        /// <summary>
         /// Sets the column name of the property.
         /// </summary>
         /// <param name="columnName">The column name.</param>
         /// <returns>The property builder.</returns>
         IPropertyBuilder ColumnName(string columnName);
+
+        /// <summary>
+        /// Sets the column name of the property.
+        /// </summary>
+        /// <param name="columnName">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        /// <returns>The property builder.</returns>
+        IPropertyBuilder ColumnName(string columnName, bool partialName);
 
         /// <summary>
         /// Ignores the property.
@@ -86,11 +103,28 @@ namespace Suilder.Reflection.Builder
         new IPropertyBuilder<TTable, TProperty> ForeignKey(string columnName);
 
         /// <summary>
+        /// Sets the property as foreign key and its column name.
+        /// <para>Call multiple times for composite keys.</para>
+        /// </summary>
+        /// <param name="columnName">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        /// <returns>The property builder.</returns>
+        new IPropertyBuilder<TTable, TProperty> ForeignKey(string columnName, bool partialName);
+
+        /// <summary>
         /// Sets the column name of the property.
         /// </summary>
         /// <param name="columnName">The column name.</param>
         /// <returns>The property builder.</returns>
         new IPropertyBuilder<TTable, TProperty> ColumnName(string columnName);
+
+        /// <summary>
+        /// Sets the column name of the property.
+        /// </summary>
+        /// <param name="columnName">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        /// <returns>The property builder.</returns>
+        new IPropertyBuilder<TTable, TProperty> ColumnName(string columnName, bool partialName);
 
         /// <summary>
         /// Ignores the property.

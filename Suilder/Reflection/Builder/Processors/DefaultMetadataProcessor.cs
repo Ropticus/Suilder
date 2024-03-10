@@ -140,7 +140,7 @@ namespace Suilder.Reflection.Builder.Processors
         /// </summary>
         protected override void ProcessData()
         {
-            var levels = GroupByInheranceLevel(ConfigData.ConfigTypes.Values);
+            var levels = GroupByInheritanceLevel(ConfigData.ConfigTypes.Values);
 
             foreach (var level in levels)
             {

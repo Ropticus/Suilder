@@ -6,7 +6,7 @@ using Suilder.Functions;
 using Suilder.Operators;
 using Suilder.Reflection.Builder;
 using Suilder.Test.Reflection;
-using Suilder.Test.Reflection.Builder.TablePerType.Tables;
+using Suilder.Test.Reflection.TablePerType.Tables;
 using Xunit;
 
 namespace Suilder.Test.Engines

@@ -72,11 +72,11 @@ namespace Suilder.Test.Builder.Functions
         public void Coalesce()
         {
             IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Coalesce(person["Name"], person["SurName"]);
+            IFunction func = SqlFn.Coalesce(person["Name"], person["Surname"]);
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("COALESCE(\"person\".\"Name\", \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("COALESCE(\"person\".\"Name\", \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -84,11 +84,11 @@ namespace Suilder.Test.Builder.Functions
         public void Concat()
         {
             IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Concat(person["Name"], person["SurName"]);
+            IFunction func = SqlFn.Concat(person["Name"], person["Surname"]);
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CONCAT(\"person\".\"Name\", \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("CONCAT(\"person\".\"Name\", \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -98,11 +98,11 @@ namespace Suilder.Test.Builder.Functions
             engine.AddFunction(FunctionName.Concat, FunctionHelper.ConcatOr);
 
             IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Concat(person["Name"], person["SurName"]);
+            IFunction func = SqlFn.Concat(person["Name"], person["Surname"]);
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("(\"person\".\"Name\" || \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("(\"person\".\"Name\" || \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

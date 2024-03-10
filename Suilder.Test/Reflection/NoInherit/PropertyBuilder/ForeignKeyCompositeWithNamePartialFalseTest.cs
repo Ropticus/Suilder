@@ -1,0 +1,106 @@
+using System.Collections.Generic;
+using Suilder.Reflection.Builder;
+using Suilder.Test.Reflection.NoInherit.Tables;
+using Xunit;
+
+namespace Suilder.Test.Reflection.NoInherit.PropertyBuilder
+{
+    public class ForeignKeyCompositeWithNamePartialFalseTest : BaseTest
+    {
+        protected override void InitConfig()
+        {
+            tableBuilder.Add<Person>()
+                .Property(x => x.DepartmentId)
+                .ForeignKey("DepartmentId2", false);
+
+            tableBuilder.Add<Person>()
+                .Property(x => x.Department.Id)
+                .ForeignKey("DepartmentId2", false);
+
+            tableBuilder.Add<Person>()
+                .Property(x => x.Department.Guid)
+                .ForeignKey("DepartmentGuid2", false);
+
+            tableBuilder.Add<Department>()
+                .Property(x => x.Boss.Id)
+                .ForeignKey("BossId2", false);
+
+            tableBuilder.Add<Department>()
+                .Property(x => x.Boss.Guid)
+                .ForeignKey("BossGuid2", false);
+        }
+
+        [Fact]
+        public void Primary_Keys()
+        {
+            ITableInfo personInfo = tableBuilder.GetConfig<Person>();
+            ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
+
+            Assert.Equal(new string[] { "Id" }, personInfo.PrimaryKeys);
+            Assert.Equal(new string[] { "Id" }, deptInfo.PrimaryKeys);
+        }
+
+        [Fact]
+        public void Foreign_Keys()
+        {
+            ITableInfo personInfo = tableBuilder.GetConfig<Person>();
+            ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
+
+            Assert.Equal(new string[] { "DepartmentId", "Department.Id", "Department.Guid" }, personInfo.ForeignKeys);
+            Assert.Equal(new string[] { "Boss.Id", "Boss.Guid" }, deptInfo.ForeignKeys);
+        }
+
+        [Fact]
+        public void Columns()
+        {
+            ITableInfo personInfo = tableBuilder.GetConfig<Person>();
+            ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
+
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "Surname", "Address.Street", "Address.City", "DepartmentId",
+                "Department.Id","Department.Guid", "Image" }, personInfo.Columns);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "Boss.Id", "Boss.Guid", "Tags" }, deptInfo.Columns);
+        }
+
+        [Fact]
+        public void Column_Names_Dic()
+        {
+            ITableInfo personInfo = tableBuilder.GetConfig<Person>();
+            ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
+
+            Assert.Equal(new Dictionary<string, string>
+            {
+                ["Id"] = "Id",
+                ["Guid"] = "Guid",
+                ["Name"] = "Name",
+                ["Surname"] = "Surname",
+                ["Address.Street"] = "AddressStreet",
+                ["Address.City"] = "AddressCity",
+                ["DepartmentId"] = "DepartmentId2",
+                ["Department.Id"] = "DepartmentId2",
+                ["Department.Guid"] = "DepartmentGuid2",
+                ["Image"] = "Image"
+            }, personInfo.ColumnNamesDic);
+
+            Assert.Equal(new Dictionary<string, string>
+            {
+                ["Id"] = "Id",
+                ["Guid"] = "Guid",
+                ["Name"] = "Name",
+                ["Boss.Id"] = "BossId2",
+                ["Boss.Guid"] = "BossGuid2",
+                ["Tags"] = "Tags"
+            }, deptInfo.ColumnNamesDic);
+        }
+
+        [Fact]
+        public void Column_Names()
+        {
+            ITableInfo personInfo = tableBuilder.GetConfig<Person>();
+            ITableInfo deptInfo = tableBuilder.GetConfig<Department>();
+
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "Surname", "AddressStreet", "AddressCity", "DepartmentId2",
+                "DepartmentGuid2", "Image" }, personInfo.ColumnNames);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "BossId2", "BossGuid2", "Tags" }, deptInfo.ColumnNames);
+        }
+    }
+}

@@ -13,7 +13,7 @@ namespace Suilder.Test.Builder.Functions
             Person person = new Person();
 
             Exception ex = Assert.Throws<NotSupportedException>(() =>
-                SqlExp.Function("CONCAT", person.Name, person.SurName));
+                SqlExp.Function("CONCAT", person.Name, person.Surname));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -111,7 +111,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Coalesce(person.Name, person.SurName));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Coalesce(person.Name, person.Surname));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -129,7 +129,7 @@ namespace Suilder.Test.Builder.Functions
         {
             Person person = new Person();
 
-            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Concat(person.Name, person.SurName));
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Concat(person.Name, person.Surname));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using static Suilder.Reflection.Builder.TableConfig;
 
 namespace Suilder.Reflection.Builder.Processors
 {
@@ -45,9 +46,44 @@ namespace Suilder.Reflection.Builder.Processors
         /// </summary>
         /// <param name="configTypes">The configuration of registered types.</param>
         /// <returns>The configuration of registered types grouped by inheritance level.</returns>
-        protected IGrouping<int, TableConfig>[] GroupByInheranceLevel(IEnumerable<TableConfig> configTypes)
+        protected IGrouping<int, TableConfig>[] GroupByInheritanceLevel(IEnumerable<TableConfig> configTypes)
         {
             return configTypes.GroupBy(x => x.InheritLevel).OrderBy(x => x.First().InheritLevel).ToArray();
+        }
+
+        /// <summary>
+        /// Gets an enumerable that iterates through the property and all the parent properties of a
+        /// <see cref="PropertyData"/>.
+        /// </summary>
+        /// <param name="property">The property.</param>
+        /// <returns>An <see cref="IEnumerable{PropertyData}"/> that contains the property and all the parent
+        /// properties.</returns>
+        protected IEnumerable<PropertyData> GetProperties(PropertyData property)
+        {
+            yield return property;
+            property = property.Parent;
+
+            while (property != null)
+            {
+                yield return property;
+                property = property.Parent;
+            }
+        }
+
+        /// <summary>
+        /// Gets an enumerable that iterates through all the parent properties of a <see cref="PropertyData"/>.
+        /// </summary>
+        /// <param name="property">The property.</param>
+        /// <returns>An <see cref="IEnumerable{PropertyData}"/> that contains all the parent properties.</returns>
+        protected IEnumerable<PropertyData> GetParentProperties(PropertyData property)
+        {
+            property = property.Parent;
+
+            while (property != null)
+            {
+                yield return property;
+                property = property.Parent;
+            }
         }
     }
 }

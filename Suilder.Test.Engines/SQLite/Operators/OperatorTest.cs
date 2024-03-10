@@ -560,14 +560,14 @@ namespace Suilder.Test.Engines.SQLite.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("SELECT * FROM (SELECT \"person\".\"Name\" FROM \"Person\" AS \"person\" "
                 + "EXCEPT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\") "
-                + "UNION SELECT * FROM (SELECT \"person\".\"SurName\" FROM \"Person\" AS \"person\" "
+                + "UNION SELECT * FROM (SELECT \"person\".\"Surname\" FROM \"Person\" AS \"person\" "
                 + "INTERSECT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
@@ -598,14 +598,14 @@ namespace Suilder.Test.Engines.SQLite.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("SELECT * FROM (SELECT \"person\".\"Name\" FROM \"Person\" AS \"person\" "
                 + "EXCEPT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\") "
-                + "UNION ALL SELECT * FROM (SELECT \"person\".\"SurName\" FROM \"Person\" AS \"person\" "
+                + "UNION ALL SELECT * FROM (SELECT \"person\".\"Surname\" FROM \"Person\" AS \"person\" "
                 + "INTERSECT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
@@ -636,14 +636,14 @@ namespace Suilder.Test.Engines.SQLite.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("SELECT * FROM (SELECT \"person\".\"Name\" FROM \"Person\" AS \"person\" "
                 + "EXCEPT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\") "
-                + "EXCEPT SELECT * FROM (SELECT \"person\".\"SurName\" FROM \"Person\" AS \"person\" "
+                + "EXCEPT SELECT * FROM (SELECT \"person\".\"Surname\" FROM \"Person\" AS \"person\" "
                 + "INTERSECT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
@@ -674,14 +674,14 @@ namespace Suilder.Test.Engines.SQLite.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("SELECT * FROM (SELECT \"person\".\"Name\" FROM \"Person\" AS \"person\" "
                 + "EXCEPT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\") "
-                + "EXCEPT ALL SELECT * FROM (SELECT \"person\".\"SurName\" FROM \"Person\" AS \"person\" "
+                + "EXCEPT ALL SELECT * FROM (SELECT \"person\".\"Surname\" FROM \"Person\" AS \"person\" "
                 + "INTERSECT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
@@ -712,14 +712,14 @@ namespace Suilder.Test.Engines.SQLite.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("SELECT * FROM (SELECT \"person\".\"Name\" FROM \"Person\" AS \"person\" "
                 + "EXCEPT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\") "
-                + "INTERSECT SELECT * FROM (SELECT \"person\".\"SurName\" FROM \"Person\" AS \"person\" "
+                + "INTERSECT SELECT * FROM (SELECT \"person\".\"Surname\" FROM \"Person\" AS \"person\" "
                 + "INTERSECT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
@@ -750,14 +750,14 @@ namespace Suilder.Test.Engines.SQLite.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("SELECT * FROM (SELECT \"person\".\"Name\" FROM \"Person\" AS \"person\" "
                 + "EXCEPT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\") "
-                + "INTERSECT ALL SELECT * FROM (SELECT \"person\".\"SurName\" FROM \"Person\" AS \"person\" "
+                + "INTERSECT ALL SELECT * FROM (SELECT \"person\".\"Surname\" FROM \"Person\" AS \"person\" "
                 + "INTERSECT SELECT \"dept\".\"Name\" FROM \"Dept\" AS \"dept\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }

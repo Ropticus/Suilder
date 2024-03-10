@@ -19,13 +19,15 @@ namespace Suilder.Reflection.Builder.Processors
         /// </summary>
         protected override void ProcessData()
         {
-            var levels = GroupByInheranceLevel(ConfigData.ConfigTypes.Values);
+            var levels = GroupByInheritanceLevel(ConfigData.ConfigTypes.Values);
 
             foreach (var level in levels)
             {
                 foreach (TableConfig tableConfig in level)
                 {
-                    AddProperties(tableConfig.Type, tableConfig);
+                    AddProperties(tableConfig);
+
+                    AddIgnore(tableConfig);
                 }
             }
         }
@@ -33,57 +35,64 @@ namespace Suilder.Reflection.Builder.Processors
         /// <summary>
         /// Adds the properties of the type to the configuration.
         /// </summary>
-        /// <param name="type">The type.</param>
         /// <param name="tableConfig">The table configuration.</param>
-        /// <param name="prefix">A prefix added to the property path for nested properties.</param>
+        protected virtual void AddProperties(TableConfig tableConfig)
+        {
+            BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+
+            foreach (PropertyInfo propertyInfo in tableConfig.Type.GetProperties(flags).OrderBy(x => x.MetadataToken))
+            {
+                AddProperty(tableConfig, propertyInfo, null, null);
+            }
+        }
+
+        /// <summary>
+        /// Adds the properties of the type to the configuration.
+        /// </summary>
+        /// <param name="tableConfig">The table configuration.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="parent">The parent property.</param>
         /// <param name="stack">The stack of nested types.</param>
-        protected virtual void AddProperties(Type type, TableConfig tableConfig, string prefix = "",
-            Stack<Type> stack = null)
+        protected virtual void AddProperties(TableConfig tableConfig, Type type, PropertyData parent, Stack<Type> stack)
         {
             BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
 
-            // It is not a nested property
-            if (prefix == "")
-                flags |= BindingFlags.DeclaredOnly;
-
-            foreach (PropertyInfo propertyInfo in type.GetProperties(flags))
+            foreach (PropertyInfo propertyInfo in type.GetProperties(flags).OrderBy(x => x.MetadataToken))
             {
-                AddProperty(propertyInfo, tableConfig, prefix, stack);
+                AddProperty(tableConfig, propertyInfo, parent, stack);
             }
         }
 
         /// <summary>
         /// Adds the property to the configuration.
         /// </summary>
-        /// <param name="propertyInfo">The property info.</param>
         /// <param name="tableConfig">The table configuration.</param>
-        /// <param name="prefix">A prefix added to the property path for nested properties.</param>
+        /// <param name="propertyInfo">The property info.</param>
+        /// <param name="parent">The parent property.</param>
         /// <param name="stack">The stack of nested types.</param>
-        protected virtual void AddProperty(PropertyInfo propertyInfo, TableConfig tableConfig, string prefix,
+        protected virtual void AddProperty(TableConfig tableConfig, PropertyInfo propertyInfo, PropertyData parent,
             Stack<Type> stack = null)
         {
-            PropertyData propertyData = new PropertyData()
+            PropertyData propertyData = new PropertyData
             {
-                FullName = $"{prefix}{propertyInfo.Name}",
-                Info = propertyInfo
+                Type = tableConfig.Type,
+                FullName = parent != null ? $"{parent.FullName}.{propertyInfo.Name}" : propertyInfo.Name,
+                Info = propertyInfo,
+                Parent = parent
             };
 
             tableConfig.Properties.Add(propertyData);
 
-            // It is another table
             propertyData.IsTable = ConfigData.GetConfig(propertyInfo.PropertyType) != null;
-            propertyData.IsNested = IsNested(propertyData, tableConfig);
+            propertyData.IsNested = IsNested(tableConfig, propertyData);
+            propertyData.IsColumn = !propertyData.IsTable && !propertyData.IsNested;
+            propertyData.IsIgnored = IsIgnored(tableConfig, propertyData);
 
             if (propertyData.IsTable && propertyData.IsNested)
             {
                 throw new InvalidConfigurationException($"The type \"{propertyInfo.PropertyType}\" registered as a table, "
                     + "cannot be marked as nested.");
             }
-
-            propertyData.IsIgnored = IsIgnored(propertyData, tableConfig);
-
-            if (propertyData.IsIgnored)
-                tableConfig.Ignore.Add(propertyData.FullName);
 
             if (!propertyData.IsIgnored && propertyData.IsNested)
             {
@@ -99,19 +108,44 @@ namespace Suilder.Reflection.Builder.Processors
 
                 stack.Push(propertyInfo.PropertyType);
 
-                AddProperties(propertyInfo.PropertyType, tableConfig, $"{propertyData.FullName}.", stack);
+                AddProperties(tableConfig, propertyInfo.PropertyType, propertyData, stack);
 
                 stack.Pop();
             }
         }
 
         /// <summary>
+        /// Adds the ignore configuration.
+        /// </summary>
+        /// <param name="tableConfig">The table configuration.</param>
+        protected virtual void AddIgnore(TableConfig tableConfig)
+        {
+            foreach (PropertyData propertyData in tableConfig.Properties.Where(x => x.IsIgnored))
+            {
+                tableConfig.Ignore.Add(propertyData.FullName);
+            }
+
+            TableConfig parentConfig = ConfigData.GetParentConfig(tableConfig.Type);
+
+            if (parentConfig != null)
+            {
+                foreach (string ignore in parentConfig.Ignore)
+                {
+                    if (!tableConfig.Properties.Any(x => ignore.StartsWith($"{x.FullName}.")))
+                    {
+                        tableConfig.Ignore.Add(ignore);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Checks if the property is a nested type.
         /// </summary>
-        /// <param name="propertyData">The property data.</param>
         /// <param name="tableConfig">The table configuration.</param>
+        /// <param name="propertyData">The property data.</param>
         /// <returns><see langword="true"/> if the property is a nested type, otherwise, <see langword="false"/>.</returns>
-        protected virtual bool IsNested(PropertyData propertyData, TableConfig tableConfig)
+        protected virtual bool IsNested(TableConfig tableConfig, PropertyData propertyData)
         {
             return ConfigData.NestedTypes.Contains(propertyData.Info.PropertyType.FullName)
                 || propertyData.Info.PropertyType.GetCustomAttribute<NestedAttribute>() != null;
@@ -120,10 +154,10 @@ namespace Suilder.Reflection.Builder.Processors
         /// <summary>
         /// Checks if the property must be ignored.
         /// </summary>
-        /// <param name="propertyData">The property data.</param>
         /// <param name="tableConfig">The table configuration.</param>
+        /// <param name="propertyData">The property data.</param>
         /// <returns><see langword="true"/> if the property is ignored, otherwise, <see langword="false"/>.</returns>
-        protected virtual bool IsIgnored(PropertyData propertyData, TableConfig tableConfig)
+        protected virtual bool IsIgnored(TableConfig tableConfig, PropertyData propertyData)
         {
             // Ignore properties without a getter and setter
             if (!propertyData.Info.CanRead || !propertyData.Info.CanWrite)

@@ -19,6 +19,12 @@ namespace Suilder.Reflection
         public string Name { get; set; }
 
         /// <summary>
+        /// If it is a partial column name.
+        /// </summary>
+        /// <value>If it is a partial column name.</value>
+        public bool PartialName { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ForeignKeyAttribute"/> class.
         /// </summary>
         public ForeignKeyAttribute()
@@ -37,12 +43,36 @@ namespace Suilder.Reflection
         /// <summary>
         /// Initializes a new instance of the <see cref="ForeignKeyAttribute"/> class.
         /// </summary>
+        /// <param name="name">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        public ForeignKeyAttribute(string name, bool partialName)
+        {
+            Name = name;
+            PartialName = partialName;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ForeignKeyAttribute"/> class.
+        /// </summary>
         /// <param name="propertyName">The property name.</param>
         /// <param name="name">The column name.</param>
         public ForeignKeyAttribute(string propertyName, string name)
         {
             PropertyName = propertyName;
             Name = name;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ForeignKeyAttribute"/> class.
+        /// </summary>
+        /// <param name="propertyName">The property name.</param>
+        /// <param name="name">The column name.</param>
+        /// <param name="partialName">If it is a partial column name.</param>
+        public ForeignKeyAttribute(string propertyName, string name, bool partialName)
+        {
+            PropertyName = propertyName;
+            Name = name;
+            PartialName = partialName;
         }
     }
 }

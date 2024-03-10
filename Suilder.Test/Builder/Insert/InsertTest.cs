@@ -52,11 +52,11 @@ namespace Suilder.Test.Builder.Insert
             IAlias person = sql.Alias("person");
             IInsert insert = sql.Insert().Into(person)
                 .Add(person["Name"])
-                .Add(person["SurName"]);
+                .Add(person["Surname"]);
 
             QueryResult result = engine.Compile(insert);
 
-            Assert.Equal("INSERT INTO \"person\" (\"Name\", \"SurName\")", result.Sql);
+            Assert.Equal("INSERT INTO \"person\" (\"Name\", \"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -64,11 +64,11 @@ namespace Suilder.Test.Builder.Insert
         public void Add_Params()
         {
             IAlias person = sql.Alias("person");
-            IInsert insert = sql.Insert().Into(person).Add(person["Name"], person["SurName"]);
+            IInsert insert = sql.Insert().Into(person).Add(person["Name"], person["Surname"]);
 
             QueryResult result = engine.Compile(insert);
 
-            Assert.Equal("INSERT INTO \"person\" (\"Name\", \"SurName\")", result.Sql);
+            Assert.Equal("INSERT INTO \"person\" (\"Name\", \"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -76,11 +76,11 @@ namespace Suilder.Test.Builder.Insert
         public void Add_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IInsert insert = sql.Insert().Into(person).Add(new List<IColumn> { person["Name"], person["SurName"] });
+            IInsert insert = sql.Insert().Into(person).Add(new List<IColumn> { person["Name"], person["Surname"] });
 
             QueryResult result = engine.Compile(insert);
 
-            Assert.Equal("INSERT INTO \"person\" (\"Name\", \"SurName\")", result.Sql);
+            Assert.Equal("INSERT INTO \"person\" (\"Name\", \"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -90,11 +90,11 @@ namespace Suilder.Test.Builder.Insert
             Person person = null;
             IInsert insert = sql.Insert().Into(() => person)
                 .Add(() => person.Name)
-                .Add(() => person.SurName);
+                .Add(() => person.Surname);
 
             QueryResult result = engine.Compile(insert);
 
-            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\")", result.Sql);
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -102,11 +102,11 @@ namespace Suilder.Test.Builder.Insert
         public void Add_Expression_Params()
         {
             Person person = null;
-            IInsert insert = sql.Insert().Into(() => person).Add(() => person.Name, () => person.SurName);
+            IInsert insert = sql.Insert().Into(() => person).Add(() => person.Name, () => person.Surname);
 
             QueryResult result = engine.Compile(insert);
 
-            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\")", result.Sql);
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -115,11 +115,11 @@ namespace Suilder.Test.Builder.Insert
         {
             Person person = null;
             IInsert insert = sql.Insert().Into(() => person).Add(new List<Expression<Func<object>>> { () => person.Name,
-                () => person.SurName });
+                () => person.Surname });
 
             QueryResult result = engine.Compile(insert);
 
-            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\")", result.Sql);
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -159,9 +159,9 @@ namespace Suilder.Test.Builder.Insert
             IAlias person = sql.Alias("person");
             IInsert insert = sql.Insert().Into(person)
                 .Add(person["Name"])
-                .Add(person["SurName"]);
+                .Add(person["Surname"]);
 
-            Assert.Equal("INSERT INTO person (person.Name, person.SurName)", insert.ToString());
+            Assert.Equal("INSERT INTO person (person.Name, person.Surname)", insert.ToString());
         }
 
         [Fact]

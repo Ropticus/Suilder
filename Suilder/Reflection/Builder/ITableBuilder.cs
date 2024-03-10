@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Suilder.Reflection.Builder.Processors;
 
 namespace Suilder.Reflection.Builder
@@ -42,6 +44,13 @@ namespace Suilder.Reflection.Builder
         /// <param name="func">The function.</param>
         /// <returns>The table builder.</returns>
         ITableBuilder DefaultTableName(Func<Type, string> func);
+
+        /// <summary>
+        /// Sets a function to get the default column name.
+        /// </summary>
+        /// <param name="func">The function.</param>
+        /// <returns>The table builder.</returns>
+        ITableBuilder DefaultColumnName(Func<Type, IReadOnlyList<PropertyInfo>, int, string> func);
 
         /// <summary>
         /// Sets a function to get the default primary key.

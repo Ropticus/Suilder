@@ -836,6 +836,8 @@ namespace Suilder.Test.Builder.Expressions
 
             public bool Equals(Custom other) => other.Value == Value;
 
+            public override bool Equals(object other) => other is Custom custom && Equals(custom);
+
             public override int GetHashCode() => Value.GetHashCode();
 
             public override string ToString() => Value;

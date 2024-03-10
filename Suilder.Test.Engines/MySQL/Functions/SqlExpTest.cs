@@ -73,11 +73,11 @@ namespace Suilder.Test.Engines.MySQL.Functions
         public void Coalesce()
         {
             Person person = null;
-            IFunction func = (IFunction)sql.Val(() => SqlExp.Coalesce(person.Name, person.SurName));
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Coalesce(person.Name, person.Surname));
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("COALESCE(`person`.`Name`, `person`.`SurName`)", result.Sql);
+            Assert.Equal("COALESCE(`person`.`Name`, `person`.`Surname`)", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -97,11 +97,11 @@ namespace Suilder.Test.Engines.MySQL.Functions
         public void Concat()
         {
             Person person = null;
-            IFunction func = (IFunction)sql.Val(() => SqlExp.Concat(person.Name, person.SurName));
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Concat(person.Name, person.Surname));
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("CONCAT(`person`.`Name`, `person`.`SurName`)", result.Sql);
+            Assert.Equal("CONCAT(`person`.`Name`, `person`.`Surname`)", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

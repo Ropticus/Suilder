@@ -48,7 +48,7 @@ namespace Suilder.Engines
         void RemoveOperator(string op);
 
         /// <summary>
-        ///  Determines if the operator is registered.
+        /// Determines if the operator is registered.
         /// </summary>
         /// <param name="op">The operator.</param>
         /// <returns><see langword="true"/> if the operator is registered, otherwise, <see langword="false"/>.</returns>
@@ -101,7 +101,7 @@ namespace Suilder.Engines
         void RemoveFunction(string name);
 
         /// <summary>
-        ///  Determines if the function is registered.
+        /// Determines if the function is registered.
         /// </summary>
         /// <param name="name">The name of the function.</param>
         /// <returns><see langword="true"/> if the function is registered, otherwise, <see langword="false"/>.</returns>

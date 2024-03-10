@@ -11,9 +11,9 @@ namespace Suilder.Test.Builder.Tables
 
         public string Name { get; set; }
 
-        public string SurName { get; set; }
+        public string Surname { get; set; }
 
-        public string FullName => $"{Name} {SurName}".TrimEnd();
+        public string FullName => $"{Name} {Surname}".TrimEnd();
 
         public Address Address { get; set; }
 

@@ -560,7 +560,7 @@ namespace Suilder.Test.Engines.OracleDB.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);
@@ -598,7 +598,7 @@ namespace Suilder.Test.Engines.OracleDB.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);
@@ -636,7 +636,7 @@ namespace Suilder.Test.Engines.OracleDB.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);
@@ -674,7 +674,7 @@ namespace Suilder.Test.Engines.OracleDB.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);
@@ -712,7 +712,7 @@ namespace Suilder.Test.Engines.OracleDB.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);
@@ -750,7 +750,7 @@ namespace Suilder.Test.Engines.OracleDB.Operators
                     sql.Query.Select(() => person.Name).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)),
                 sql.Intersect(
-                    sql.Query.Select(() => person.SurName).From(() => person),
+                    sql.Query.Select(() => person.Surname).From(() => person),
                     sql.Query.Select(() => dept.Name).From(() => dept)));
 
             QueryResult result = engine.Compile(op);

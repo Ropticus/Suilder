@@ -73,7 +73,7 @@ namespace Suilder.Test.Engines.PostgreSQL.Functions
         public void Coalesce()
         {
             Person person = null;
-            IFunction func = (IFunction)sql.Val(() => SqlExp.Coalesce(person.Name, person.SurName));
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Coalesce(person.Name, person.Surname));
 
             QueryResult result = engine.Compile(func);
 
@@ -97,7 +97,7 @@ namespace Suilder.Test.Engines.PostgreSQL.Functions
         public void Concat()
         {
             Person person = null;
-            IFunction func = (IFunction)sql.Val(() => SqlExp.Concat(person.Name, person.SurName));
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Concat(person.Name, person.Surname));
 
             QueryResult result = engine.Compile(func);
 

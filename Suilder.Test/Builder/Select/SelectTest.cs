@@ -20,12 +20,12 @@ namespace Suilder.Test.Builder.Select
             ISelect select = sql.Select()
                 .Add(person["Name"])
                 .Add(", ")
-                .Add(person["SurName"])
+                .Add(person["Surname"])
                 .Add(value);
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\", @p1", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"Surname\", @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", ",
@@ -38,11 +38,11 @@ namespace Suilder.Test.Builder.Select
         public void Add_Params(object value)
         {
             IAlias person = sql.Alias("person");
-            ISelect select = sql.Select().Add(person["Name"], ", ", person["SurName"], value);
+            ISelect select = sql.Select().Add(person["Name"], ", ", person["Surname"], value);
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\", @p1", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"Surname\", @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", ",
@@ -55,11 +55,11 @@ namespace Suilder.Test.Builder.Select
         public void Add_Enumerable(object value)
         {
             IAlias person = sql.Alias("person");
-            ISelect select = sql.Select().Add(new List<object> { person["Name"], ", ", person["SurName"], value });
+            ISelect select = sql.Select().Add(new List<object> { person["Name"], ", ", person["Surname"], value });
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\", @p1", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"Surname\", @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", ",
@@ -75,12 +75,12 @@ namespace Suilder.Test.Builder.Select
             ISelect select = sql.Select()
                 .Add(() => person.Name)
                 .Add(() => ", ")
-                .Add(() => person.SurName)
+                .Add(() => person.Surname)
                 .Add(() => value);
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\", @p1", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"Surname\", @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", ",
@@ -93,11 +93,11 @@ namespace Suilder.Test.Builder.Select
         public void Add_Expression_Params(object value)
         {
             Person person = null;
-            ISelect select = sql.Select().Add(() => person.Name, () => ", ", () => person.SurName, () => value);
+            ISelect select = sql.Select().Add(() => person.Name, () => ", ", () => person.Surname, () => value);
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\", @p1", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"Surname\", @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", ",
@@ -111,11 +111,11 @@ namespace Suilder.Test.Builder.Select
         {
             Person person = null;
             ISelect select = sql.Select().Add(new List<Expression<Func<object>>> { () => person.Name, () => ", ",
-                () => person.SurName, () => value });
+                () => person.Surname, () => value });
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\", @p1", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"Surname\", @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", ",
@@ -142,12 +142,12 @@ namespace Suilder.Test.Builder.Select
             ISelect select = sql.Select()
                 .Add(person["Name"]).As("Name")
                 .Add(", ").As("Literal")
-                .Add(person["SurName"]).As("SurName");
+                .Add(person["Surname"]).As("Surname");
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT \"person\".\"Name\" AS \"Name\", @p0 AS \"Literal\", \"person\".\"SurName\" "
-                + "AS \"SurName\"", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\" AS \"Name\", @p0 AS \"Literal\", \"person\".\"Surname\" "
+                + "AS \"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", "
@@ -158,11 +158,11 @@ namespace Suilder.Test.Builder.Select
         public void Alias_Params()
         {
             IAlias person = sql.Alias("person");
-            ISelect select = sql.Select().Add(person["Name"], ", ", person["SurName"]).As("SurName");
+            ISelect select = sql.Select().Add(person["Name"], ", ", person["Surname"]).As("Surname");
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\" AS \"SurName\"", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"Surname\" AS \"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", "
@@ -225,11 +225,11 @@ namespace Suilder.Test.Builder.Select
         public void Distinct_On_Params()
         {
             IAlias person = sql.Alias("person");
-            ISelect select = sql.Select().DistinctOn(person["Name"], person["SurName"]).Add(person.All);
+            ISelect select = sql.Select().DistinctOn(person["Name"], person["Surname"]).Add(person.All);
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"SurName\") \"person\".*", result.Sql);
+            Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"Surname\") \"person\".*", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -237,11 +237,11 @@ namespace Suilder.Test.Builder.Select
         public void Distinct_On_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            ISelect select = sql.Select().DistinctOn(new List<object> { person["Name"], person["SurName"] }).Add(person.All);
+            ISelect select = sql.Select().DistinctOn(new List<object> { person["Name"], person["Surname"] }).Add(person.All);
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"SurName\") \"person\".*", result.Sql);
+            Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"Surname\") \"person\".*", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -254,7 +254,7 @@ namespace Suilder.Test.Builder.Select
             QueryResult result = engine.Compile(select);
 
             Assert.Equal("SELECT DISTINCT ON(\"person\".\"Id\") \"person\".\"Id\", \"person\".\"Active\", "
-                + "\"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", "
+                + "\"person\".\"Name\", \"person\".\"Surname\", \"person\".\"AddressStreet\", "
                 + "\"person\".\"AddressNumber\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
                 + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
                 + "\"person\".\"Flags\"", result.Sql);
@@ -265,12 +265,12 @@ namespace Suilder.Test.Builder.Select
         public void Distinct_On_Expression_Params()
         {
             Person person = null;
-            ISelect select = sql.Select().DistinctOn(() => person.Name, () => person.SurName).Add(() => person);
+            ISelect select = sql.Select().DistinctOn(() => person.Name, () => person.Surname).Add(() => person);
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"SurName\") \"person\".\"Id\", "
-                + "\"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", "
+            Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"Surname\") \"person\".\"Id\", "
+                + "\"person\".\"Active\", \"person\".\"Name\", \"person\".\"Surname\", \"person\".\"AddressStreet\", "
                 + "\"person\".\"AddressNumber\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
                 + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
                 + "\"person\".\"Flags\"", result.Sql);
@@ -282,12 +282,12 @@ namespace Suilder.Test.Builder.Select
         {
             Person person = null;
             ISelect select = sql.Select().DistinctOn(new List<Expression<Func<object>>> {() => person.Name,
-                () => person.SurName}).Add(() => person);
+                () => person.Surname}).Add(() => person);
 
             QueryResult result = engine.Compile(select);
 
-            Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"SurName\") \"person\".\"Id\", "
-                + "\"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", \"person\".\"AddressStreet\", "
+            Assert.Equal("SELECT DISTINCT ON(\"person\".\"Name\", \"person\".\"Surname\") \"person\".\"Id\", "
+                + "\"person\".\"Active\", \"person\".\"Name\", \"person\".\"Surname\", \"person\".\"AddressStreet\", "
                 + "\"person\".\"AddressNumber\", \"person\".\"AddressCity\", \"person\".\"Salary\", "
                 + "\"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
                 + "\"person\".\"Flags\"", result.Sql);
@@ -516,7 +516,7 @@ namespace Suilder.Test.Builder.Select
         {
             IAlias person = sql.Alias("person");
             ISelect select = sql.Select();
-            object[] values = new object[] { person["Name"], ", ", person["SurName"], 1 };
+            object[] values = new object[] { person["Name"], ", ", person["Surname"], 1 };
 
             int i = 0;
             Assert.Equal(i, select.Count);
@@ -541,9 +541,9 @@ namespace Suilder.Test.Builder.Select
         public void To_String()
         {
             IAlias person = sql.Alias("person");
-            ISelect select = sql.Select().Add(person["Name"], person["SurName"]);
+            ISelect select = sql.Select().Add(person["Name"], person["Surname"]);
 
-            Assert.Equal("SELECT person.Name, person.SurName", select.ToString());
+            Assert.Equal("SELECT person.Name, person.Surname", select.ToString());
         }
 
         [Fact]

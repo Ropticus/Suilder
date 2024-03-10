@@ -39,7 +39,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         {
             Person person = null;
             Expression<Func<object>> expression = () => person;
-            IAlias alias = sql.Alias(() => person);
+            IAlias alias = sql.Alias(expression);
 
             QueryResult result = engine.Compile(alias);
 

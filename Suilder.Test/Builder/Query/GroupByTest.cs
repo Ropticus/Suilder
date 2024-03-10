@@ -26,11 +26,11 @@ namespace Suilder.Test.Builder.Query
         public void GroupBy_Params()
         {
             IAlias person = sql.Alias("person");
-            IQuery query = sql.Query.GroupBy(person["Name"], person["SurName"]);
+            IQuery query = sql.Query.GroupBy(person["Name"], person["Surname"]);
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("GROUP BY \"person\".\"Name\", \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("GROUP BY \"person\".\"Name\", \"person\".\"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -38,11 +38,11 @@ namespace Suilder.Test.Builder.Query
         public void GroupBy_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IQuery query = sql.Query.GroupBy(new List<object> { person["Name"], person["SurName"] });
+            IQuery query = sql.Query.GroupBy(new List<object> { person["Name"], person["Surname"] });
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("GROUP BY \"person\".\"Name\", \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("GROUP BY \"person\".\"Name\", \"person\".\"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -62,11 +62,11 @@ namespace Suilder.Test.Builder.Query
         public void GroupBy_Expression_Params()
         {
             Person person = null;
-            IQuery query = sql.Query.GroupBy(() => person.Name, () => person.SurName);
+            IQuery query = sql.Query.GroupBy(() => person.Name, () => person.Surname);
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("GROUP BY \"person\".\"Name\", \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("GROUP BY \"person\".\"Name\", \"person\".\"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -74,11 +74,11 @@ namespace Suilder.Test.Builder.Query
         public void GroupBy_Expression_Enumerable()
         {
             Person person = null;
-            IQuery query = sql.Query.GroupBy(new List<Expression<Func<object>>> { () => person.Name, () => person.SurName });
+            IQuery query = sql.Query.GroupBy(new List<Expression<Func<object>>> { () => person.Name, () => person.Surname });
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("GROUP BY \"person\".\"Name\", \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("GROUP BY \"person\".\"Name\", \"person\".\"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

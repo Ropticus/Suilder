@@ -14,13 +14,13 @@ namespace Suilder.Reflection.Builder
         /// The type of the table.
         /// </summary>
         /// <value>The type of the table.</value>
-        public Type Type { get; protected set; }
+        public Type Type { get; private set; }
 
         /// <summary>
         /// The inheritance level.
         /// </summary>
         /// <value>The inheritance level</value>
-        public int InheritLevel { get; protected set; }
+        public int InheritLevel { get; private set; }
 
         /// <summary>
         /// The properties of the type.
@@ -28,6 +28,13 @@ namespace Suilder.Reflection.Builder
         /// </summary>
         /// <value>The properties of the type.</value>
         public IList<PropertyData> Properties { get; set; } = new List<PropertyData>();
+
+        /// <summary>
+        /// The properties of the columns.
+        /// <para>It includes the properties of inherited columns.</para>
+        /// </summary>
+        /// <value>The properties of the columns.</value>
+        public IDictionary<string, PropertyData> ColumnProperties { get; set; } = new Dictionary<string, PropertyData>();
 
         /// <summary>
         /// If the type is a table.
@@ -69,15 +76,21 @@ namespace Suilder.Reflection.Builder
         public IList<string> PrimaryKeys { get; set; } = new List<string>();
 
         /// <summary>
-        /// The translations of the properties.
+        /// The column names of the properties.
         /// </summary>
-        /// <value>The translations of the properties.</value>
+        /// <value>The column names of the properties.</value>
         public IDictionary<string, string> ColumnNames { get; set; } = new Dictionary<string, string>();
+
+        /// <summary>
+        /// The properties with a partial column name.
+        /// </summary>
+        /// <value>The properties with a partial column name.</value>
+        public ISet<string> PartialNames { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// The foreign keys properties.
         /// </summary>
-        /// <value>The ignored properties.</value>
+        /// <value>The foreign keys properties.</value>
         public ISet<string> ForeignKeys { get; set; } = new HashSet<string>();
 
         /// <summary>
@@ -106,10 +119,7 @@ namespace Suilder.Reflection.Builder
         /// <param name="type">The type of the table.</param>
         public TableConfig(Type type)
         {
-            Type parentType = type.BaseType;
-            if (parentType == null)
-                throw new InvalidConfigurationException($"Invalid type \"{type}\".");
-
+            Type parentType = type.BaseType ?? throw new InvalidConfigurationException($"Invalid type \"{type}\".");
             Type = type;
 
             // Get inherit level
@@ -126,6 +136,12 @@ namespace Suilder.Reflection.Builder
         public class PropertyData
         {
             /// <summary>
+            /// The type of the table.
+            /// </summary>
+            /// <value>The type of the table.</value>
+            public Type Type { get; set; }
+
+            /// <summary>
             /// The full property name.
             /// </summary>
             /// <value>The full property name.</value>
@@ -138,10 +154,16 @@ namespace Suilder.Reflection.Builder
             public PropertyInfo Info { get; set; }
 
             /// <summary>
+            /// The parent property data.
+            /// </summary>
+            /// <value>The parent property data.</value>
+            public PropertyData Parent { get; set; }
+
+            /// <summary>
             /// If the property is a column.
             /// </summary>
             /// <value><see langword="true"/> if the property is a column, otherwise, <see langword="false"/>.</value>
-            public bool IsColumn => !IsTable && !IsNested;
+            public bool IsColumn { get; set; }
 
             /// <summary>
             /// If the property is another table.

@@ -226,7 +226,8 @@ namespace Suilder.Test
                     new object[] { new DateOnly(2001, 1, 1) },
                     new object[] { new DateTime(2001, 1, 1) },
                     new object[] { new DateTimeOffset(2001, 1, 1, 0, 0, 0, new TimeSpan(1, 0, 0)) },
-                    new object[] { PersonFlags.ValueA }
+                    new object[] { PersonFlags.ValueA },
+                    new object[] { new Guid("11111111-1111-1111-1111-111111111111") }
                 };
             }
         }
@@ -260,7 +261,10 @@ namespace Suilder.Test
                     new object[] { new DateTimeOffset[] { new DateTimeOffset(2001, 1, 1, 0, 0, 0, new TimeSpan(1, 0, 0)),
                         new DateTimeOffset(2002, 2, 2, 0, 0, 0, new TimeSpan(2, 0, 0)),
                         new DateTimeOffset(2003, 3, 3, 0, 0, 0, new TimeSpan(3, 0, 0)) } },
-                    new object[] { new PersonFlags[] { PersonFlags.ValueA, PersonFlags.ValueB, PersonFlags.ValueC } }
+                    new object[] { new PersonFlags[] { PersonFlags.ValueA, PersonFlags.ValueB, PersonFlags.ValueC } },
+                    new object[] { new Guid[] { new Guid("11111111-1111-1111-1111-111111111111"),
+                        new Guid("22222222-2222-2222-2222-222222222222"),
+                        new Guid("33333333-3333-3333-3333-333333333333") } }
                 };
             }
         }
@@ -296,7 +300,10 @@ namespace Suilder.Test
                     new object[] { new List<DateTimeOffset> { new DateTimeOffset(2001, 1, 1, 0, 0, 0, new TimeSpan(1, 0, 0)),
                         new DateTimeOffset(2002, 2, 2, 0, 0, 0, new TimeSpan(2, 0, 0)),
                         new DateTimeOffset(2003, 3, 3, 0, 0, 0, new TimeSpan(3, 0, 0)) } },
-                    new object[] { new List<PersonFlags> { PersonFlags.ValueA, PersonFlags.ValueB, PersonFlags.ValueC } }
+                    new object[] { new List<PersonFlags> { PersonFlags.ValueA, PersonFlags.ValueB, PersonFlags.ValueC } },
+                    new object[] { new List<Guid> { new Guid("11111111-1111-1111-1111-111111111111"),
+                        new Guid("22222222-2222-2222-2222-222222222222"),
+                        new Guid("33333333-3333-3333-3333-333333333333") } }
                 };
             }
         }

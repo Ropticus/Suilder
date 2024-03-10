@@ -253,9 +253,9 @@ namespace Suilder.Test.Builder.Cte
 
             QueryResult result = engine.Compile(cte);
 
-            Assert.Equal("\"cte\" (\"Id\", \"Active\", \"Name\", \"SurName\", \"AddressStreet\", \"AddressNumber\", "
+            Assert.Equal("\"cte\" (\"Id\", \"Active\", \"Name\", \"Surname\", \"AddressStreet\", \"AddressNumber\", "
                 + "\"AddressCity\", \"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\", \"Flags\") "
-                + "AS (SELECT \"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+                + "AS (SELECT \"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"Surname\", "
                 + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
                 + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
                 + "\"person\".\"Flags\" FROM \"Person\" AS \"person\")", result.Sql);
@@ -330,7 +330,7 @@ namespace Suilder.Test.Builder.Cte
         {
             IAlias person = sql.Alias("person");
             ICte cte = sql.Cte("cte");
-            IColumn[] values = new IColumn[] { person["Id"], person["Name"], person["SurName"] };
+            IColumn[] values = new IColumn[] { person["Id"], person["Name"], person["Surname"] };
 
             int i = 0;
             Assert.Equal(i, cte.Count);

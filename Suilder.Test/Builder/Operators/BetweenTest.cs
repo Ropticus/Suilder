@@ -96,11 +96,11 @@ namespace Suilder.Test.Builder.Operators
         public void Builder_Object_Left_Null()
         {
             IAlias person = sql.Alias("person");
-            IOperator op = sql.Between((object)null, person["Name"], person["SurName"]);
+            IOperator op = sql.Between((object)null, person["Name"], person["Surname"]);
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("@p0 BETWEEN \"person\".\"Name\" AND \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("@p0 BETWEEN \"person\".\"Name\" AND \"person\".\"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = null

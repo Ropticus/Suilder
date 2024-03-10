@@ -241,7 +241,7 @@ namespace Suilder.Core
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return ToStringBuilder.Build(b => b.Write(JoinType.ToString().ToUpper()).Write(" JOIN ")
+            return ToStringBuilder.Build(b => b.Write(JoinType.ToString().ToUpperInvariant()).Write(" JOIN ")
                 .WriteFragment(Source).IfNotNull(AliasName, x => b.Write(" AS " + x))
                 .IfNotNull(OptionsValue, x => b.Write(" ").WriteFragment(x))
                 .IfNotNull(OnValue, x => b.Write(" ON ").WriteFragment(x)));

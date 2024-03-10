@@ -72,7 +72,7 @@ namespace Suilder.Test.Engines.PostgreSQL.Functions
         public void Coalesce()
         {
             IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Coalesce(person["Name"], person["SurName"]);
+            IFunction func = SqlFn.Coalesce(person["Name"], person["Surname"]);
 
             QueryResult result = engine.Compile(func);
 
@@ -84,7 +84,7 @@ namespace Suilder.Test.Engines.PostgreSQL.Functions
         public void Concat()
         {
             IAlias person = sql.Alias("person");
-            IFunction func = SqlFn.Concat(person["Name"], person["SurName"]);
+            IFunction func = SqlFn.Concat(person["Name"], person["Surname"]);
 
             QueryResult result = engine.Compile(func);
 

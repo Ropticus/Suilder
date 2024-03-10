@@ -16,7 +16,7 @@ namespace Suilder.Reflection.Builder.Processors
         /// </summary>
         protected override void ProcessData()
         {
-            var levels = GroupByInheranceLevel(ConfigData.ConfigTypes.Values);
+            var levels = GroupByInheritanceLevel(ConfigData.ConfigTypes.Values);
 
             foreach (var level in levels)
             {
@@ -91,7 +91,12 @@ namespace Suilder.Reflection.Builder.Processors
                     ColumnAttribute columnAttr = property.Info.GetCustomAttribute<ColumnAttribute>();
 
                     if (columnAttr != null)
+                    {
                         tableConfig.ColumnNames.Add(property.FullName, columnAttr.Name);
+
+                        if (columnAttr.PartialName)
+                            tableConfig.PartialNames.Add(property.FullName);
+                    }
                 }
             }
         }
@@ -116,12 +121,16 @@ namespace Suilder.Reflection.Builder.Processors
                         {
                             if (keys.Length > 1)
                             {
-                                throw new InvalidConfigurationException($"Invalid multiple foreign key for property "
-                                    + $"\"{property.FullName}\" of the type \"{tableConfig.Type}\".");
+                                throw new InvalidConfigurationException($"Invalid multiple "
+                                    + $"\"{typeof(ForeignKeyAttribute)}\" for property \"{property.FullName}\" "
+                                    + $"of the type \"{tableConfig.Type}\".");
                             }
                             else
                             {
                                 tableConfig.ColumnNames.Add(property.FullName, keys[0].Name);
+
+                                if (keys[0].PartialName)
+                                    tableConfig.PartialNames.Add(property.FullName);
                             }
                         }
                     }
@@ -132,8 +141,9 @@ namespace Suilder.Reflection.Builder.Processors
                     ForeignKeyAttribute[] keys = property.Info.GetCustomAttributes<ForeignKeyAttribute>().ToArray();
                     if (keys.Length > 1 && keys.Any(x => string.IsNullOrEmpty(x.PropertyName)))
                     {
-                        throw new InvalidConfigurationException($"Empty property name in multiple foreign key "
-                            + $"for property \"{property.FullName}\" of the type \"{tableConfig.Type}\".");
+                        throw new InvalidConfigurationException($"Empty property name in multiple "
+                            + $"\"{typeof(ForeignKeyAttribute)}\" for property \"{property.FullName}\" "
+                            + $"of the type \"{tableConfig.Type}\".");
                     }
 
                     foreach (ForeignKeyAttribute foreignKeyAttr in keys)
@@ -146,6 +156,9 @@ namespace Suilder.Reflection.Builder.Processors
                         if (!string.IsNullOrEmpty(foreignKeyAttr.Name) && !tableConfig.ColumnNames.ContainsKey(column))
                         {
                             tableConfig.ColumnNames.Add(column, foreignKeyAttr.Name);
+
+                            if (foreignKeyAttr.PartialName)
+                                tableConfig.PartialNames.Add(column);
                         }
                     }
                 }

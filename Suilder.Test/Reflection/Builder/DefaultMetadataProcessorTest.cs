@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Suilder.Reflection.Builder;
 using Suilder.Reflection.Builder.Processors;
-using Suilder.Test.Reflection.Builder.TablePerType.Tables;
+using Suilder.Test.Reflection.TablePerType.Tables;
 using Xunit;
 
 namespace Suilder.Test.Reflection.Builder

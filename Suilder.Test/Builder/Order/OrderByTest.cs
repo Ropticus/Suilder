@@ -18,11 +18,11 @@ namespace Suilder.Test.Builder.Order
             IAlias person = sql.Alias("person");
             IOrderBy orderBy = sql.OrderBy()
                 .Add(person["Name"])
-                .Add(person["SurName"]);
+                .Add(person["Surname"]);
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -32,11 +32,11 @@ namespace Suilder.Test.Builder.Order
             IAlias person = sql.Alias("person");
             IOrderBy orderBy = sql.OrderBy()
                 .Add(person["Name"]).Asc
-                .Add(person["SurName"]).Desc;
+                .Add(person["Surname"]).Desc;
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\" ASC, \"person\".\"SurName\" DESC", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\" ASC, \"person\".\"Surname\" DESC", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -44,11 +44,11 @@ namespace Suilder.Test.Builder.Order
         public void Add_Params()
         {
             IAlias person = sql.Alias("person");
-            IOrderBy orderBy = sql.OrderBy().Add(person["Name"], person["SurName"]);
+            IOrderBy orderBy = sql.OrderBy().Add(person["Name"], person["Surname"]);
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -56,11 +56,11 @@ namespace Suilder.Test.Builder.Order
         public void Add_Params_With_Order()
         {
             IAlias person = sql.Alias("person");
-            IOrderBy orderBy = sql.OrderBy().Add(person["Name"], person["SurName"]).Desc;
+            IOrderBy orderBy = sql.OrderBy().Add(person["Name"], person["Surname"]).Desc;
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\" DESC, \"person\".\"SurName\" DESC", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\" DESC, \"person\".\"Surname\" DESC", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -68,11 +68,11 @@ namespace Suilder.Test.Builder.Order
         public void Add_Enumerable()
         {
             IAlias person = sql.Alias("person");
-            IOrderBy orderBy = sql.OrderBy().Add(new List<object> { person["Name"], person["SurName"] });
+            IOrderBy orderBy = sql.OrderBy().Add(new List<object> { person["Name"], person["Surname"] });
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -80,11 +80,11 @@ namespace Suilder.Test.Builder.Order
         public void Add_Enumerable_With_Order()
         {
             IAlias person = sql.Alias("person");
-            IOrderBy orderBy = sql.OrderBy().Add(new List<object> { person["Name"], person["SurName"] }).Desc;
+            IOrderBy orderBy = sql.OrderBy().Add(new List<object> { person["Name"], person["Surname"] }).Desc;
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\" DESC, \"person\".\"SurName\" DESC", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\" DESC, \"person\".\"Surname\" DESC", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -94,11 +94,11 @@ namespace Suilder.Test.Builder.Order
             Person person = null;
             IOrderBy orderBy = sql.OrderBy()
                 .Add(() => person.Name)
-                .Add(() => person.SurName);
+                .Add(() => person.Surname);
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -108,11 +108,11 @@ namespace Suilder.Test.Builder.Order
             Person person = null;
             IOrderBy orderBy = sql.OrderBy()
                 .Add(() => person.Name).Asc
-                .Add(() => person.SurName).Desc;
+                .Add(() => person.Surname).Desc;
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\" ASC, \"person\".\"SurName\" DESC", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\" ASC, \"person\".\"Surname\" DESC", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -120,11 +120,11 @@ namespace Suilder.Test.Builder.Order
         public void Add_Expression_Params()
         {
             Person person = null;
-            IOrderBy orderBy = sql.OrderBy().Add(() => person.Name, () => person.SurName);
+            IOrderBy orderBy = sql.OrderBy().Add(() => person.Name, () => person.Surname);
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -132,11 +132,11 @@ namespace Suilder.Test.Builder.Order
         public void Add_Expression_Params_With_Order()
         {
             Person person = null;
-            IOrderBy orderBy = sql.OrderBy().Add(() => person.Name, () => person.SurName).Desc;
+            IOrderBy orderBy = sql.OrderBy().Add(() => person.Name, () => person.Surname).Desc;
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\" DESC, \"person\".\"SurName\" DESC", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\" DESC, \"person\".\"Surname\" DESC", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -145,11 +145,11 @@ namespace Suilder.Test.Builder.Order
         {
             Person person = null;
             IOrderBy orderBy = sql.OrderBy().Add(new List<Expression<Func<object>>> { () => person.Name,
-                () => person.SurName });
+                () => person.Surname });
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"SurName\"", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\", \"person\".\"Surname\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -159,11 +159,11 @@ namespace Suilder.Test.Builder.Order
         {
             Person person = null;
             IOrderBy orderBy = sql.OrderBy().Add(new List<Expression<Func<object>>> { () => person.Name,
-                () => person.SurName }).Desc;
+                () => person.Surname }).Desc;
 
             QueryResult result = engine.Compile(orderBy);
 
-            Assert.Equal("ORDER BY \"person\".\"Name\" DESC, \"person\".\"SurName\" DESC", result.Sql);
+            Assert.Equal("ORDER BY \"person\".\"Name\" DESC, \"person\".\"Surname\" DESC", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -246,12 +246,12 @@ namespace Suilder.Test.Builder.Order
             IOrderBy orderBy = sql.OrderBy()
                 .Add(sql.Case()
                     .When(person["Name"].IsNotNull(), person["Name"])
-                    .Else(person["SurName"])).Desc;
+                    .Else(person["Surname"])).Desc;
 
             QueryResult result = engine.Compile(orderBy);
 
             Assert.Equal("ORDER BY CASE WHEN \"person\".\"Name\" IS NOT NULL THEN \"person\".\"Name\" "
-                + "ELSE \"person\".\"SurName\" END DESC", result.Sql);
+                + "ELSE \"person\".\"Surname\" END DESC", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -276,7 +276,7 @@ namespace Suilder.Test.Builder.Order
         {
             IAlias person = sql.Alias("person");
             IOrderBy orderBy = sql.OrderBy();
-            object[] values = new object[] { person["Name"], person["SurName"], person["Id"] };
+            object[] values = new object[] { person["Name"], person["Surname"], person["Id"] };
 
             int i = 0;
             Assert.Equal(i, orderBy.Count);
@@ -303,9 +303,9 @@ namespace Suilder.Test.Builder.Order
             IAlias person = sql.Alias("person");
             IOrderBy orderBy = sql.OrderBy()
                 .Add(person["Name"])
-                .Add(person["SurName"]);
+                .Add(person["Surname"]);
 
-            Assert.Equal("ORDER BY person.Name, person.SurName", orderBy.ToString());
+            Assert.Equal("ORDER BY person.Name, person.Surname", orderBy.ToString());
         }
 
         [Fact]
@@ -314,9 +314,9 @@ namespace Suilder.Test.Builder.Order
             IAlias person = sql.Alias("person");
             IOrderBy orderBy = sql.OrderBy()
                 .Add(person["Name"]).Asc
-                .Add(person["SurName"]).Desc;
+                .Add(person["Surname"]).Desc;
 
-            Assert.Equal("ORDER BY person.Name ASC, person.SurName DESC", orderBy.ToString());
+            Assert.Equal("ORDER BY person.Name ASC, person.Surname DESC", orderBy.ToString());
         }
 
         [Fact]

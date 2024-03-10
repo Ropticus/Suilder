@@ -118,16 +118,16 @@ namespace Suilder.Test.Builder.Query
         {
             Person person = null;
             IQuery query = sql.Query.Insert(x => x.Into(() => person)
-                .Add(() => person.Name, () => person.SurName, () => person.Image))
-                .Values("Name1", "SurName1", new byte[] { 1, 2, 3 });
+                .Add(() => person.Name, () => person.Surname, () => person.Image))
+                .Values("Name1", "Surname1", new byte[] { 1, 2, 3 });
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\", \"Image\") VALUES (@p0, @p1, @p2)", result.Sql);
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"Surname\", \"Image\") VALUES (@p0, @p1, @p2)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = "Name1",
-                ["@p1"] = "SurName1",
+                ["@p1"] = "Surname1",
                 ["@p2"] = new byte[] { 1, 2, 3 }
             }, result.Parameters);
         }
@@ -137,23 +137,23 @@ namespace Suilder.Test.Builder.Query
         {
             Person person = null;
             IQuery query = sql.Query.Insert(x => x.Into(() => person)
-                .Add(() => person.Name, () => person.SurName))
-                .Values("Name1", "SurName1")
-                .Values("Name2", "SurName2")
-                .Values("Name3", "SurName3");
+                .Add(() => person.Name, () => person.Surname))
+                .Values("Name1", "Surname1")
+                .Values("Name2", "Surname2")
+                .Values("Name3", "Surname3");
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\") VALUES (@p0, @p1), (@p2, @p3), (@p4, @p5)",
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"Surname\") VALUES (@p0, @p1), (@p2, @p3), (@p4, @p5)",
                 result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = "Name1",
-                ["@p1"] = "SurName1",
+                ["@p1"] = "Surname1",
                 ["@p2"] = "Name2",
-                ["@p3"] = "SurName2",
+                ["@p3"] = "Surname2",
                 ["@p4"] = "Name3",
-                ["@p5"] = "SurName3"
+                ["@p5"] = "Surname3"
             }, result.Parameters);
         }
 
@@ -162,16 +162,16 @@ namespace Suilder.Test.Builder.Query
         {
             Person person = null;
             IQuery query = sql.Query.Insert(x => x.Into(() => person)
-                .Add(() => person.Name, () => person.SurName))
-                .Values(sql.ValList.Add("Name1", "SurName1"));
+                .Add(() => person.Name, () => person.Surname))
+                .Values(sql.ValList.Add("Name1", "Surname1"));
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\") VALUES (@p0, @p1)", result.Sql);
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"Surname\") VALUES (@p0, @p1)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = "Name1",
-                ["@p1"] = "SurName1"
+                ["@p1"] = "Surname1"
             }, result.Parameters);
         }
 
@@ -182,16 +182,16 @@ namespace Suilder.Test.Builder.Query
 
             Person person = null;
             IQuery query = sql.Query.Insert(x => x.Into(() => person)
-                .Add(() => person.Name, () => person.SurName))
-                .Values("Name1", "SurName1");
+                .Add(() => person.Name, () => person.Surname))
+                .Values("Name1", "Surname1");
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\") VALUES (@p0, @p1)", result.Sql);
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"Surname\") VALUES (@p0, @p1)", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = "Name1",
-                ["@p1"] = "SurName1"
+                ["@p1"] = "Surname1"
             }, result.Parameters);
         }
 
@@ -202,23 +202,23 @@ namespace Suilder.Test.Builder.Query
 
             Person person = null;
             IQuery query = sql.Query.Insert(x => x.Into(() => person)
-                .Add(() => person.Name, () => person.SurName))
-                .Values("Name1", "SurName1")
-                .Values("Name2", "SurName2")
-                .Values("Name3", "SurName3");
+                .Add(() => person.Name, () => person.Surname))
+                .Values("Name1", "Surname1")
+                .Values("Name2", "Surname2")
+                .Values("Name3", "Surname3");
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\") SELECT @p0, @p1 UNION ALL "
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"Surname\") SELECT @p0, @p1 UNION ALL "
                 + "SELECT @p2, @p3 UNION ALL SELECT @p4, @p5", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = "Name1",
-                ["@p1"] = "SurName1",
+                ["@p1"] = "Surname1",
                 ["@p2"] = "Name2",
-                ["@p3"] = "SurName2",
+                ["@p3"] = "Surname2",
                 ["@p4"] = "Name3",
-                ["@p5"] = "SurName3"
+                ["@p5"] = "Surname3"
             }, result.Parameters);
         }
 
@@ -230,23 +230,23 @@ namespace Suilder.Test.Builder.Query
 
             Person person = null;
             IQuery query = sql.Query.Insert(x => x.Into(() => person)
-                .Add(() => person.Name, () => person.SurName))
-                .Values("Name1", "SurName1")
-                .Values("Name2", "SurName2")
-                .Values("Name3", "SurName3");
+                .Add(() => person.Name, () => person.Surname))
+                .Values("Name1", "Surname1")
+                .Values("Name2", "Surname2")
+                .Values("Name3", "Surname3");
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\") SELECT @p0, @p1 FROM DUAL UNION ALL "
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"Surname\") SELECT @p0, @p1 FROM DUAL UNION ALL "
                 + "SELECT @p2, @p3 FROM DUAL UNION ALL SELECT @p4, @p5 FROM DUAL", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = "Name1",
-                ["@p1"] = "SurName1",
+                ["@p1"] = "Surname1",
                 ["@p2"] = "Name2",
-                ["@p3"] = "SurName2",
+                ["@p3"] = "Surname2",
                 ["@p4"] = "Name3",
-                ["@p5"] = "SurName3"
+                ["@p5"] = "Surname3"
             }, result.Parameters);
         }
 
@@ -255,15 +255,15 @@ namespace Suilder.Test.Builder.Query
         {
             Person person = null;
             IQuery query = sql.Query.Insert(x => x.Into(() => person)
-                .Add(() => person.Name, () => person.SurName))
-                .Select(() => person.Name, () => person.SurName)
+                .Add(() => person.Name, () => person.Surname))
+                .Select(() => person.Name, () => person.Surname)
                 .From(() => person)
                 .Where(() => !person.Active);
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"SurName\") SELECT \"person\".\"Name\", "
-                + "\"person\".\"SurName\" FROM \"Person\" AS \"person\" WHERE \"person\".\"Active\" = @p0", result.Sql);
+            Assert.Equal("INSERT INTO \"Person\" (\"Name\", \"Surname\") SELECT \"person\".\"Name\", "
+                + "\"person\".\"Surname\" FROM \"Person\" AS \"person\" WHERE \"person\".\"Active\" = @p0", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = false

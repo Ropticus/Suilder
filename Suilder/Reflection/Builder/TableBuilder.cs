@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using Suilder.Builder;
 using Suilder.Exceptions;
 using Suilder.Reflection.Builder.Processors;
@@ -59,9 +60,9 @@ namespace Suilder.Reflection.Builder
         public ITableBuilder DefaultInheritTable(bool inheritTable)
         {
             if (inheritTable)
-                return DefaultInheritTable(x => !x.IsAbstract && !x.BaseType.IsAbstract);
+                return DefaultInheritTable(type => !type.IsAbstract && !type.BaseType.IsAbstract);
             else
-                return DefaultInheritTable(x => false);
+                return DefaultInheritTable(type => false);
         }
 
         /// <summary>
@@ -113,6 +114,19 @@ namespace Suilder.Reflection.Builder
             CheckInitialized();
 
             ConfigData.TableNameDefault = func;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets a function to get the default column name.
+        /// </summary>
+        /// <param name="func">The function.</param>
+        /// <returns>The table builder.</returns>
+        public ITableBuilder DefaultColumnName(Func<Type, IReadOnlyList<PropertyInfo>, int, string> func)
+        {
+            CheckInitialized();
+
+            ConfigData.ColumnNameDefault = func;
             return this;
         }
 

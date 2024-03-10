@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Suilder.Exceptions;
 using Suilder.Reflection;
 using Suilder.Reflection.Builder;
-using Suilder.Test.Reflection.Builder.TablePerType.Tables;
+using Suilder.Test.Reflection.TablePerType.Tables;
 using Xunit;
 
 namespace Suilder.Test.Reflection.Builder
@@ -107,11 +107,10 @@ namespace Suilder.Test.Reflection.Builder
 
         private class Recursive
         {
-            public class Person
+            [Nested]
+            public class Address
             {
-                public int Id { get; set; }
-
-                public string Name { get; set; }
+                public string Street { get; set; }
 
                 public Employee Employee { get; set; }
             }
@@ -126,10 +125,11 @@ namespace Suilder.Test.Reflection.Builder
                 public decimal Salary { get; set; }
             }
 
-            [Nested]
-            public class Address
+            public class Person
             {
-                public string Street { get; set; }
+                public int Id { get; set; }
+
+                public string Name { get; set; }
 
                 public Employee Employee { get; set; }
             }

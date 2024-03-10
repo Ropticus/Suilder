@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Suilder.Builder;
 using Suilder.Exceptions;
 using static Suilder.Reflection.Builder.TableConfig;
@@ -18,7 +20,7 @@ namespace Suilder.Reflection.Builder.Processors
         /// </summary>
         protected override void ProcessData()
         {
-            var levels = GroupByInheranceLevel(ConfigData.ConfigTypes.Values);
+            var levels = GroupByInheritanceLevel(ConfigData.ConfigTypes.Values);
 
             foreach (var level in levels)
             {
@@ -43,6 +45,10 @@ namespace Suilder.Reflection.Builder.Processors
                     TableInfo parentInfo = ResultData.GetParentConfig(tableConfig.Type);
 
                     LoadColumns(tableConfig, tableInfo, parentInfo);
+
+                    LoadForeignKeys(tableConfig, tableInfo, parentInfo);
+
+                    LoadColumnNames(tableConfig, tableInfo, parentInfo);
                 }
             }
         }
@@ -73,7 +79,7 @@ namespace Suilder.Reflection.Builder.Processors
                 tableConfig.InheritColumns = ConfigData.InheritColumnsDefault(tableConfig.Type);
             }
 
-            if ((tableConfig.InheritTable == true || tableConfig.InheritColumns == true) && parentInfo == null)
+            if (tableConfig.InheritColumns == true && parentInfo == null)
             {
                 throw new InvalidConfigurationException(
                     $"The type \"{tableConfig.Type}\" does not have a base type to inherit.");
@@ -115,65 +121,72 @@ namespace Suilder.Reflection.Builder.Processors
         /// <param name="parentInfo">The parent class table information.</param>
         protected virtual void LoadPrimaryKeys(TableConfig tableConfig, TableInfo tableInfo, TableInfo parentInfo)
         {
-            if (tableConfig.PrimaryKeys.Count > 0)
+            foreach (string primaryKey in tableConfig.PrimaryKeys.Distinct().Where(x => !IsIgnored(tableConfig, x)))
             {
-                foreach (var item in tableConfig.PrimaryKeys.Distinct().Where(x => !IsIgnored(x, tableConfig)))
-                    tableInfo.PrimaryKeys.Add(item);
+                tableInfo.PrimaryKeys.Add(primaryKey);
             }
-            else if (parentInfo != null && parentInfo.PrimaryKeys.Count > 0)
+
+            if (tableInfo.PrimaryKeys.Count > 0)
+                return;
+
+            if (parentInfo != null && parentInfo.PrimaryKeys.Count > 0)
             {
-                foreach (var item in parentInfo.PrimaryKeys.Where(x => !IsIgnored(x, tableConfig)))
-                    tableInfo.PrimaryKeys.Add(item);
+                foreach (string primaryKey in parentInfo.PrimaryKeys.Where(x => !IsIgnored(tableConfig, x)))
+                {
+                    tableInfo.PrimaryKeys.Add(primaryKey);
+                }
             }
             else
             {
                 string primaryKey = ConfigData.PrimaryKeyDefault(tableConfig.Type);
-                if (!string.IsNullOrEmpty(primaryKey) && !IsIgnored(primaryKey, tableConfig))
+                if (!string.IsNullOrEmpty(primaryKey))
                 {
                     if (ExpressionProcessor.GetProperty(tableConfig.Type, primaryKey) == null)
                     {
                         throw new InvalidConfigurationException($"The type \"{tableConfig.Type}\" does not have "
                             + $"property \"{primaryKey}\".");
                     }
-                    tableInfo.PrimaryKeys.Add(primaryKey);
+
+                    if (!IsIgnored(tableConfig, primaryKey))
+                        tableInfo.PrimaryKeys.Add(primaryKey);
                 }
             }
         }
 
         /// <summary>
-        /// Loads the columns, foreign keys and column names.
+        /// Loads the columns.
         /// </summary>
         /// <param name="tableConfig">The table configuration.</param>
         /// <param name="tableInfo">The table information.</param>
         /// <param name="parentInfo">The parent class table information.</param>
         protected virtual void LoadColumns(TableConfig tableConfig, TableInfo tableInfo, TableInfo parentInfo)
         {
-            tableInfo.ColumnNamesDic = new Dictionary<string, string>(tableConfig.ColumnNames);
-
             foreach (PropertyData property in tableConfig.Properties.Where(x => !x.IsIgnored && !x.IsNested))
             {
                 if (property.IsColumn)
                 {
                     tableInfo.Columns.Add(property.FullName);
-
-                    if (tableConfig.ForeignKeys.Contains(property.FullName))
-                        tableInfo.ForeignKeys.Add(property.FullName);
+                    tableConfig.ColumnProperties.Add(property.FullName, property);
                 }
                 else // It is another table
                 {
-                    TableInfo tableInfoFK = ResultData.GetConfig(property.Info.PropertyType);
-                    string[] keys = tableConfig.ForeignKeys.Where(x => x.StartsWith($"{property.FullName}.")).ToArray();
+                    string[] columns = (tableConfig.InheritColumns != true ? Enumerable.Empty<string>()
+                            : parentInfo.ForeignKeys.Where(x => x.StartsWith($"{property.FullName}.")))
+                        .Union(tableConfig.ForeignKeys.Where(x => x.StartsWith($"{property.FullName}."))).ToArray();
 
-                    if (keys.Length > 0)
+                    if (columns.Length > 0)
                     {
-                        foreach (string column in keys.Where(x => !IsIgnored(x, tableConfig)))
+                        foreach (PropertyData tableProperty in columns.Where(x => !IsIgnored(tableConfig, x))
+                            .Select(x => GetTableProperty(property, x)))
                         {
-                            tableInfo.Columns.Add(column);
-                            tableInfo.ForeignKeys.Add(column);
+                            tableInfo.Columns.Add(tableProperty.FullName);
+                            tableConfig.ColumnProperties.Add(tableProperty.FullName, tableProperty);
                         }
                     }
                     else
                     {
+                        TableInfo tableInfoFK = ResultData.GetConfig(property.Info.PropertyType);
+
                         if (tableInfoFK.PrimaryKeys.Count == 0)
                         {
                             throw new InvalidConfigurationException($"Foreign key property not specified "
@@ -181,105 +194,216 @@ namespace Suilder.Reflection.Builder.Processors
                                 + $"type \"{property.Info.PropertyType}\" does not have a primary key.");
                         }
 
-                        List<string> columns = new List<string>(tableInfoFK.PrimaryKeys.Count);
                         // Add all primary keys
-                        foreach (string primaryKey in tableInfoFK.PrimaryKeys)
+                        foreach (PropertyData tableProperty in tableInfoFK.PrimaryKeys
+                            .Select(x => $"{property.FullName}.{x}")
+                            .Where(x => !IsIgnored(tableConfig, x)).Select(x => GetTableProperty(property, x)))
                         {
-                            string column = $"{property.FullName}.{primaryKey}";
-
-                            if (!IsIgnored(column, tableConfig))
-                            {
-                                columns.Add(column);
-                                tableInfo.Columns.Add(column);
-                                tableInfo.ForeignKeys.Add(column);
-                            }
-                        }
-
-                        // If the property has a column name
-                        if (tableConfig.ColumnNames.TryGetValue(property.FullName, out string columnName))
-                        {
-                            if (columns.Count > 1)
-                            {
-                                throw new InvalidConfigurationException($"Foreign key property not specified "
-                                    + $"for property \"{property.FullName}\" of the type \"{tableConfig.Type}\", and the "
-                                    + $"type \"{property.Info.PropertyType}\" have multiple primary keys.");
-                            }
-
-                            string column = columns[0];
-                            // Change column name
-                            tableConfig.ColumnNames.Remove(property.FullName);
-                            tableConfig.ColumnNames.Add(column, columnName);
+                            tableInfo.Columns.Add(tableProperty.FullName);
+                            tableConfig.ForeignKeys.Add(tableProperty.FullName);
+                            tableConfig.ColumnProperties.Add(tableProperty.FullName, tableProperty);
                         }
                     }
                 }
             }
 
             // Add parent columns
-            if (tableConfig.InheritColumns == true)
+            if (parentInfo != null)
             {
-                tableInfo.Columns = parentInfo.Columns.Where(x => !IsIgnored(x, tableConfig))
+                tableInfo.Columns = (tableConfig.InheritColumns == true ? parentInfo.Columns
+                    : parentInfo.Columns.Where(x => tableInfo.PrimaryKeys.Contains(x)))
+                    .Where(x => !IsIgnored(tableConfig, x))
                     .Union(tableInfo.Columns).ToList();
+
+                TableConfig parentConfig = ConfigData.GetParentConfig(tableConfig.Type);
+
+                foreach (string column in tableInfo.Columns.Where(x => !tableConfig.ColumnProperties.ContainsKey(x)))
+                {
+                    tableConfig.ColumnProperties.Add(column, parentConfig.ColumnProperties[column]);
+                }
+            }
+
+            foreach (string primaryKey in tableInfo.PrimaryKeys)
+            {
+                if (!tableInfo.Columns.Contains(primaryKey))
+                {
+                    throw new InvalidConfigurationException($"Primary key does not exists as a column "
+                        + $"for property \"{primaryKey}\" of the type \"{tableConfig.Type}\".");
+                }
             }
 
             // Add primary keys first
-            tableInfo.Columns = tableInfo.PrimaryKeys.Union(tableInfo.Columns).Distinct().ToList();
+            tableInfo.Columns = tableInfo.PrimaryKeys.Union(tableInfo.Columns).ToList();
+        }
 
-            // Add column names
+        /// <summary>
+        /// Gets the property of another table.
+        /// </summary>
+        /// <param name="parent">The parent property.</param>
+        /// <param name="propertyName">The property name.</param>
+        /// <returns>The property of another table.</returns>
+        protected virtual PropertyData GetTableProperty(PropertyData parent, string propertyName)
+        {
+            foreach (string property in propertyName.Substring(parent.FullName.Length + 1).Split('.'))
+            {
+                PropertyInfo propertyInfo = parent.Info.PropertyType.GetProperty(property);
+
+                PropertyData propertyData = new PropertyData
+                {
+                    Type = parent.Type,
+                    FullName = $"{parent.FullName}.{propertyInfo.Name}",
+                    Info = propertyInfo,
+                    Parent = parent
+                };
+
+                parent = propertyData;
+            }
+
+            parent.IsColumn = true;
+            return parent;
+        }
+
+        /// <summary>
+        /// Loads the foreign keys.
+        /// </summary>
+        /// <param name="tableConfig">The table configuration.</param>
+        /// <param name="tableInfo">The table information.</param>
+        /// <param name="parentInfo">The parent class table information.</param>
+        protected virtual void LoadForeignKeys(TableConfig tableConfig, TableInfo tableInfo, TableInfo parentInfo)
+        {
             foreach (string column in tableInfo.Columns)
             {
-                if (tableConfig.ColumnNames.TryGetValue(column, out string columnName))
+                if (tableConfig.ForeignKeys.Contains(column)
+                    || (parentInfo != null && parentInfo.ForeignKeys.Contains(column)))
                 {
-                    tableInfo.ColumnNamesDic[column] = columnName;
+                    tableInfo.ForeignKeys.Add(column);
                 }
-                else
+            }
+        }
+
+        /// <summary>
+        /// Loads the column names.
+        /// </summary>
+        /// <param name="tableConfig">The table configuration.</param>
+        /// <param name="tableInfo">The table information.</param>
+        /// <param name="parentInfo">The parent class table information.</param>
+        protected virtual void LoadColumnNames(TableConfig tableConfig, TableInfo tableInfo, TableInfo parentInfo)
+        {
+            foreach (var table in tableConfig.ColumnProperties.Values
+                .GroupBy(p => GetParentProperties(p).Where(x => x.IsTable).Select(x => x.FullName).FirstOrDefault())
+                .Where(x => x.Key != null))
+            {
+                // If the property has a column name
+                if (table.Any(x => !tableConfig.ColumnNames.ContainsKey(x.FullName))
+                    && tableConfig.ColumnNames.TryGetValue(table.Key, out string columnName))
                 {
-                    var columnsSplit = column.Split('.');
-                    for (int i = columnsSplit.Length - 1; i > 0; i--)
+                    if (table.Count() > 1)
                     {
-                        string key = string.Join(".", columnsSplit.Take(i));
-                        if (tableConfig.ColumnNames.TryGetValue(key, out columnName))
-                        {
-                            tableInfo.ColumnNamesDic[column] = $"{columnName}{string.Join("", columnsSplit.Skip(i))}";
-                            break;
-                        }
+                        throw new InvalidConfigurationException($"Foreign key property not specified for column name "
+                            + $"of property \"{table.Key}\" of the type \"{tableConfig.Type}\", and the "
+                            + $"property have multiple foreign keys.");
+                    }
+
+                    // Change column name
+                    tableConfig.ColumnNames.Remove(table.Key);
+                    tableConfig.ColumnNames.Add(table.First().FullName, columnName);
+
+                    if (tableConfig.PartialNames.Remove(table.Key))
+                    {
+                        tableConfig.PartialNames.Add(table.First().FullName);
                     }
                 }
             }
 
-            // Add parent column names and foreign keys
-            if (parentInfo != null)
-            {
-                foreach (var item in parentInfo.ColumnNamesDic)
-                {
-                    if (!tableInfo.ColumnNamesDic.ContainsKey(item.Key) && tableInfo.Columns.Contains(item.Key))
-                        tableInfo.ColumnNamesDic.Add(item.Key, item.Value);
-                }
-
-                foreach (var foreignKey in parentInfo.ForeignKeys)
-                {
-                    if (tableInfo.Columns.Contains(foreignKey))
-                        tableInfo.ForeignKeys.Add(foreignKey);
-                }
-            }
-
-            // Add default column names
             foreach (string column in tableInfo.Columns)
             {
-                if (!tableInfo.ColumnNamesDic.ContainsKey(column))
-                    tableInfo.ColumnNamesDic.Add(column, column.Replace(".", ""));
+                PropertyData property = tableConfig.ColumnProperties[column];
+
+                if (tableConfig.ColumnNames.TryGetValue(column, out string columnName))
+                {
+                    if (property.Parent == null || !tableConfig.PartialNames.Contains(property.FullName))
+                    {
+                        tableInfo.ColumnNamesDic.Add(column, columnName);
+                        continue;
+                    }
+                }
+
+                if (property.Parent != null)
+                {
+                    bool hasName = columnName != null;
+                    List<string> columnNames = new List<string> { columnName };
+
+                    foreach (PropertyData parent in GetParentProperties(property))
+                    {
+                        if (!parent.IsNested)
+                        {
+                            columnNames.Add("");
+                            continue;
+                        }
+
+                        if (tableConfig.ColumnNames.TryGetValue(parent.FullName, out columnName))
+                        {
+                            hasName = true;
+                            columnNames.Add(columnName);
+
+                            if (!tableConfig.PartialNames.Contains(parent.FullName))
+                                break;
+                        }
+                        else
+                        {
+                            columnNames.Add(null);
+                        }
+                    }
+
+                    if (hasName)
+                    {
+                        IReadOnlyList<PropertyInfo> properties = null;
+                        columnNames.Reverse();
+
+                        for (int i = 0; i < columnNames.Count; i++)
+                        {
+                            if (columnNames[i] == null)
+                            {
+                                if (properties == null)
+                                {
+                                    properties = Array.AsReadOnly(GetProperties(property)
+                                        .Select(x => x.Info).Reverse().ToArray());
+                                }
+
+                                columnNames[i] = ConfigData.ColumnNameDefault(tableConfig.Type, properties,
+                                    i + properties.Count - columnNames.Count);
+                            }
+                        }
+
+                        tableInfo.ColumnNamesDic.Add(column, string.Join("", columnNames));
+                        continue;
+                    }
+                }
+
+                if (parentInfo != null && parentInfo.ColumnNamesDic.TryGetValue(column, out columnName))
+                {
+                    tableInfo.ColumnNamesDic.Add(column, columnName);
+                }
+                else
+                {
+                    IReadOnlyList<PropertyInfo> properties = Array.AsReadOnly(GetProperties(property)
+                        .Select(x => x.Info).Reverse().ToArray());
+
+                    tableInfo.ColumnNamesDic.Add(column, string.Join("", properties
+                        .Select((x, i) => ConfigData.ColumnNameDefault(tableConfig.Type, properties, i))));
+                }
             }
 
-            tableInfo.ColumnNamesDic = tableInfo.Columns.ToDictionary(x => x, x => tableInfo.ColumnNamesDic[x]);
             tableInfo.ColumnNames = tableInfo.Columns.Select(x => tableInfo.ColumnNamesDic[x]).Distinct().ToList();
         }
 
         /// <summary>
         /// Checks if the property must be ignored.
         /// </summary>
-        /// <param name="propertyName">The property name.</param>
         /// <param name="tableConfig">The table configuration.</param>
+        /// <param name="propertyName">The property name.</param>
         /// <returns><see langword="true"/> if the property is ignored, otherwise, <see langword="false"/>.</returns>
-        protected virtual bool IsIgnored(string propertyName, TableConfig tableConfig)
+        protected virtual bool IsIgnored(TableConfig tableConfig, string propertyName)
         {
             return tableConfig.Ignore.Contains(propertyName)
                 || tableConfig.Ignore.Any(x => propertyName.StartsWith($"{x}."));

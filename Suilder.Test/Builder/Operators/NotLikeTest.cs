@@ -602,11 +602,11 @@ namespace Suilder.Test.Builder.Operators
         public void Expression_Function()
         {
             Person person = null;
-            IOperator op = sql.Op(() => person.Name.NotLike(SqlExp.Trim(person.SurName)));
+            IOperator op = sql.Op(() => person.Name.NotLike(SqlExp.Trim(person.Surname)));
 
             QueryResult result = engine.Compile(op);
 
-            Assert.Equal("\"person\".\"Name\" NOT LIKE TRIM(\"person\".\"SurName\")", result.Sql);
+            Assert.Equal("\"person\".\"Name\" NOT LIKE TRIM(\"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

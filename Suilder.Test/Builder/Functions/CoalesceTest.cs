@@ -43,11 +43,11 @@ namespace Suilder.Test.Builder.Functions
         public void Expression_Column()
         {
             Person person = null;
-            IFunction func = (IFunction)sql.Val(() => person.Name ?? person.SurName);
+            IFunction func = (IFunction)sql.Val(() => person.Name ?? person.Surname);
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("COALESCE(\"person\".\"Name\", \"person\".\"SurName\")", result.Sql);
+            Assert.Equal("COALESCE(\"person\".\"Name\", \"person\".\"Surname\")", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -56,11 +56,11 @@ namespace Suilder.Test.Builder.Functions
         public void Expression_Multiple(string value)
         {
             Person person = null;
-            IFunction func = (IFunction)sql.Val(() => person.Name ?? person.SurName ?? value);
+            IFunction func = (IFunction)sql.Val(() => person.Name ?? person.Surname ?? value);
 
             QueryResult result = engine.Compile(func);
 
-            Assert.Equal("COALESCE(\"person\".\"Name\", COALESCE(\"person\".\"SurName\", @p0))", result.Sql);
+            Assert.Equal("COALESCE(\"person\".\"Name\", COALESCE(\"person\".\"Surname\", @p0))", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value

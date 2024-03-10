@@ -4,9 +4,9 @@ using Suilder.Exceptions;
 using Suilder.Reflection;
 using Suilder.Reflection.Builder;
 using Suilder.Reflection.Builder.Processors;
-using Suilder.Test.Reflection.Builder.TablePerType.Tables;
+using Suilder.Test.Reflection.TablePerType.Tables;
 using Xunit;
-using Nested = Suilder.Test.Reflection.Builder.TableNested.Tables;
+using Nested = Suilder.Test.Reflection.TableNested.Tables;
 
 namespace Suilder.Test.Reflection.Builder
 {
@@ -66,12 +66,26 @@ namespace Suilder.Test.Reflection.Builder
         [Fact]
         public void Add_Type_Invalid_Object()
         {
-            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.Add<object>());
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.Add(typeof(object)));
             Assert.Equal($"Invalid type \"{typeof(object)}\".", ex.Message);
         }
 
         [Fact]
         public void Add_Type_Invalid_Interface()
+        {
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.Add(typeof(ITableBuilder)));
+            Assert.Equal($"Invalid type \"{typeof(ITableBuilder)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Add_Type_Generic_Invalid_Object()
+        {
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.Add<object>());
+            Assert.Equal($"Invalid type \"{typeof(object)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Add_Type_Generic_Invalid_Interface()
         {
             Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.Add<ITableBuilder>());
             Assert.Equal($"Invalid type \"{typeof(ITableBuilder)}\".", ex.Message);
@@ -114,7 +128,7 @@ namespace Suilder.Test.Reflection.Builder
 
             ITableInfo personInfo = tableBuilder.GetConfig<Nested.Person>();
 
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Employee.Address.Street", "Employee.Address.City",
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "Surname", "Employee.Address.Street", "Employee.Address.City",
                 "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Id", "Employee.Image" },
                 personInfo.Columns);
         }
@@ -130,7 +144,7 @@ namespace Suilder.Test.Reflection.Builder
 
             ITableInfo personInfo = tableBuilder.GetConfig<Nested.Person>();
 
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Employee.Address.Street", "Employee.Address.City",
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "Surname", "Employee.Address.Street", "Employee.Address.City",
                 "Employee.Salary", "Employee.DepartmentId", "Employee.Department.Id", "Employee.Image" },
                 personInfo.Columns);
         }
@@ -138,12 +152,27 @@ namespace Suilder.Test.Reflection.Builder
         [Fact]
         public void Add_Nested_Type_Invalid_Object()
         {
-            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.AddNested<object>());
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.AddNested(typeof(object)));
             Assert.Equal($"Invalid type \"{typeof(object)}\".", ex.Message);
         }
 
         [Fact]
         public void Add_Nested_Type_Invalid_Interface()
+        {
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() =>
+                tableBuilder.AddNested(typeof(ITableBuilder)));
+            Assert.Equal($"Invalid type \"{typeof(ITableBuilder)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Add_Nested_Type_Generic_Invalid_Object()
+        {
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.AddNested<object>());
+            Assert.Equal($"Invalid type \"{typeof(object)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Add_Nested_Type_Generic_Invalid_Interface()
         {
             Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.AddNested<ITableBuilder>());
             Assert.Equal($"Invalid type \"{typeof(ITableBuilder)}\".", ex.Message);
@@ -162,7 +191,7 @@ namespace Suilder.Test.Reflection.Builder
 
             ITableInfo personInfo = tableBuilder.GetConfig<Nested.Person>();
 
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Employee" }, personInfo.Columns);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "Surname", "Employee" }, personInfo.Columns);
         }
 
         [Fact]
@@ -178,7 +207,7 @@ namespace Suilder.Test.Reflection.Builder
 
             ITableInfo personInfo = tableBuilder.GetConfig<Nested.Person>();
 
-            Assert.Equal(new string[] { "Id", "Guid", "Name", "SurName", "Employee" }, personInfo.Columns);
+            Assert.Equal(new string[] { "Id", "Guid", "Name", "Surname", "Employee" }, personInfo.Columns);
         }
 
         [Fact]

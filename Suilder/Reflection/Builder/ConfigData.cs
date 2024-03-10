@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Suilder.Exceptions;
 
 namespace Suilder.Reflection.Builder
@@ -44,6 +45,13 @@ namespace Suilder.Reflection.Builder
         /// </summary>
         /// <value>Delegate to get the default table name.</value>
         public Func<Type, string> TableNameDefault { get; set; } = type => type.Name;
+
+        /// <summary>
+        /// Delegate to get the default column name.
+        /// </summary>
+        /// <value>Delegate to get the default column name.</value>
+        public Func<Type, IReadOnlyList<PropertyInfo>, int, string> ColumnNameDefault { get; set; }
+            = (type, properties, i) => properties[i].Name;
 
         /// <summary>
         /// Delegate to get the default primary key.

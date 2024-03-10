@@ -32,11 +32,11 @@ namespace Suilder.Test.Builder.Case
         {
             IAlias person = sql.Alias("person");
             ICase caseWhen = sql.Case()
-                .When(sql.And.Add(person["Name"].IsNull(), person["SurName"].IsNull()), "abcd");
+                .When(sql.And.Add(person["Name"].IsNull(), person["Surname"].IsNull()), "abcd");
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NULL AND \"person\".\"SurName\" IS NULL THEN @p0 END",
+            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NULL AND \"person\".\"Surname\" IS NULL THEN @p0 END",
                 result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
@@ -102,12 +102,12 @@ namespace Suilder.Test.Builder.Case
             IAlias person = sql.Alias("person");
             ICase caseWhen = sql.Case()
                 .When(person["Name"].IsNotNull(), person["Name"])
-                .Else(person["SurName"]);
+                .Else(person["Surname"]);
 
             QueryResult result = engine.Compile(caseWhen);
 
             Assert.Equal("CASE WHEN \"person\".\"Name\" IS NOT NULL THEN \"person\".\"Name\" "
-                + "ELSE \"person\".\"SurName\" END", result.Sql);
+                + "ELSE \"person\".\"Surname\" END", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -149,11 +149,11 @@ namespace Suilder.Test.Builder.Case
         {
             Person person = null;
             ICase caseWhen = sql.Case()
-                .When(() => person.Name == null && person.SurName == null, "abcd");
+                .When(() => person.Name == null && person.Surname == null, "abcd");
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NULL AND \"person\".\"SurName\" IS NULL THEN @p0 END",
+            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NULL AND \"person\".\"Surname\" IS NULL THEN @p0 END",
                 result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
@@ -254,12 +254,12 @@ namespace Suilder.Test.Builder.Case
             Person person = null;
             ICase caseWhen = sql.Case()
                 .When(() => person.Name != null, () => person.Name)
-                .Else(() => person.SurName);
+                .Else(() => person.Surname);
 
             QueryResult result = engine.Compile(caseWhen);
 
             Assert.Equal("CASE WHEN \"person\".\"Name\" IS NOT NULL THEN \"person\".\"Name\" "
-                + "ELSE \"person\".\"SurName\" END", result.Sql);
+                + "ELSE \"person\".\"Surname\" END", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -285,11 +285,11 @@ namespace Suilder.Test.Builder.Case
         {
             IAlias person = sql.Alias("person");
             ICase caseWhen = sql.Case(null)
-                .When(person["SurName"], "abcd");
+                .When(person["Surname"], "abcd");
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE @p0 WHEN \"person\".\"SurName\" THEN @p1 END", result.Sql);
+            Assert.Equal("CASE @p0 WHEN \"person\".\"Surname\" THEN @p1 END", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = null,
@@ -302,11 +302,11 @@ namespace Suilder.Test.Builder.Case
         {
             IAlias person = sql.Alias("person");
             ICase caseWhen = sql.Case(person["Name"])
-                .When(person["SurName"], "abcd");
+                .When(person["Surname"], "abcd");
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"SurName\" THEN @p0 END", result.Sql);
+            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"Surname\" THEN @p0 END", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = "abcd"
@@ -351,11 +351,11 @@ namespace Suilder.Test.Builder.Case
         {
             IAlias person = sql.Alias("person");
             ICase caseWhen = sql.Case(person["Name"])
-                .When(person["SurName"], null);
+                .When(person["Surname"], null);
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"SurName\" THEN @p0 END", result.Sql);
+            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"Surname\" THEN @p0 END", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = null
@@ -367,11 +367,11 @@ namespace Suilder.Test.Builder.Case
         {
             IAlias person = sql.Alias("person");
             ICase caseWhen = sql.Case(person["Name"])
-                .When(person["SurName"], person["Name"]);
+                .When(person["Surname"], person["Name"]);
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"SurName\" THEN \"person\".\"Name\" END", result.Sql);
+            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"Surname\" THEN \"person\".\"Name\" END", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -397,13 +397,13 @@ namespace Suilder.Test.Builder.Case
         {
             IAlias person = sql.Alias("person");
             ICase caseWhen = sql.Case(person["Name"])
-                .When(person["SurName"], "abcd")
+                .When(person["Surname"], "abcd")
                 .When("efgh", person["Name"])
                 .Else("ijkl");
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"SurName\" THEN @p0 "
+            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"Surname\" THEN @p0 "
                 + "WHEN @p1 THEN \"person\".\"Name\" ELSE @p2 END", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
@@ -435,11 +435,11 @@ namespace Suilder.Test.Builder.Case
         {
             Person person = null;
             ICase caseWhen = sql.Case(() => person.Name)
-                .When(() => person.SurName, "abcd");
+                .When(() => person.Surname, "abcd");
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"SurName\" THEN @p0 END", result.Sql);
+            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"Surname\" THEN @p0 END", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = "abcd"
@@ -451,11 +451,11 @@ namespace Suilder.Test.Builder.Case
         {
             Person person = null;
             ICase caseWhen = sql.Case(() => person.Name)
-                .When(() => person.SurName, null);
+                .When(() => person.Surname, null);
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"SurName\" THEN @p0 END", result.Sql);
+            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"Surname\" THEN @p0 END", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = null
@@ -500,11 +500,11 @@ namespace Suilder.Test.Builder.Case
         {
             Person person = null;
             ICase caseWhen = sql.Case(() => person.Name)
-                .When(() => person.SurName, () => person.Name);
+                .When(() => person.Surname, () => person.Name);
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"SurName\" THEN \"person\".\"Name\" END", result.Sql);
+            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"Surname\" THEN \"person\".\"Name\" END", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -532,13 +532,13 @@ namespace Suilder.Test.Builder.Case
         {
             Person person = null;
             ICase caseWhen = sql.Case(() => person.Name)
-                .When(() => person.SurName, "abcd")
+                .When(() => person.Surname, "abcd")
                 .When("efgh", () => person.Name)
                 .Else("ijkl");
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"SurName\" THEN @p0 "
+            Assert.Equal("CASE \"person\".\"Name\" WHEN \"person\".\"Surname\" THEN @p0 "
                 + "WHEN @p1 THEN \"person\".\"Name\" ELSE @p2 END", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
@@ -553,11 +553,11 @@ namespace Suilder.Test.Builder.Case
         public void Expression_Left_Value(string value)
         {
             Person person = null;
-            ICase caseWhen = (ICase)sql.Val(() => person.Name == null ? value : person.SurName);
+            ICase caseWhen = (ICase)sql.Val(() => person.Name == null ? value : person.Surname);
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NULL THEN @p0 ELSE \"person\".\"SurName\" END", result.Sql);
+            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NULL THEN @p0 ELSE \"person\".\"Surname\" END", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -569,11 +569,11 @@ namespace Suilder.Test.Builder.Case
         public void Expression_Right_Value(string value)
         {
             Person person = null;
-            ICase caseWhen = (ICase)sql.Val(() => person.Name != null ? person.SurName : value);
+            ICase caseWhen = (ICase)sql.Val(() => person.Name != null ? person.Surname : value);
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NOT NULL THEN \"person\".\"SurName\" ELSE @p0 END", result.Sql);
+            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NOT NULL THEN \"person\".\"Surname\" ELSE @p0 END", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = value
@@ -584,12 +584,12 @@ namespace Suilder.Test.Builder.Case
         public void Expression_Column()
         {
             Person person = null;
-            ICase caseWhen = (ICase)sql.Val(() => person.Name.Like("%abcd%") ? person.Name : person.SurName);
+            ICase caseWhen = (ICase)sql.Val(() => person.Name.Like("%abcd%") ? person.Name : person.Surname);
 
             QueryResult result = engine.Compile(caseWhen);
 
             Assert.Equal("CASE WHEN \"person\".\"Name\" LIKE @p0 THEN \"person\".\"Name\" "
-                + "ELSE \"person\".\"SurName\" END", result.Sql);
+                + "ELSE \"person\".\"Surname\" END", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = "%abcd%"
@@ -600,11 +600,11 @@ namespace Suilder.Test.Builder.Case
         public void Expression_Object()
         {
             Person person = null;
-            ICase caseWhen = (ICase)sql.Val(() => person.Name != null ? (object)person.SurName : person.Id);
+            ICase caseWhen = (ICase)sql.Val(() => person.Name != null ? (object)person.Surname : person.Id);
 
             QueryResult result = engine.Compile(caseWhen);
 
-            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NOT NULL THEN \"person\".\"SurName\" "
+            Assert.Equal("CASE WHEN \"person\".\"Name\" IS NOT NULL THEN \"person\".\"Surname\" "
                 + "ELSE \"person\".\"Id\" END", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
@@ -817,9 +817,9 @@ namespace Suilder.Test.Builder.Case
             IAlias person = sql.Alias("person");
             ICase caseWhen = sql.Case()
                 .When(person["Name"].IsNotNull(), person["Name"])
-                .Else(person["SurName"]);
+                .Else(person["Surname"]);
 
-            Assert.Equal("CASE WHEN person.Name IS NOT NULL THEN person.Name ELSE person.SurName END", caseWhen.ToString());
+            Assert.Equal("CASE WHEN person.Name IS NOT NULL THEN person.Name ELSE person.Surname END", caseWhen.ToString());
         }
 
         [Fact]

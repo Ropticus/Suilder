@@ -19,7 +19,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"Surname\", "
                 + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
                 + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
                 + "\"person\".\"Flags\"", result.Sql);
@@ -132,7 +132,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"SurName\", "
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"Surname\", "
                 + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
                 + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
                 + "\"person\".\"Flags\"", result.Sql);
@@ -295,7 +295,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"Id\", \"Active\", \"Name\", \"SurName\", \"AddressStreet\", \"AddressNumber\", "
+            Assert.Equal("\"Id\", \"Active\", \"Name\", \"Surname\", \"AddressStreet\", \"AddressNumber\", "
                 + "\"AddressCity\", \"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\", \"Flags\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
@@ -368,7 +368,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
 
             QueryResult result = engine.Compile(column);
 
-            Assert.Equal("\"Id\", \"Active\", \"Name\", \"SurName\", \"AddressStreet\", \"AddressNumber\", "
+            Assert.Equal("\"Id\", \"Active\", \"Name\", \"Surname\", \"AddressStreet\", \"AddressNumber\", "
                 + "\"AddressCity\", \"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\", \"Flags\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }

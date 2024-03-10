@@ -27,11 +27,11 @@ namespace Suilder.Test.Builder.Query
         public void Select_Params(object value)
         {
             IAlias person = sql.Alias("person");
-            IQuery query = sql.Query.Select(person["Name"], ", ", person["SurName"], value);
+            IQuery query = sql.Query.Select(person["Name"], ", ", person["Surname"], value);
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\", @p1", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"Surname\", @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", ",
@@ -44,11 +44,11 @@ namespace Suilder.Test.Builder.Query
         public void Select_Enumerable(object value)
         {
             IAlias person = sql.Alias("person");
-            IQuery query = sql.Query.Select(new List<object> { person["Name"], ", ", person["SurName"], value });
+            IQuery query = sql.Query.Select(new List<object> { person["Name"], ", ", person["Surname"], value });
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\", @p1", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"Surname\", @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", ",
@@ -73,11 +73,11 @@ namespace Suilder.Test.Builder.Query
         public void Select_Expression_Params(object value)
         {
             Person person = null;
-            IQuery query = sql.Query.Select(() => person.Name, () => ", ", () => person.SurName, () => value);
+            IQuery query = sql.Query.Select(() => person.Name, () => ", ", () => person.Surname, () => value);
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\", @p1", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"Surname\", @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", ",
@@ -91,11 +91,11 @@ namespace Suilder.Test.Builder.Query
         {
             Person person = null;
             IQuery query = sql.Query.Select(new List<Expression<Func<object>>> { () => person.Name, () => ", ",
-                () => person.SurName, () => value });
+                () => person.Surname, () => value });
 
             QueryResult result = engine.Compile(query);
 
-            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"SurName\", @p1", result.Sql);
+            Assert.Equal("SELECT \"person\".\"Name\", @p0, \"person\".\"Surname\", @p1", result.Sql);
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = ", ",

@@ -62,7 +62,7 @@ namespace Suilder.Test.Builder.Query
             Person person = null;
             IQuery query = sql.Query.Update()
                 .Set(() => person.Name, "abcd")
-                .From(() => person); ;
+                .From(() => person);
 
             QueryResult result = engine.Compile(query);
 

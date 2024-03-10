@@ -2,7 +2,7 @@ using System;
 using Suilder.Exceptions;
 using Suilder.Reflection.Builder;
 using Suilder.Reflection.Builder.Processors;
-using Suilder.Test.Reflection.Builder.TablePerType.Tables;
+using Suilder.Test.Reflection.TablePerType.Tables;
 using Xunit;
 
 namespace Suilder.Test.Reflection.Builder
@@ -49,7 +49,7 @@ namespace Suilder.Test.Reflection.Builder
         }
 
         [Fact]
-        public void Not_Exists_Primary_Key()
+        public void Primary_Key_Not_Exists()
         {
             tableBuilder.DefaultPrimaryKey(x => "Other");
 
@@ -57,6 +57,28 @@ namespace Suilder.Test.Reflection.Builder
 
             Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
             Assert.Equal($"The type \"{typeof(BaseConfig)}\" does not have property \"Other\".", ex.Message);
+        }
+
+        [Fact]
+        public void Primary_Key_Not_Column()
+        {
+            tableBuilder.Add<Department>()
+                .PrimaryKey(x => x.Tags.Count);
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Primary key does not exists as a column for property \"Tags.Count\" of the type "
+                + $"\"{typeof(Department)}\".", ex.Message);
+        }
+
+        [Fact]
+        public void Primary_Key_Not_Foreign_Key()
+        {
+            tableBuilder.Add<Employee>()
+                .PrimaryKey(x => x.Department.Guid);
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
+            Assert.Equal($"Primary key does not exists as a column for property \"Department.Guid\" of the type "
+                + $"\"{typeof(Employee)}\".", ex.Message);
         }
 
         [Fact]
@@ -83,8 +105,8 @@ namespace Suilder.Test.Reflection.Builder
                 .PrimaryKey(x => x.Guid);
 
             Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
-            Assert.Equal($"Foreign key property not specified for property \"Department\" of the type "
-                + $"\"{typeof(Employee)}\", and the type \"{typeof(Department)}\" have multiple primary keys.", ex.Message);
+            Assert.Equal($"Foreign key property not specified for column name of property \"Department\" of the type "
+                + $"\"{typeof(Employee)}\", and the property have multiple foreign keys.", ex.Message);
         }
 
         [Fact]
@@ -104,7 +126,7 @@ namespace Suilder.Test.Reflection.Builder
             tableBuilder.Add<Person>()
                 .InheritColumns(false)
                 .Ignore(x => x.Id)
-                .Ignore(x => x.SurName)
+                .Ignore(x => x.Surname)
                 .Ignore(x => x.Address);
 
             Exception ex = Assert.Throws<InvalidConfigurationException>(() => tableBuilder.GetConfig());
