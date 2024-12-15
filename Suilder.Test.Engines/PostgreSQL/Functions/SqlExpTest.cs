@@ -82,18 +82,6 @@ namespace Suilder.Test.Engines.PostgreSQL.Functions
         }
 
         [Fact]
-        public void Coalesce_Object_Overload()
-        {
-            Person person = null;
-            IFunction func = (IFunction)sql.Val(() => SqlExp.Coalesce(person.Name, person.Salary));
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("COALESCE(\"person\".\"name\", \"person\".\"salary\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
         public void Concat()
         {
             Person person = null;

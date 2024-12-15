@@ -18,9 +18,44 @@ namespace Suilder.Test.Builder.Functions
         }
 
         [Fact]
+        public void Function_Generic()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<NotSupportedException>(() =>
+                SqlExp.Function<string>("CONCAT", person.Name, person.Surname));
+            Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Fact]
         public void Function_Name_Only()
         {
             Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Function("NOW"));
+            Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Fact]
+        public void Function_Name_Only_Generic()
+        {
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Function<DateTime>("NOW"));
+            Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Fact]
+        public void Col()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Col(person, "Id"));
+            Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Fact]
+        public void Col_Generic()
+        {
+            Person person = new Person();
+
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.Col<int>(person, "Id"));
             Assert.Equal("Only for expressions.", ex.Message);
         }
 
@@ -171,6 +206,13 @@ namespace Suilder.Test.Builder.Functions
         public void LastInsertId()
         {
             Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.LastInsertId());
+            Assert.Equal("Only for expressions.", ex.Message);
+        }
+
+        [Fact]
+        public void LastInsertId_Generic()
+        {
+            Exception ex = Assert.Throws<NotSupportedException>(() => SqlExp.LastInsertId<int>());
             Assert.Equal("Only for expressions.", ex.Message);
         }
 

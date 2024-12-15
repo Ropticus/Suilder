@@ -10,16 +10,8 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
 {
     public class AliasScopeTest : BuilderBaseTest
     {
-        public Person personField;
-
-        public Person PersonProperty { get; set; }
-
-        public static Person personFieldStatic;
-
-        public static Person PersonPropertyStatic { get; set; }
-
         [Fact]
-        public void Field()
+        public void Expression_Field()
         {
             IAlias alias = sql.Alias(() => personField);
 
@@ -30,7 +22,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Property()
+        public void Expression_Property()
         {
             IAlias alias = sql.Alias(() => PersonProperty);
 
@@ -41,7 +33,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Field_Static()
+        public void Expression_Field_Static()
         {
             IAlias alias = sql.Alias(() => personFieldStatic);
 
@@ -52,7 +44,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Property_Static()
+        public void Expression_Property_Static()
         {
             IAlias alias = sql.Alias(() => PersonPropertyStatic);
 
@@ -63,7 +55,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Nested_Field_Static()
+        public void Expression_Nested_Field_Static()
         {
             IAlias alias = sql.Alias(() => Tables.person);
 
@@ -74,7 +66,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Nested_Property_Static()
+        public void Expression_Nested_Property_Static()
         {
             IAlias alias = sql.Alias(() => Tables.Person);
 
@@ -85,7 +77,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Field_Object_Overload()
+        public void Expression_Field_Object_Overload()
         {
             Expression<Func<object>> expression = () => personField;
             IAlias alias = sql.Alias(expression);
@@ -97,7 +89,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Property_Object_Overload()
+        public void Expression_Property_Object_Overload()
         {
             Expression<Func<object>> expression = () => PersonProperty;
             IAlias alias = sql.Alias(expression);
@@ -109,7 +101,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Field_Static_Object_Overload()
+        public void Expression_Field_Static_Object_Overload()
         {
             Expression<Func<object>> expression = () => personFieldStatic;
             IAlias alias = sql.Alias(expression);
@@ -121,7 +113,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Property_Static_Object_Overload()
+        public void Expression_Property_Static_Object_Overload()
         {
             Expression<Func<object>> expression = () => PersonPropertyStatic;
             IAlias alias = sql.Alias(expression);
@@ -133,7 +125,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Nested_Field_Static_Object_Overload()
+        public void Expression_Nested_Field_Static_Object_Overload()
         {
             Expression<Func<object>> expression = () => Tables.person;
             IAlias alias = sql.Alias(expression);
@@ -145,7 +137,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Nested_Property_Static_Object_Overload()
+        public void Expression_Nested_Property_Static_Object_Overload()
         {
             Expression<Func<object>> expression = () => Tables.Person;
             IAlias alias = sql.Alias(expression);
@@ -157,7 +149,14 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Invalid_Nested_Field()
+        public void Invalid_Expression_Method()
+        {
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(() => GetPerson()));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Expression_Nested_Field()
         {
             TablesError tables = null;
 
@@ -166,7 +165,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Invalid_Nested_Property()
+        public void Invalid_Expression_Nested_Property()
         {
             TablesError tables = null;
 
@@ -175,7 +174,39 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Invalid_Nested_Field_Object_Overload()
+        public void Invalid_Expression_Nested_Method()
+        {
+            TablesError tables = null;
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(() => tables.GetPerson()));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Expression_Method_Static()
+        {
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(() => GetPersonStatic()));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Expression_Nested_Method_Static()
+        {
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(() => Tables.GetPerson()));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Expression_Method_Object_Overload()
+        {
+            Expression<Func<object>> expression = () => GetPerson();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(expression));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Expression_Nested_Field_Object_Overload()
         {
             TablesError tables = null;
             Expression<Func<object>> expression = () => tables.person;
@@ -185,7 +216,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Invalid_Nested_Property_Object_Overload()
+        public void Invalid_Expression_Nested_Property_Object_Overload()
         {
             TablesError tables = null;
             Expression<Func<object>> expression = () => tables.Person;
@@ -194,11 +225,53 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             Assert.Equal("Invalid expression.", ex.Message);
         }
 
+        [Fact]
+        public void Invalid_Expression_Nested_Method_Object_Overload()
+        {
+            TablesError tables = null;
+            Expression<Func<object>> expression = () => tables.GetPerson();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(expression));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Expression_Method_Static_Object_Overload()
+        {
+            Expression<Func<object>> expression = () => GetPersonStatic();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(expression));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Expression_Nested_Method_Static_Object_Overload()
+        {
+            Expression<Func<object>> expression = () => Tables.GetPerson();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(expression));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        public Person personField;
+
+        public Person PersonProperty { get; set; }
+
+        public Person GetPerson() => personField;
+
+        public static Person personFieldStatic;
+
+        public static Person PersonPropertyStatic { get; set; }
+
+        public static Person GetPersonStatic() => null;
+
         protected static class Tables
         {
             public static Person person;
 
             public static Person Person { get; set; }
+
+            public static Person GetPerson() => null;
         }
 
         protected class TablesError
@@ -206,6 +279,8 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             public Person person;
 
             public Person Person { get; set; }
+
+            public Person GetPerson() => null;
         }
     }
 }

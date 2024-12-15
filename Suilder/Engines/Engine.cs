@@ -32,13 +32,15 @@ namespace Suilder.Engines
         /// The registered operators.
         /// </summary>
         /// <value>The registered operators.</value>
-        protected IDictionary<string, IOperatorInfo> Operators { get; set; } = new Dictionary<string, IOperatorInfo>();
+        protected IDictionary<string, IOperatorInfo> Operators { get; set; }
+            = new Dictionary<string, IOperatorInfo>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// The registered functions.
         /// </summary>
         /// <value>The registered functions.</value>
-        protected IDictionary<string, IFunctionInfo> Functions { get; set; } = new Dictionary<string, IFunctionInfo>();
+        protected IDictionary<string, IFunctionInfo> Functions { get; set; }
+            = new Dictionary<string, IFunctionInfo>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Engine"/> class.
@@ -122,7 +124,7 @@ namespace Suilder.Engines
         /// <param name="isFunction">If the operator is a function.</param>
         public virtual void AddOperator(string op, string opSql, bool isFunction)
         {
-            Operators[op.ToUpperInvariant()] = new OperatorInfo()
+            Operators[op] = new OperatorInfo()
             {
                 Op = opSql,
                 Function = isFunction
@@ -135,7 +137,7 @@ namespace Suilder.Engines
         /// <param name="op">The operator.</param>
         public virtual void RemoveOperator(string op)
         {
-            Operators.Remove(op.ToUpperInvariant());
+            Operators.Remove(op);
         }
 
         /// <summary>
@@ -145,7 +147,7 @@ namespace Suilder.Engines
         /// <returns><see langword="true"/> if the operator is registered, otherwise, <see langword="false"/>.</returns>
         public virtual bool ContainsOperator(string op)
         {
-            return Operators.ContainsKey(op.ToUpperInvariant());
+            return Operators.ContainsKey(op);
         }
 
         /// <summary>
@@ -163,7 +165,7 @@ namespace Suilder.Engines
         /// <returns>The operator information.</returns>
         public virtual IOperatorInfo GetOperator(string op)
         {
-            Operators.TryGetValue(op.ToUpperInvariant(), out IOperatorInfo func);
+            Operators.TryGetValue(op, out IOperatorInfo func);
             return func;
         }
 
@@ -204,7 +206,7 @@ namespace Suilder.Engines
         /// <param name="func">A custom delegate to compile the function.</param>
         public virtual void AddFunction(string name, string nameSql, FunctionCompile func)
         {
-            Functions[name.ToUpperInvariant()] = new FunctionInfo()
+            Functions[name] = new FunctionInfo()
             {
                 Name = nameSql,
                 Compile = func
@@ -217,7 +219,7 @@ namespace Suilder.Engines
         /// <param name="name">The name of the function.</param>
         public virtual void RemoveFunction(string name)
         {
-            Functions.Remove(name.ToUpperInvariant());
+            Functions.Remove(name);
         }
 
         /// <summary>
@@ -227,7 +229,7 @@ namespace Suilder.Engines
         /// <returns><see langword="true"/> if the function is registered, otherwise, <see langword="false"/>.</returns>
         public virtual bool ContainsFunction(string name)
         {
-            return Functions.ContainsKey(name.ToUpperInvariant());
+            return Functions.ContainsKey(name);
         }
 
         /// <summary>
@@ -245,7 +247,7 @@ namespace Suilder.Engines
         /// <returns>The function information.</returns>
         public virtual IFunctionInfo GetFunction(string name)
         {
-            Functions.TryGetValue(name.ToUpperInvariant(), out IFunctionInfo func);
+            Functions.TryGetValue(name, out IFunctionInfo func);
             return func;
         }
 

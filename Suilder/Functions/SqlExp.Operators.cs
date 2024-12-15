@@ -10,6 +10,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> and <paramref name="right"/> are equal, otherwise,
+        /// <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Eq(object left, object right)
         {
@@ -21,6 +23,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> and <paramref name="right"/> are not equal,
+        /// otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool NotEq(object left, object right)
         {
@@ -32,6 +36,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> matches <paramref name="right"/>, otherwise,
+        /// <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Like(object left, object right)
         {
@@ -43,6 +49,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> does not match <paramref name="right"/>, otherwise,
+        /// <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool NotLike(object left, object right)
         {
@@ -54,6 +62,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is less than <paramref name="right"/>, otherwise,
+        /// <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Lt(object left, object right)
         {
@@ -65,6 +75,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is less than or equal to <paramref name="right"/>,
+        /// otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Le(object left, object right)
         {
@@ -76,6 +88,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is greater than <paramref name="right"/>, otherwise,
+        /// <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Gt(object left, object right)
         {
@@ -87,6 +101,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is greater than or equal to <paramref name="right"/>,
+        /// otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Ge(object left, object right)
         {
@@ -98,6 +114,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is equal to any value of <paramref name="right"/>,
+        /// otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool In(object left, object right)
         {
@@ -109,6 +127,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="left">The left value.</param>
         /// <param name="right">The right value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is not equal to any value of <paramref name="right"/>,
+        /// otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool NotIn(object left, object right)
         {
@@ -119,6 +139,8 @@ namespace Suilder.Functions
         /// Creates a "not" operator.
         /// </summary>
         /// <param name="value">The value.</param>
+        /// <returns><see langword="true"/> if <paramref name="value"/> evaluates to <see langword="false"/>, otherwise,
+        /// <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Not(object value)
         {
@@ -129,6 +151,8 @@ namespace Suilder.Functions
         /// Creates an "is null" operator.
         /// </summary>
         /// <param name="value">The value.</param>
+        /// <returns><see langword="true"/> if <paramref name="value"/> is <see langword="null"/>, otherwise,
+        /// <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool IsNull(object value)
         {
@@ -139,6 +163,8 @@ namespace Suilder.Functions
         /// Creates an "is not null" operator.
         /// </summary>
         /// <param name="value">The value.</param>
+        /// <returns><see langword="true"/> if <paramref name="value"/> is not <see langword="null"/>, otherwise,
+        /// <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool IsNotNull(object value)
         {
@@ -151,6 +177,8 @@ namespace Suilder.Functions
         /// <param name="left">The left value.</param>
         /// <param name="min">The min value.</param>
         /// <param name="max">The max value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is greater than or equal to <paramref name="min"/>
+        /// and less than or equal to <paramref name="max"/>, otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Between(object left, object min, object max)
         {
@@ -163,6 +191,8 @@ namespace Suilder.Functions
         /// <param name="left">The left value.</param>
         /// <param name="min">The min value.</param>
         /// <param name="max">The max value.</param>
+        /// <returns><see langword="true"/> if <paramref name="left"/> is less than <paramref name="min"/> or greater than
+        /// <paramref name="max"/>, otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool NotBetween(object left, object min, object max)
         {
@@ -173,6 +203,8 @@ namespace Suilder.Functions
         /// Creates an "all" operator.
         /// </summary>
         /// <param name="value">The value.</param>
+        /// <returns><see langword="true"/> if all of the values of the rows of <paramref name="value"/> meet the condition,
+        /// otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool All(IQueryFragment value)
         {
@@ -184,6 +216,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="value">The value.</param>
         /// <typeparam name="T">The type of the value.</typeparam>
+        /// <returns><see langword="true"/> if all of the values of the rows of <paramref name="value"/> meet the condition,
+        /// otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static T All<T>(IQueryFragment value)
         {
@@ -194,6 +228,8 @@ namespace Suilder.Functions
         /// Creates an "any" operator.
         /// </summary>
         /// <param name="value">The value.</param>
+        /// <returns><see langword="true"/> if any of the values of the rows of <paramref name="value"/> meet the condition,
+        /// otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Any(IQueryFragment value)
         {
@@ -205,6 +241,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="value">The value.</param>
         /// <typeparam name="T">The type of the value.</typeparam>
+        /// <returns><see langword="true"/> if any of the values of the rows of <paramref name="value"/> meet the condition,
+        /// otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static T Any<T>(IQueryFragment value)
         {
@@ -215,6 +253,8 @@ namespace Suilder.Functions
         /// Creates an "exists" operator.
         /// </summary>
         /// <param name="value">The value.</param>
+        /// <returns><see langword="true"/> if <paramref name="value"/> contains any rows, otherwise,
+        /// <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Exists(IQueryFragment value)
         {
@@ -225,6 +265,8 @@ namespace Suilder.Functions
         /// Creates a "some" operator.
         /// </summary>
         /// <param name="value">The value.</param>
+        /// <returns><see langword="true"/> if any of the values of the rows of <paramref name="value"/> meet the condition,
+        /// otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static bool Some(IQueryFragment value)
         {
@@ -236,6 +278,8 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="value">The value.</param>
         /// <typeparam name="T">The type of the value.</typeparam>
+        /// <returns><see langword="true"/> if any of the values of the rows of <paramref name="value"/> meet the condition,
+        /// otherwise, <see langword="false"/>.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static T Some<T>(IQueryFragment value)
         {
@@ -246,6 +290,7 @@ namespace Suilder.Functions
         /// Creates a function.
         /// </summary>
         /// <param name="name">The name of the function.</param>
+        /// <returns>The result of the function.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static object Function(string name)
         {
@@ -256,9 +301,60 @@ namespace Suilder.Functions
         /// Creates a function.
         /// </summary>
         /// <param name="name">The name of the function.</param>
+        /// <typeparam name="T">The type of the return value.</typeparam>
+        /// <returns>The result of the function.</returns>
+        /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
+        public static T Function<T>(string name)
+        {
+            throw new NotSupportedException("Only for expressions.");
+        }
+
+        /// <summary>
+        /// Creates a function.
+        /// </summary>
+        /// <param name="name">The name of the function.</param>
         /// <param name="values">The arguments of the function.</param>
+        /// <returns>The result of the function.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static object Function(string name, params object[] values)
+        {
+            throw new NotSupportedException("Only for expressions.");
+        }
+
+        /// <summary>
+        /// Creates a function.
+        /// </summary>
+        /// <param name="name">The name of the function.</param>
+        /// <param name="values">The arguments of the function.</param>
+        /// <typeparam name="T">The type of the return value.</typeparam>
+        /// <returns>The result of the function.</returns>
+        /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
+        public static T Function<T>(string name, params object[] values)
+        {
+            throw new NotSupportedException("Only for expressions.");
+        }
+
+        /// <summary>
+        /// Creates a column with an alias.
+        /// </summary>
+        /// <param name="alias">The alias.</param>
+        /// <param name="columnName">The column name.</param>
+        /// <returns>The column.</returns>
+        /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
+        public static object Col(object alias, string columnName)
+        {
+            throw new NotSupportedException("Only for expressions.");
+        }
+
+        /// <summary>
+        /// Creates a column with an alias.
+        /// </summary>
+        /// <param name="alias">The alias.</param>
+        /// <param name="columnName">The column name.</param>
+        /// <typeparam name="T">The type of the column.</typeparam>
+        /// <returns>The column.</returns>
+        /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
+        public static T Col<T>(object alias, string columnName)
         {
             throw new NotSupportedException("Only for expressions.");
         }
@@ -268,6 +364,7 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="value">The value.</param>
         /// <typeparam name="T">The type of the value.</typeparam>
+        /// <returns>The column without the table name or alias.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static T ColName<T>(T value)
         {
@@ -280,6 +377,7 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="value">The value.</param>
         /// <typeparam name="T">The new type of the value.</typeparam>
+        /// <returns>The value.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         /// <seealso cref="Cast{T}"/>
         public static T As<T>(object value)
@@ -294,6 +392,7 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="value">The value.</param>
         /// <typeparam name="T">The type of the value.</typeparam>
+        /// <returns>The value.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
         public static T Val<T>(T value)
         {

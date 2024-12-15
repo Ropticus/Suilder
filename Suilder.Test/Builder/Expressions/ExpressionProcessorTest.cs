@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Suilder.Builder;
 using Suilder.Functions;
 using Suilder.Test.Builder.Tables;
@@ -236,23 +237,182 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Fact]
-        public void Invalid_Property()
+        public void Invalid_Compile_Field()
         {
-            Person person = null;
-            Expression<Func<object>> expression = () => person.Name.ToString();
+            CompileTest value = null;
+            Expression<Func<object>> expression = () => value.field;
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => ExpressionProcessor.Compile(expression));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NullReferenceException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Compile_Property()
+        {
+            CompileTest value = null;
+            Expression<Func<object>> expression = () => value.Property;
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => ExpressionProcessor.Compile(expression));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NullReferenceException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Compile_Property_Exception()
+        {
+            CompileTest value = new CompileTest();
+            Expression<Func<object>> expression = () => value.PropertyException;
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => ExpressionProcessor.Compile(expression));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NotImplementedException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Compile_Constructor()
+        {
+            Expression expression = Expression.New(typeof(AbstractTest));
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => ExpressionProcessor.Compile(expression));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<MemberAccessException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Compile_Constructor_Exception()
+        {
+            Expression<Func<object>> expression = () => new CompileTest(true);
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => ExpressionProcessor.Compile(expression));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NotImplementedException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Compile_Method()
+        {
+            CompileTest value = null;
+            Expression<Func<object>> expression = () => value.ToString();
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => ExpressionProcessor.Compile(expression));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NullReferenceException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Compile_Method_Exception()
+        {
+            CompileTest value = new CompileTest();
+            Expression<Func<object>> expression = () => value.MethodException();
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => ExpressionProcessor.Compile(expression));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NotImplementedException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Compile_Convert()
+        {
+            int? value = null;
+            Expression<Func<object>> expression = () => (int)value;
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => ExpressionProcessor.Compile(expression));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<InvalidOperationException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void GetProperties()
+        {
+            Expression<Func<Person, object>> expression = x => x.Id;
+
+            var properties = ExpressionProcessor.GetProperties(expression);
+            Assert.Equal("Id", string.Join('.', properties.Select(x => x.Name)));
+        }
+
+        [Fact]
+        public void GetProperties_Checked()
+        {
+            Expression<Func<Person, object>> expression = x => checked((long)x.Id);
+
+            var properties = ExpressionProcessor.GetProperties(expression);
+            Assert.Equal("Id", string.Join('.', properties.Select(x => x.Name)));
+        }
+
+        [Fact]
+        public void GetProperties_Nested()
+        {
+            Expression<Func<Person, object>> expression = x => x.Address.Street;
+
+            var properties = ExpressionProcessor.GetProperties(expression);
+            Assert.Equal("Address.Street", string.Join('.', properties.Select(x => x.Name)));
+        }
+
+        [Fact]
+        public void GetProperties_Nested_Deep()
+        {
+            Expression<Func<Person2, object>> expression = x => x.Address.City.Country.Name;
+
+            var properties = ExpressionProcessor.GetProperties(expression);
+            Assert.Equal("Address.City.Country.Name", string.Join('.', properties.Select(x => x.Name)));
+        }
+
+        [Fact]
+        public void Invalid_GetProperties_Operator()
+        {
+            Expression<Func<Person, object>> expression = x => -x.Id;
 
             Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.GetProperties(expression));
             Assert.Equal("Invalid expression.", ex.Message);
         }
 
         [Fact]
-        public void Get_Properties()
+        public void Invalid_GetProperties_Method()
+        {
+            Expression<Func<Person, object>> expression = x => x.ToString();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.GetProperties(expression));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_GetProperties_Property_Method()
+        {
+            Expression<Func<Person, object>> expression = x => x.Id.ToString();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.GetProperties(expression));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_GetProperties_Method_Property()
+        {
+            Expression<Func<Person, object>> expression = x => x.ToString().Length;
+
+            Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.GetProperties(expression));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_GetProperties_Instance()
         {
             Person person = null;
             Expression<Func<object>> expression = () => person.Id;
 
-            var properties = ExpressionProcessor.GetProperties(expression);
-            Assert.Equal("person.Id", string.Join('.', properties.Select(x => x.Name)));
+            Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.GetProperties(expression));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        public static Person personStatic;
+
+        [Fact]
+        public void Invalid_GetProperties_Static()
+        {
+            Expression<Func<object>> expression = () => personStatic.Id;
+
+            Exception ex = Assert.Throws<ArgumentException>(() => ExpressionProcessor.GetProperties(expression));
+            Assert.Equal("Invalid expression.", ex.Message);
         }
 
         [Fact]
@@ -270,6 +430,30 @@ namespace Suilder.Test.Builder.Expressions
             ExpressionProcessor.RemoveTable(typeof(CustomTable));
 
             Assert.False(ExpressionProcessor.ContainsTable(typeof(CustomTable)));
+        }
+
+        private class CompileTest
+        {
+            public CompileTest()
+            {
+            }
+
+            public CompileTest(bool exception)
+            {
+                throw new NotImplementedException();
+            }
+
+            public string field = null;
+
+            public string Property { get; set; }
+
+            public string PropertyException => throw new NotImplementedException();
+
+            public string MethodException() => throw new NotImplementedException();
+        }
+
+        private abstract class AbstractTest
+        {
         }
 
         private class CustomTable

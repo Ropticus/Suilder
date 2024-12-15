@@ -91,7 +91,7 @@ namespace Suilder.Test.Reflection.Builder
             public string Data { get; set; }
         }
 
-        private struct CustomClass
+        private class CustomClass
         {
             public string Data { get; set; }
         }

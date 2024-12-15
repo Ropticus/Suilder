@@ -177,9 +177,36 @@ namespace Suilder.Test.Builder.BitOperators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
+        [Fact]
+        public void Expression_Enum()
+        {
+            Person2 person = null;
+            IOperator op = (IOperator)sql.Val(() => ~person.Flags);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("~ \"person\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
         [Theory]
         [MemberData(nameof(DataInt))]
         public void Expression_Value(int value)
+        {
+            IOperator op = (IOperator)sql.Val(() => ~value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("~ @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataEnum))]
+        public void Expression_Value_Enum(PersonFlags value)
         {
             IOperator op = (IOperator)sql.Val(() => ~value);
 
@@ -197,6 +224,13 @@ namespace Suilder.Test.Builder.BitOperators
         {
             int value = (int)sql.Val(() => ~1);
             Assert.Equal(~1, value);
+        }
+
+        [Fact]
+        public void Expression_Inline_Value_Enum()
+        {
+            PersonFlags value = (PersonFlags)sql.Val(() => ~PersonFlags.ValueA);
+            Assert.Equal(~PersonFlags.ValueA, value);
         }
 
         [Fact]

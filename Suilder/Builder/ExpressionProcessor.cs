@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
+using System.Text;
 using Suilder.Core;
 using Suilder.Functions;
 
@@ -12,20 +9,8 @@ namespace Suilder.Builder
     /// <summary>
     /// Utility class to compile an expression to an <see cref="IQueryFragment"/>.
     /// </summary>
-    public static class ExpressionProcessor
+    public static partial class ExpressionProcessor
     {
-        /// <summary>
-        /// Contains the types registered as a table.
-        /// </summary>
-        private static ISet<string> Tables { get; set; } = new HashSet<string>();
-
-        /// <summary>
-        /// The registered functions.
-        /// </summary>
-        /// <returns>The registered functions.</returns>
-        private static IDictionary<string, Func<MethodCallExpression, object>> Functions { get; set; }
-            = new ConcurrentDictionary<string, Func<MethodCallExpression, object>>();
-
         /// <summary>
         /// Determines if the <see cref="MemberExpression"/> is an alias.
         /// </summary>
@@ -33,12 +18,20 @@ namespace Suilder.Builder
         /// <returns><see langword="true"/> if the expression is an alias, otherwise, <see langword="false"/>.</returns>
         public static bool IsAlias(MemberExpression expression)
         {
-            while (expression.Expression is MemberExpression nextExp)
+            while (true)
             {
-                expression = nextExp;
+                switch (expression.Expression)
+                {
+                    case MemberExpression memberExpression:
+                        expression = memberExpression;
+                        break;
+                    case ConstantExpression _:
+                    case null:
+                        return Tables.Contains(expression.Type.FullName);
+                    default:
+                        return false;
+                }
             }
-
-            return Tables.Contains(expression.Type.FullName);
         }
 
         /// <summary>
@@ -47,6 +40,7 @@ namespace Suilder.Builder
         /// <param name="expression">The expression.</param>
         /// <typeparam name="T">The type of the alias.</typeparam>
         /// <returns>The alias.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IAlias<T> ParseAlias<T>(LambdaExpression expression)
         {
             return ParseAlias<T>(expression.Body);
@@ -58,16 +52,16 @@ namespace Suilder.Builder
         /// <param name="expression">The expression.</param>
         /// <typeparam name="T">The type of the alias.</typeparam>
         /// <returns>The alias.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IAlias<T> ParseAlias<T>(Expression expression)
         {
-            MemberExpression memberExp = expression as MemberExpression;
-            if (memberExp == null)
+            if (!(expression is MemberExpression memberExpression))
                 throw new ArgumentException("Invalid expression.");
 
-            if (memberExp.Expression is MemberExpression)
+            if (memberExpression.Expression is MemberExpression)
                 throw new ArgumentException("Invalid expression.");
 
-            return SqlBuilder.Instance.Alias<T>(memberExp.Member.Name);
+            return SqlBuilder.Instance.Alias<T>(memberExpression.Member.Name);
         }
 
         /// <summary>
@@ -75,6 +69,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The alias.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IAlias ParseAlias(LambdaExpression expression)
         {
             return ParseAlias(expression.Body);
@@ -85,16 +80,16 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The alias.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IAlias ParseAlias(Expression expression)
         {
-            MemberExpression memberExp = expression as MemberExpression;
-            if (memberExp == null)
+            if (!(expression is MemberExpression memberExpression))
                 throw new ArgumentException("Invalid expression.");
 
-            if (memberExp.Expression is MemberExpression)
+            if (memberExpression.Expression is MemberExpression)
                 throw new ArgumentException("Invalid expression.");
 
-            return SqlBuilder.Instance.Alias(memberExp.Type, memberExp.Member.Name);
+            return SqlBuilder.Instance.Alias(memberExpression.Type, memberExpression.Member.Name);
         }
 
         /// <summary>
@@ -104,50 +99,71 @@ namespace Suilder.Builder
         /// <param name="expression">The expression.</param>
         /// <typeparam name="T">The type of the alias.</typeparam>
         /// <returns>The column.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IColumn ParseColumn<T>(string tableName, LambdaExpression expression)
         {
             return ParseColumn<T>(tableName, expression.Body);
         }
 
         /// <summary>
-        /// Compiles a <see cref="Expression"/> to an <see cref="IColumn"/>.
+        /// Compiles an <see cref="Expression"/> to an <see cref="IColumn"/>.
         /// </summary>
         /// <param name="tableName">The table name or his alias.</param>
         /// <param name="expression">The expression.</param>
         /// <typeparam name="T">The type of the alias.</typeparam>
         /// <returns>The column.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IColumn ParseColumn<T>(string tableName, Expression expression)
         {
-            if (expression.NodeType == ExpressionType.Convert)
-                return ParseColumn<T>(tableName, ((UnaryExpression)expression).Operand);
-
-            if (expression is MemberExpression memberExp)
+            switch (expression)
             {
-                // Nested property
-                if (memberExp.Expression is MemberExpression lastExp)
-                {
-                    List<string> list = new List<string>
+                case UnaryExpression unaryExpression:
+                    if (unaryExpression.NodeType == ExpressionType.Convert
+                        || unaryExpression.NodeType == ExpressionType.ConvertChecked)
                     {
-                        memberExp.Member.Name
-                    };
+                        return ParseColumn<T>(tableName, unaryExpression.Operand);
+                    }
+                    break;
+                case MemberExpression firstExp:
+                    string column = firstExp.Member.Name;
 
-                    do
+                    switch (firstExp.Expression)
                     {
-                        list.Add(lastExp.Member.Name);
-                        lastExp = lastExp.Expression as MemberExpression;
-                    } while (lastExp != null);
-
-                    list.Reverse();
-                    return SqlBuilder.Instance.Col<T>(tableName, string.Join(".", list));
-                }
-                else
-                {
-                    return SqlBuilder.Instance.Col<T>(tableName, memberExp.Member.Name);
-                }
+                        case MemberExpression lastExp:
+                            column = ParseColumn(lastExp, column.Length).Append(column).ToString();
+                            return SqlBuilder.Instance.Col<T>(tableName, column);
+                        case ParameterExpression _:
+                            return SqlBuilder.Instance.Col<T>(tableName, column);
+                        default:
+                            throw new ArgumentException("Invalid expression.");
+                    }
+                case ParameterExpression _:
+                    return SqlBuilder.Instance.Col<T>(tableName, "*");
             }
-            else
+
+            throw new ArgumentException("Invalid expression.");
+        }
+
+        /// <summary>
+        /// Gets the full column name of a <see cref="MemberExpression"/>.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        /// <param name="capacity">The suggested starting size of the returned <see cref="StringBuilder"/>.</param>
+        /// <returns>A <see cref="StringBuilder"/> that contains the full column name.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
+        private static StringBuilder ParseColumn(MemberExpression expression, int capacity)
+        {
+            string column = expression.Member.Name;
+            capacity += column.Length + 1;
+
+            switch (expression.Expression)
             {
-                return SqlBuilder.Instance.Col<T>(tableName, "*");
+                case MemberExpression memberExpression:
+                    return ParseColumn(memberExpression, capacity).Append(column).Append('.');
+                case ParameterExpression _:
+                    return new StringBuilder(capacity).Append(column).Append('.');
+                default:
+                    throw new ArgumentException("Invalid expression.");
             }
         }
 
@@ -156,6 +172,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The column.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IColumn ParseColumn(LambdaExpression expression)
         {
             return ParseColumn(expression.Body);
@@ -166,13 +183,21 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The column.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IColumn ParseColumn(Expression expression)
         {
-            if (expression.NodeType == ExpressionType.Convert)
-                return ParseColumn(((UnaryExpression)expression).Operand);
-
-            if (expression is MemberExpression memberExp)
-                return ParseColumn(memberExp);
+            switch (expression)
+            {
+                case UnaryExpression unaryExpression:
+                    if (unaryExpression.NodeType == ExpressionType.Convert
+                        || unaryExpression.NodeType == ExpressionType.ConvertChecked)
+                    {
+                        return ParseColumn(unaryExpression.Operand);
+                    }
+                    break;
+                case MemberExpression memberExpression:
+                    return ParseColumn(memberExpression);
+            }
 
             throw new ArgumentException("Invalid expression.");
         }
@@ -182,36 +207,58 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The column.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IColumn ParseColumn(MemberExpression expression)
         {
-            if (expression.Expression is MemberExpression memberExp)
+            switch (expression.Expression)
             {
-                // Nested property
-                if (memberExp.Expression is MemberExpression lastExp)
-                {
-                    List<string> list = new List<string>
-                    {
-                        expression.Member.Name,
-                        memberExp.Member.Name
-                    };
+                case MemberExpression firstExp:
+                    string column = expression.Member.Name;
 
-                    while (lastExp.Expression is MemberExpression nextExp)
+                    switch (firstExp.Expression)
                     {
-                        list.Add(lastExp.Member.Name);
-                        lastExp = nextExp;
+                        case MemberExpression lastExp:
+                            column = ParseColumn(ref lastExp, firstExp.Member.Name, column.Length).Append(column)
+                                .ToString();
+                            return SqlBuilder.Instance.Col(lastExp.Type, lastExp.Member.Name, column);
+                        case ConstantExpression _:
+                        case null:
+                            return SqlBuilder.Instance.Col(firstExp.Type, firstExp.Member.Name, column);
+                        default:
+                            throw new ArgumentException("Invalid expression.");
                     }
-
-                    list.Reverse();
-                    return SqlBuilder.Instance.Col(lastExp.Type, lastExp.Member.Name, string.Join(".", list));
-                }
-                else
-                {
-                    return SqlBuilder.Instance.Col(memberExp.Type, memberExp.Member.Name, expression.Member.Name);
-                }
+                case ConstantExpression _:
+                case null:
+                    return SqlBuilder.Instance.Col(expression.Type, expression.Member.Name, "*");
+                default:
+                    throw new ArgumentException("Invalid expression.");
             }
-            else
+        }
+
+        /// <summary>
+        /// Gets the full column name of a <see cref="MemberExpression"/>.
+        /// </summary>
+        /// <param name="expression">The expression. When this method returns, contains the last
+        /// <see cref="MemberExpression"/>.</param>
+        /// <param name="column">The column name to append to the returned <see cref="StringBuilder"/>.</param>
+        /// <param name="capacity">The suggested starting size of the returned <see cref="StringBuilder"/>.</param>
+        /// <returns>A <see cref="StringBuilder"/> that contains the full column name.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
+        private static StringBuilder ParseColumn(ref MemberExpression expression, string column, int capacity)
+        {
+            capacity += column.Length + 1;
+
+            switch (expression.Expression)
             {
-                return SqlBuilder.Instance.Col(expression.Type, expression.Member.Name, "*");
+                case MemberExpression memberExpression:
+                    StringBuilder builder = ParseColumn(ref memberExpression, expression.Member.Name, capacity);
+                    expression = memberExpression;
+                    return builder.Append(column).Append('.');
+                case ConstantExpression _:
+                case null:
+                    return new StringBuilder(capacity).Append(column).Append('.');
+                default:
+                    throw new ArgumentException("Invalid expression.");
             }
         }
 
@@ -222,6 +269,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The value.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static object ParseValue(LambdaExpression expression)
         {
             return ParseValue(expression.Body);
@@ -234,6 +282,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The value.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static object ParseValue(Expression expression)
         {
             switch (expression)
@@ -266,6 +315,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The value.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static object ParseValue(MemberExpression expression)
         {
             return IsAlias(expression) ? ParseColumn(expression) : Compile(expression);
@@ -278,9 +328,11 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The value.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static object ParseMethod(MethodCallExpression expression)
         {
             string methodName = GetMethodFullName(expression);
+
             if (Functions.TryGetValue(methodName, out var method))
             {
                 return method(expression);
@@ -296,11 +348,13 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The value.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static object ParseValue(UnaryExpression expression)
         {
             switch (expression.NodeType)
             {
                 case ExpressionType.Convert:
+                case ExpressionType.ConvertChecked:
                 case ExpressionType.UnaryPlus:
                     return ParseValue(expression.Operand);
                 case ExpressionType.Not:
@@ -308,7 +362,10 @@ namespace Suilder.Builder
                         return SqlBuilder.Instance.BitNot(ParseValue(expression.Operand));
                     break;
                 case ExpressionType.Negate:
+                case ExpressionType.NegateChecked:
                     return SqlBuilder.Instance.Negate(ParseValue(expression.Operand));
+                case ExpressionType.ArrayLength:
+                    return Compile(expression);
             }
 
             return ParseBoolOperator(expression);
@@ -319,6 +376,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The value.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static object ParseValue(BinaryExpression expression)
         {
             switch (expression.NodeType)
@@ -328,8 +386,11 @@ namespace Suilder.Builder
                         return ParseArithmeticOperator(expression);
                     else
                         return ParseFunction(expression);
+                case ExpressionType.AddChecked:
                 case ExpressionType.Subtract:
+                case ExpressionType.SubtractChecked:
                 case ExpressionType.Multiply:
+                case ExpressionType.MultiplyChecked:
                 case ExpressionType.Divide:
                 case ExpressionType.Modulo:
                     return ParseArithmeticOperator(expression);
@@ -356,6 +417,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The operator.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IOperator ParseBoolOperator(LambdaExpression expression)
         {
             return ParseBoolOperator(expression.Body);
@@ -366,6 +428,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The operator.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IOperator ParseBoolOperator(Expression expression)
         {
             switch (expression)
@@ -388,6 +451,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The operator.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IOperator ParseBoolOperator(MemberExpression expression)
         {
             if (expression.Type == typeof(bool))
@@ -401,6 +465,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The operator.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IOperator ParseBoolOperator(MethodCallExpression expression)
         {
             if (expression.Type == typeof(bool))
@@ -423,6 +488,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The operator.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IOperator ParseBoolOperator(UnaryExpression expression)
         {
             switch (expression.NodeType)
@@ -461,6 +527,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The operator.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IOperator ParseBoolOperator(BinaryExpression expression)
         {
             switch (expression.NodeType)
@@ -495,6 +562,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The logical operator.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static ILogicalOperator ParseLogicalOperator(BinaryExpression expression)
         {
             ILogicalOperator logicalOperator = null;
@@ -542,12 +610,13 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The arithmetic operator.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IArithOperator ParseArithmeticOperator(BinaryExpression expression)
         {
             IArithOperator arithOperator = null;
             Expression left = expression.Left;
 
-            while (left.NodeType == ExpressionType.Convert)
+            while (left.NodeType == ExpressionType.Convert || left.NodeType == ExpressionType.ConvertChecked)
             {
                 left = ((UnaryExpression)left).Operand;
             }
@@ -557,13 +626,28 @@ namespace Suilder.Builder
                 switch (expression.NodeType)
                 {
                     case ExpressionType.Add:
-                        arithOperator = SqlBuilder.Instance.Add;
+                        if (left.NodeType != ExpressionType.AddChecked)
+                            arithOperator = SqlBuilder.Instance.Add;
+                        break;
+                    case ExpressionType.AddChecked:
+                        if (left.NodeType != ExpressionType.Add)
+                            arithOperator = SqlBuilder.Instance.Add;
                         break;
                     case ExpressionType.Subtract:
-                        arithOperator = SqlBuilder.Instance.Subtract;
+                        if (left.NodeType != ExpressionType.SubtractChecked)
+                            arithOperator = SqlBuilder.Instance.Subtract;
+                        break;
+                    case ExpressionType.SubtractChecked:
+                        if (left.NodeType != ExpressionType.Subtract)
+                            arithOperator = SqlBuilder.Instance.Subtract;
                         break;
                     case ExpressionType.Multiply:
-                        arithOperator = SqlBuilder.Instance.Multiply;
+                        if (left.NodeType != ExpressionType.MultiplyChecked)
+                            arithOperator = SqlBuilder.Instance.Multiply;
+                        break;
+                    case ExpressionType.MultiplyChecked:
+                        if (left.NodeType != ExpressionType.Multiply)
+                            arithOperator = SqlBuilder.Instance.Multiply;
                         break;
                     case ExpressionType.Divide:
                         arithOperator = SqlBuilder.Instance.Divide;
@@ -593,12 +677,13 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The bitwise operator.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IBitOperator ParseBitOperator(BinaryExpression expression)
         {
             IBitOperator bitOperator = null;
             Expression left = expression.Left;
 
-            while (left.NodeType == ExpressionType.Convert)
+            while (left.NodeType == ExpressionType.Convert || left.NodeType == ExpressionType.ConvertChecked)
             {
                 left = ((UnaryExpression)left).Operand;
             }
@@ -644,6 +729,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The function.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static IFunction ParseFunction(BinaryExpression expression)
         {
             IFunction func = null;
@@ -681,6 +767,7 @@ namespace Suilder.Builder
         /// </summary>
         /// <param name="expression">The expression.</param>
         /// <returns>The "case" statement.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         public static ICase ParseCase(ConditionalExpression expression)
         {
             return ParseCase(expression, null);
@@ -692,6 +779,7 @@ namespace Suilder.Builder
         /// <param name="expression">The expression.</param>
         /// <param name="caseWhen">The "case" to append conditions.</param>
         /// <returns>The "case" statement.</returns>
+        /// <exception cref="ArgumentException">The expression is invalid.</exception>
         private static ICase ParseCase(ConditionalExpression expression, ICase caseWhen)
         {
             if (caseWhen == null)
@@ -709,487 +797,6 @@ namespace Suilder.Builder
             }
 
             return caseWhen;
-        }
-
-        /// <summary>
-        /// Compiles a <see cref="LambdaExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        public static object Compile(LambdaExpression expression)
-        {
-            return Compile(expression.Body);
-        }
-
-        /// <summary>
-        /// Compiles an <see cref="Expression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        public static object Compile(Expression expression)
-        {
-            switch (expression)
-            {
-                case ConstantExpression constantExpression:
-                    return Compile(constantExpression);
-                case MemberExpression memberExpression:
-                    return Compile(memberExpression);
-                case NewExpression newExpression:
-                    return Compile(newExpression);
-                case NewArrayExpression newArrayExpression:
-                    return Compile(newArrayExpression);
-                case ListInitExpression listInitExpression:
-                    return Compile(listInitExpression);
-                case MethodCallExpression methodCallExpression:
-                    return Compile(methodCallExpression);
-                case UnaryExpression unaryExpression:
-                    return Compile(unaryExpression);
-                case BinaryExpression binaryExpression:
-                    return Compile(binaryExpression);
-                case ConditionalExpression conditionalExpression:
-                    return Compile(conditionalExpression);
-                default:
-                    return CompileDynamicInvoke(expression);
-            }
-        }
-
-        /// <summary>
-        /// Compiles a <see cref="ConstantExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        public static object Compile(ConstantExpression expression)
-        {
-            return expression.Value;
-        }
-
-        /// <summary>
-        /// Compiles a <see cref="MemberExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        public static object Compile(MemberExpression expression)
-        {
-            object value = expression.Expression != null ? Compile(expression.Expression) : null;
-
-            if (expression.Member is FieldInfo fieldInfo)
-            {
-                return fieldInfo.GetValue(value);
-            }
-            else
-            {
-                PropertyInfo propertyInfo = (PropertyInfo)expression.Member;
-                return propertyInfo.GetValue(value);
-            }
-        }
-
-        /// <summary>
-        /// Compiles a <see cref="NewExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        public static object Compile(NewExpression expression)
-        {
-            if (expression.Constructor == null)
-                return Activator.CreateInstance(expression.Type);
-
-            object[] args = null;
-            if (expression.Arguments.Count > 0)
-            {
-                args = new object[expression.Arguments.Count];
-                for (int i = 0; i < expression.Arguments.Count; i++)
-                {
-                    args[i] = Compile(expression.Arguments[i]);
-                }
-            }
-
-            return expression.Constructor.Invoke(args);
-        }
-
-        /// <summary>
-        /// Compiles a <see cref="NewArrayExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        public static object Compile(NewArrayExpression expression)
-        {
-            Array value = Array.CreateInstance(expression.Type.GetElementType(), expression.Expressions.Count);
-
-            for (int i = 0; i < expression.Expressions.Count; i++)
-            {
-                value.SetValue(Compile(expression.Expressions[i]), i);
-            }
-
-            return value;
-        }
-
-        /// <summary>
-        /// Compiles a <see cref="ListInitExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        public static object Compile(ListInitExpression expression)
-        {
-            object value = Compile(expression.NewExpression);
-
-            foreach (var item in expression.Initializers)
-            {
-                object[] args = null;
-                if (item.Arguments.Count > 0)
-                {
-                    args = new object[item.Arguments.Count];
-                    for (int i = 0; i < item.Arguments.Count; i++)
-                    {
-                        args[i] = Compile(item.Arguments[i]);
-                    }
-                }
-
-                item.AddMethod.Invoke(value, args);
-            }
-
-            return value;
-        }
-
-        /// <summary>
-        /// Compiles a <see cref="MethodCallExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        public static object Compile(MethodCallExpression expression)
-        {
-            object value = expression.Object != null ? Compile(expression.Object) : null;
-
-            object[] args = null;
-            if (expression.Arguments.Count > 0)
-            {
-                args = new object[expression.Arguments.Count];
-                for (int i = 0; i < expression.Arguments.Count; i++)
-                {
-                    args[i] = Compile(expression.Arguments[i]);
-                }
-            }
-
-            return expression.Method.Invoke(value, args);
-        }
-
-        /// <summary>
-        /// Compiles a <see cref="UnaryExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        public static object Compile(UnaryExpression expression)
-        {
-            if (expression.Method != null)
-                return expression.Method.Invoke(null, new object[] { Compile(expression.Operand) });
-
-            switch (expression.NodeType)
-            {
-                case ExpressionType.Convert:
-                    if (expression.Type == typeof(object) || expression.Type.IsAssignableFrom(expression.Operand.Type))
-                    {
-                        return Compile(expression.Operand);
-                    }
-                    else if (expression.Type.IsPrimitive)
-                    {
-                        if (typeof(IConvertible).IsAssignableFrom(expression.Operand.Type))
-                        {
-                            return Convert.ChangeType(Compile(expression.Operand), expression.Type);
-                        }
-                        else
-                        {
-                            Type operandType = Nullable.GetUnderlyingType(expression.Operand.Type);
-                            if (operandType != null && typeof(IConvertible).IsAssignableFrom(operandType))
-                                return Convert.ChangeType(Compile(expression.Operand), expression.Type);
-                        }
-                    }
-                    break;
-            }
-
-            return CompileDynamicInvoke(expression);
-        }
-
-        /// <summary>
-        /// Compiles a <see cref="BinaryExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        public static object Compile(BinaryExpression expression)
-        {
-            if (expression.Method != null)
-                return expression.Method.Invoke(null, new object[] { Compile(expression.Left), Compile(expression.Right) });
-
-            switch (expression.NodeType)
-            {
-                case ExpressionType.ArrayIndex:
-                    Array array = (Array)Compile(expression.Left);
-                    int index = (int)Compile(expression.Right);
-                    return array.GetValue(index);
-                case ExpressionType.Coalesce:
-                    return Compile(expression.Left) ?? Compile(expression.Right);
-                default:
-                    return CompileDynamicInvoke(expression);
-            }
-        }
-
-        /// <summary>
-        /// Compiles a <see cref="ConditionalExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        public static object Compile(ConditionalExpression expression)
-        {
-            return (bool)Compile(expression.Test) ? Compile(expression.IfTrue) : Compile(expression.IfFalse);
-        }
-
-        /// <summary>
-        /// Compiles an <see cref="Expression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The result of the expression.</returns>
-        private static object CompileDynamicInvoke(Expression expression)
-        {
-            return Expression.Lambda(expression).Compile(true).DynamicInvoke();
-        }
-
-        /// <summary>
-        /// Gets the full method name.
-        /// </summary>
-        /// <param name="type">The type of the class of the method.</param>
-        /// <param name="methodName">The method name.</param>
-        /// <returns>The full method name.</returns>
-        private static string GetMethodFullName(Type type, string methodName)
-        {
-            return type.FullName + "." + methodName;
-        }
-
-        /// <summary>
-        /// Gets the full method name of a <see cref="MethodCallExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The full method name.</returns>
-        private static string GetMethodFullName(MethodCallExpression expression)
-        {
-            return GetMethodFullName(expression.Method.DeclaringType, expression.Method.Name);
-        }
-
-        /// <summary>
-        /// Gets the specified property.
-        /// <para>The property can be a nested property.</para>
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="propertyName">The property name.</param>
-        /// <returns>The property info.</returns>
-        public static PropertyInfo GetProperty(Type type, string propertyName)
-        {
-            PropertyInfo propertyInfo = null;
-
-            foreach (var property in propertyName.Split('.'))
-            {
-                propertyInfo = type.GetProperty(property);
-                if (propertyInfo == null)
-                    return null;
-
-                type = propertyInfo.PropertyType;
-            }
-
-            return propertyInfo;
-        }
-
-        /// <summary>
-        /// Gets the property path of a <see cref="LambdaExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The property path.</returns>
-        public static string GetPropertyPath(LambdaExpression expression)
-        {
-            return GetPropertyPath(expression.Body);
-        }
-
-        /// <summary>
-        /// Gets the property path of an <see cref="Expression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>The property path.</returns>
-        public static string GetPropertyPath(Expression expression)
-        {
-            return string.Join(".", GetProperties(expression).Select(x => x.Name));
-        }
-
-        /// <summary>
-        /// Gets all the nested members of a <see cref="LambdaExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>A list with the <see cref="MemberInfo"/> of all members.</returns>
-        public static IList<MemberInfo> GetProperties(LambdaExpression expression)
-        {
-            return GetProperties(expression.Body);
-        }
-
-        /// <summary>
-        /// Gets all the nested members of an <see cref="Expression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>A list with the <see cref="MemberInfo"/> of all members.</returns>
-        public static IList<MemberInfo> GetProperties(Expression expression)
-        {
-            if (expression.NodeType == ExpressionType.Convert)
-                return GetProperties(((UnaryExpression)expression).Operand);
-
-            if (expression is MemberExpression memberExp)
-                return GetMemberInfoList(memberExp);
-
-            throw new ArgumentException("Invalid expression.");
-        }
-
-        /// <summary>
-        /// Gets all the nested members of a <see cref="MemberExpression"/>.
-        /// </summary>
-        /// <param name="expression">The expression.</param>
-        /// <returns>A list with the <see cref="MemberInfo"/> of all members.</returns>
-        public static IList<MemberInfo> GetMemberInfoList(MemberExpression expression)
-        {
-            List<MemberInfo> list = new List<MemberInfo>();
-
-            do
-            {
-                list.Add(expression.Member);
-                expression = expression.Expression as MemberExpression;
-            } while (expression != null);
-
-            list.Reverse();
-            return list;
-        }
-
-        /// <summary>
-        /// Registers a function to compile it into an <see cref="IQueryFragment"/>.
-        /// </summary>
-        /// <param name="type">The type of the class of the method.</param>
-        /// <param name="methodName">The method name.</param>
-        public static void AddFunction(Type type, string methodName)
-        {
-            AddFunction(type, methodName, methodName);
-        }
-
-        /// <summary>
-        /// Registers a function to compile it into an <see cref="IQueryFragment"/>.
-        /// </summary>
-        /// <param name="type">The type of the class of the method.</param>
-        /// <param name="methodName">The method name.</param>
-        /// <param name="nameSql">The method name in SQL</param>
-        public static void AddFunction(Type type, string methodName, string nameSql)
-        {
-            Functions[GetMethodFullName(type, methodName)] =
-                x => ExpressionHelper.Function(x, nameSql.ToUpperInvariant());
-        }
-
-        /// <summary>
-        /// Registers a function to compile it into an <see cref="IQueryFragment"/>.
-        /// </summary>
-        /// <param name="type">The type of the class of the method.</param>
-        /// <param name="methodName">The method name.</param>
-        /// <param name="func">A custom delegate to compile the expression.</param>
-        public static void AddFunction(Type type, string methodName, Func<MethodCallExpression, object> func)
-        {
-            Functions[GetMethodFullName(type, methodName)] = func;
-        }
-
-        /// <summary>
-        /// Registers a function to compile it into an <see cref="IQueryFragment"/>.
-        /// </summary>
-        /// <param name="type">The type of the class of the method.</param>
-        /// <param name="methodName">The method name.</param>
-        /// <param name="func">A custom delegate to compile the expression.</param>
-        public static void AddFunction(Type type, string methodName,
-            Func<MethodCallExpression, string, IQueryFragment> func)
-        {
-            Functions[GetMethodFullName(type, methodName)] = x => func(x, methodName.ToUpperInvariant());
-        }
-
-        /// <summary>
-        /// Registers a function to compile it into an <see cref="IQueryFragment"/>.
-        /// </summary>
-        /// <param name="type">The type of the class of the method.</param>
-        /// <param name="methodName">The method name.</param>
-        /// <param name="nameSql">The method name in SQL</param>
-        /// <param name="func">A custom delegate to compile the expression.</param>
-        public static void AddFunction(Type type, string methodName, string nameSql,
-            Func<MethodCallExpression, string, IQueryFragment> func)
-        {
-            Functions[GetMethodFullName(type, methodName)] = x => func(x, nameSql);
-        }
-
-        /// <summary>
-        /// Removes a registered function.
-        /// </summary>
-        /// <param name="type">The type of the class of the method.</param>
-        /// <param name="methodName">The method name.</param>
-        public static void RemoveFunction(Type type, string methodName)
-        {
-            Functions.Remove(GetMethodFullName(type, methodName));
-        }
-
-        /// <summary>
-        /// Determines if the function is registered.
-        /// </summary>
-        /// <param name="type">The type of the class of the method.</param>
-        /// <param name="methodName">The method name.</param>
-        /// <returns><see langword="true"/> if the function is registered, otherwise, <see langword="false"/>.</returns>
-        public static bool ContainsFunction(Type type, string methodName)
-        {
-            return Functions.ContainsKey(GetMethodFullName(type, methodName));
-        }
-
-        /// <summary>
-        /// Removes all registered functions.
-        /// </summary>
-        public static void ClearFunctions()
-        {
-            Functions.Clear();
-        }
-
-        /// <summary>
-        /// Registers a type as a table.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        public static void AddTable(Type type)
-        {
-            lock (Tables)
-            {
-                Tables.Add(type.FullName);
-            }
-        }
-
-        /// <summary>
-        /// Removes a registered type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        public static void RemoveTable(Type type)
-        {
-            lock (Tables)
-            {
-                Tables.Remove(type.FullName);
-            }
-        }
-
-        /// <summary>
-        /// Determines if the type is registered.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns><see langword="true"/> if the type is registered, otherwise, <see langword="false"/>.</returns>
-        public static bool ContainsTable(Type type)
-        {
-            return Tables.Contains(type.FullName);
-        }
-
-        /// <summary>
-        /// Removes all registered types.
-        /// </summary>
-        public static void ClearTables()
-        {
-            lock (Tables)
-            {
-                Tables.Clear();
-            }
         }
     }
 }

@@ -177,11 +177,38 @@ namespace Suilder.Test.Builder.ArithOperators
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
+        [Fact]
+        public void Expression_Checked()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(-person.Id));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("- \"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
         [Theory]
         [MemberData(nameof(DataInt))]
         public void Expression_Value(int value)
         {
             IOperator op = (IOperator)sql.Val(() => -value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("- @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_Value_Checked(int value)
+        {
+            IOperator op = (IOperator)sql.Val(() => checked(-value));
 
             QueryResult result = engine.Compile(op);
 
@@ -248,10 +275,34 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
+        public void Expression_Function_Checked()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(-SqlExp.Max(person.Id)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("- MAX(\"person\".\"Id\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Expression_Function_As()
         {
             Person person = null;
             IOperator op = (IOperator)sql.Val(() => -SqlExp.As<decimal>(person.Name));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("- \"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As_Checked()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(-SqlExp.As<long>(person.Name)));
 
             QueryResult result = engine.Compile(op);
 
@@ -272,6 +323,18 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
+        public void Expression_Function_As_SubQuery_Checked()
+        {
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = (IOperator)sql.Val(() => checked(-SqlExp.As<long>(query)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("- (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Expression_Function_Cast()
         {
             Person person = null;
@@ -284,10 +347,34 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
+        public void Expression_Function_Cast_Checked()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(-SqlExp.Cast<long>(person.Name, sql.Type("DECIMAL", 10, 2))));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("- CAST(\"person\".\"Name\" AS DECIMAL(10, 2))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Expression_Function_Cast_SubQuery()
         {
             IRawQuery query = sql.RawQuery("Subquery");
             IOperator op = (IOperator)sql.Val(() => -SqlExp.Cast<decimal>(query, sql.Type("DECIMAL", 10, 2)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("- CAST((Subquery) AS DECIMAL(10, 2))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast_SubQuery_Checked()
+        {
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = (IOperator)sql.Val(() => checked(-SqlExp.Cast<long>(query, sql.Type("DECIMAL", 10, 2))));
 
             QueryResult result = engine.Compile(op);
 

@@ -280,6 +280,30 @@ namespace Suilder.Builder
         };
 
         /// <summary>
+        /// Delegate to create a column with an alias.
+        /// </summary>
+        /// <value>The delegate.</value>
+        public readonly static Func<MethodCallExpression, IColumn> Col = expression =>
+        {
+            if (expression.Object == null)
+            {
+                if (expression.Arguments.Count != 2)
+                    throw new ArgumentException("Invalid expression, wrong number of parameters.");
+
+                return SqlBuilder.Instance.Alias(expression.Arguments[0])
+                    .Col((string)SqlBuilder.Instance.Val(expression.Arguments[1]));
+            }
+            else
+            {
+                if (expression.Arguments.Count != 1)
+                    throw new ArgumentException("Invalid expression, wrong number of parameters.");
+
+                return SqlBuilder.Instance.Alias(expression.Object)
+                    .Col((string)SqlBuilder.Instance.Val(expression.Arguments[0]));
+            }
+        };
+
+        /// <summary>
         /// Delegate to create a column without the table name or alias.
         /// </summary>
         /// <value>The delegate.</value>
@@ -290,14 +314,14 @@ namespace Suilder.Builder
                 if (expression.Arguments.Count != 1)
                     throw new ArgumentException("Invalid expression, wrong number of parameters.");
 
-                return ExpressionProcessor.ParseColumn(expression.Arguments[0]).Name;
+                return ((IColumn)SqlBuilder.Instance.Val(expression.Arguments[0])).Name;
             }
             else
             {
                 if (expression.Arguments.Count != 0)
                     throw new ArgumentException("Invalid expression, wrong number of parameters.");
 
-                return ExpressionProcessor.ParseColumn(expression.Object).Name;
+                return ((IColumn)SqlBuilder.Instance.Val(expression.Object)).Name;
             }
         };
 
@@ -312,14 +336,14 @@ namespace Suilder.Builder
                 if (expression.Arguments.Count != 1)
                     throw new ArgumentException("Invalid expression, wrong number of parameters.");
 
-                return ExpressionProcessor.ParseValue(expression.Arguments[0]);
+                return SqlBuilder.Instance.Val(expression.Arguments[0]);
             }
             else
             {
                 if (expression.Arguments.Count != 0)
                     throw new ArgumentException("Invalid expression, wrong number of parameters.");
 
-                return ExpressionProcessor.ParseValue(expression.Object);
+                return SqlBuilder.Instance.Val(expression.Object);
             }
         };
 

@@ -171,6 +171,17 @@ namespace Suilder.Functions
         }
 
         /// <summary>
+        /// Returns the last inserted id.
+        /// </summary>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        /// <returns>The last inserted id.</returns>
+        /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
+        public static T LastInsertId<T>()
+        {
+            throw new NotSupportedException("Only for expressions.");
+        }
+
+        /// <summary>
         /// Returns the length of a string.
         /// </summary>
         /// <param name="value">The value.</param>
@@ -254,9 +265,10 @@ namespace Suilder.Functions
         /// </summary>
         /// <param name="value1">First value.</param>
         /// <param name="value2">Second value.</param>
+        /// <typeparam name="T">The type of the first value.</typeparam>
         /// <returns>Null if the two values equal, otherwise the first value.</returns>
         /// <exception cref="NotSupportedException">The method is called outside an expression.</exception>
-        public static object NullIf(object value1, object value2)
+        public static T NullIf<T>(T value1, object value2)
         {
             throw new NotSupportedException("Only for expressions.");
         }

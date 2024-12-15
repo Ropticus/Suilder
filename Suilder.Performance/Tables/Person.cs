@@ -22,11 +22,14 @@ namespace Suilder.Performance.Tables
         [Column("DateCreated")]
         public DateTime Created { get; set; }
 
+        [ForeignKey]
         public int DepartmentId { get; set; }
 
         public Department Department { get; set; }
 
         public byte[] Image { get; set; }
+
+        public ulong Flags { get; set; }
 
         [Ignore]
         public string Ignore { get; set; }

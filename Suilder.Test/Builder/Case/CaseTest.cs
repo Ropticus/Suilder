@@ -600,7 +600,7 @@ namespace Suilder.Test.Builder.Case
         public void Expression_Object()
         {
             Person person = null;
-            ICase caseWhen = (ICase)sql.Val(() => person.Name != null ? (object)person.Surname : person.Id);
+            ICase caseWhen = (ICase)sql.Val(() => person.Name != null ? person.Surname : person.Id);
 
             QueryResult result = engine.Compile(caseWhen);
 

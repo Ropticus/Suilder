@@ -280,7 +280,7 @@ namespace Suilder.Test.Builder.Expressions
         private static object FunctionWithName() => null;
 
         [Fact]
-        public void Function_With_Name_Without_Parameters()
+        public void Function_With_Name_Invalid_Without_Parameters()
         {
             Expression<Func<object>> expression = () => FunctionWithName();
             MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
@@ -700,6 +700,54 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Fact]
+        public void Col_Static()
+        {
+            Person person = null;
+            Expression<Func<object>> expression = () => Custom.Col<string>(person, "Name");
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Col(methodExpression));
+
+            Assert.Equal("\"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Col_Static_Invalid()
+        {
+            Person person = null;
+            Expression<Func<object>> expression = () => string.Concat(person);
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            Exception ex = Assert.Throws<ArgumentException>(() => ExpressionHelper.Col(methodExpression));
+            Assert.Equal("Invalid expression, wrong number of parameters.", ex.Message);
+        }
+
+        [Fact]
+        public void Col_Instance()
+        {
+            Person person = null;
+            Expression<Func<bool>> expression = () => person.Equals("Name");
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            QueryResult result = engine.Compile(ExpressionHelper.Col(methodExpression));
+
+            Assert.Equal("\"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Col_Instance_Invalid()
+        {
+            Person person = null;
+            Expression<Func<string>> expression = () => person.ToString();
+            MethodCallExpression methodExpression = (MethodCallExpression)expression.Body;
+
+            Exception ex = Assert.Throws<ArgumentException>(() => ExpressionHelper.Col(methodExpression));
+            Assert.Equal("Invalid expression, wrong number of parameters.", ex.Message);
+        }
+
+        [Fact]
         public void ColName_Static()
         {
             Person person = null;
@@ -863,6 +911,8 @@ namespace Suilder.Test.Builder.Expressions
             public static bool Not(bool value) => false;
 
             public static bool Not(IQueryFragment value) => false;
+
+            public static T Col<T>(object value, string columnName) => (T)value;
 
             public static T ColName<T>(T value) => value;
 

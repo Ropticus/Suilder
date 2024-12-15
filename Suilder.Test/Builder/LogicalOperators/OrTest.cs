@@ -261,6 +261,150 @@ namespace Suilder.Test.Builder.LogicalOperators
             }, result.Parameters);
         }
 
+        [Theory]
+        [InlineData(1000, 10, "efgh")]
+        public void Expression_Or_Parentheses_Center(decimal value1, int value2, string value3)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id == 1 | person.Active | (person.Name.Like("%abcd%")
+                | person.Salary > value1) | person.Address.Number == value2 | person.Address.City == value3);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 OR (\"person\".\"Name\" LIKE @p2 "
+                + "OR \"person\".\"Salary\" > @p3) OR \"person\".\"AddressNumber\" = @p4 "
+                + "OR \"person\".\"AddressCity\" = @p5", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%abcd%",
+                ["@p3"] = value1,
+                ["@p4"] = value2,
+                ["@p5"] = value3
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [InlineData(1000, 10, "efgh")]
+        public void Expression_OrElse_Parentheses_Center(decimal value1, int value2, string value3)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id == 1 || person.Active || (person.Name.Like("%abcd%")
+                || person.Salary > value1) || person.Address.Number == value2 || person.Address.City == value3);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 OR (\"person\".\"Name\" LIKE @p2 "
+                + "OR \"person\".\"Salary\" > @p3) OR \"person\".\"AddressNumber\" = @p4 "
+                + "OR \"person\".\"AddressCity\" = @p5", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%abcd%",
+                ["@p3"] = value1,
+                ["@p4"] = value2,
+                ["@p5"] = value3
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [InlineData(1000, 10, "efgh")]
+        public void Expression_Or_Parentheses_Right(decimal value1, int value2, string value3)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id == 1 | person.Active | person.Name.Like("%abcd%")
+                | person.Salary > value1 | (person.Address.Number == value2 | person.Address.City == value3));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 OR \"person\".\"Name\" LIKE @p2 "
+                + "OR \"person\".\"Salary\" > @p3 OR (\"person\".\"AddressNumber\" = @p4 "
+                + "OR \"person\".\"AddressCity\" = @p5)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%abcd%",
+                ["@p3"] = value1,
+                ["@p4"] = value2,
+                ["@p5"] = value3
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [InlineData(1000, 10, "efgh")]
+        public void Expression_OrElse_Parentheses_Right(decimal value1, int value2, string value3)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id == 1 || person.Active || person.Name.Like("%abcd%")
+                || person.Salary > value1 || (person.Address.Number == value2 || person.Address.City == value3));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 OR \"person\".\"Name\" LIKE @p2 "
+                + "OR \"person\".\"Salary\" > @p3 OR (\"person\".\"AddressNumber\" = @p4 "
+                + "OR \"person\".\"AddressCity\" = @p5)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%abcd%",
+                ["@p3"] = value1,
+                ["@p4"] = value2,
+                ["@p5"] = value3
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [InlineData(1000, 10, "efgh")]
+        public void Expression_Or_Parentheses_Both(decimal value1, int value2, string value3)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id == 1 | person.Active | (person.Name.Like("%abcd%")
+                | person.Salary > value1) | (person.Address.Number == value2 | person.Address.City == value3));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 OR (\"person\".\"Name\" LIKE @p2 "
+                + "OR \"person\".\"Salary\" > @p3) OR (\"person\".\"AddressNumber\" = @p4 "
+                + "OR \"person\".\"AddressCity\" = @p5)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%abcd%",
+                ["@p3"] = value1,
+                ["@p4"] = value2,
+                ["@p5"] = value3
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [InlineData(1000, 10, "efgh")]
+        public void Expression_OrElse_Parentheses_Both(decimal value1, int value2, string value3)
+        {
+            Person person = null;
+            IOperator op = sql.Op(() => person.Id == 1 || person.Active || (person.Name.Like("%abcd%")
+                || person.Salary > value1) || (person.Address.Number == value2 || person.Address.City == value3));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" = @p0 OR \"person\".\"Active\" = @p1 OR (\"person\".\"Name\" LIKE @p2 "
+                + "OR \"person\".\"Salary\" > @p3) OR (\"person\".\"AddressNumber\" = @p4 "
+                + "OR \"person\".\"AddressCity\" = @p5)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 1,
+                ["@p1"] = true,
+                ["@p2"] = "%abcd%",
+                ["@p3"] = value1,
+                ["@p4"] = value2,
+                ["@p5"] = value3
+            }, result.Parameters);
+        }
+
         [Fact]
         public void Expression_Or_OrElse()
         {

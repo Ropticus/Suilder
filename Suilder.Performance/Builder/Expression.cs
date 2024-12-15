@@ -11,7 +11,7 @@ namespace Suilder.Performance.Builder
     public class Expression : BaseBenchmark
     {
         [Benchmark]
-        [BenchmarkCategory("Alias")]
+        [BenchmarkCategory("Alias", "AliasTyped")]
         public IAlias<Person> Alias_Typed()
         {
             Person person = null;
@@ -19,7 +19,7 @@ namespace Suilder.Performance.Builder
         }
 
         [Benchmark]
-        [BenchmarkCategory("Alias")]
+        [BenchmarkCategory("Alias", "AliasObject")]
         public IAlias Alias_Object()
         {
             Person person = null;
@@ -29,28 +29,43 @@ namespace Suilder.Performance.Builder
 
         private IAlias<Person> person;
 
-        [GlobalSetup(Targets = new[] { nameof(Column_Typed), nameof(Column_Typed_All) })]
+        [GlobalSetup(Targets = new[] { nameof(Column_Typed_All), nameof(Column_Typed), nameof(Column_Typed_Nested),
+            nameof(Column_Typed_Nested_Deep) })]
         public void Column_Setup()
         {
             person = sql.Alias<Person>();
         }
 
         [Benchmark]
-        [BenchmarkCategory("Alias")]
+        [BenchmarkCategory("Column", "AliasTyped")]
         public IColumn Column_Typed_All()
         {
             return person.Col(x => x);
         }
 
         [Benchmark]
-        [BenchmarkCategory("Alias")]
+        [BenchmarkCategory("Column", "AliasTyped")]
         public IColumn Column_Typed()
         {
             return person.Col(x => x.Id);
         }
 
         [Benchmark]
-        [BenchmarkCategory("Alias")]
+        [BenchmarkCategory("Column", "AliasTyped")]
+        public IColumn Column_Typed_Nested()
+        {
+            return person.Col(x => x.Address.Street);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Column", "AliasTyped")]
+        public IColumn Column_Typed_Nested_Deep()
+        {
+            return person.Col(x => x.Address.City.Country.Name);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Column", "AliasObject")]
         public IColumn Column_Object_All()
         {
             Person person = null;
@@ -58,11 +73,59 @@ namespace Suilder.Performance.Builder
         }
 
         [Benchmark]
-        [BenchmarkCategory("Alias")]
+        [BenchmarkCategory("Column", "AliasObject")]
         public IColumn Column_Object()
         {
             Person person = null;
             return sql.Col(() => person.Id);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Column", "AliasObject")]
+        public IColumn Column_Object_Nested()
+        {
+            Person person = null;
+            return sql.Col(() => person.Address.Street);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Column", "AliasObject")]
+        public IColumn Column_Object_Nested_Deep()
+        {
+            Person person = null;
+            return sql.Col(() => person.Address.City.Country.Name);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Column", "AliasVal")]
+        public object Column_Val_All()
+        {
+            Person person = null;
+            return sql.Val(() => person);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Column", "AliasVal")]
+        public object Column_Val()
+        {
+            Person person = null;
+            return sql.Val(() => person.Id);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Column", "AliasVal")]
+        public object Column_Val_Nested()
+        {
+            Person person = null;
+            return sql.Val(() => person.Address.Street);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Column", "AliasVal")]
+        public object Column_Val_Nested_Deep()
+        {
+            Person person = null;
+            return sql.Val(() => person.Address.City.Country.Name);
         }
 
         [Benchmark]
@@ -179,7 +242,7 @@ namespace Suilder.Performance.Builder
         [BenchmarkCategory("Value", "Enumerable")]
         public object Local_Value_Array()
         {
-            byte[] value = new byte[] { 1, 2, 3 };
+            int[] value = new int[] { 1, 2, 3 };
             return sql.Val(() => value);
         }
 
@@ -189,6 +252,14 @@ namespace Suilder.Performance.Builder
         {
             int[] value = new int[] { 1, 2, 3 };
             return sql.Val(() => value[1]);
+        }
+
+        [Benchmark]
+        [BenchmarkCategory("Value", "Enumerable")]
+        public object Local_Value_Array_Length()
+        {
+            int[] value = new int[] { 1, 2, 3 };
+            return sql.Val(() => value.Length);
         }
 
         [Benchmark]

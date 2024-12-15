@@ -22,6 +22,7 @@ namespace Suilder.Test.Engines.Tables
         [Column("DateCreated")]
         public DateTime Created { get; set; }
 
+        [ForeignKey]
         public int DepartmentId { get; set; }
 
         public Department Department { get; set; }

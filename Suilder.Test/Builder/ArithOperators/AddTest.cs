@@ -289,6 +289,22 @@ namespace Suilder.Test.Builder.ArithOperators
             }, result.Parameters);
         }
 
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_Checked(long value)
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
         [Fact]
         public void Expression_Inline_Value()
         {
@@ -301,6 +317,21 @@ namespace Suilder.Test.Builder.ArithOperators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 100m
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Inline_Value_Checked()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + 100L));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100L
             }, result.Parameters);
         }
 
@@ -317,6 +348,23 @@ namespace Suilder.Test.Builder.ArithOperators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 100m,
+                ["@p1"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_Values_Checked(long value)
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + 100L + value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + @p0 + @p1", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100L,
                 ["@p1"] = value
             }, result.Parameters);
         }
@@ -343,6 +391,26 @@ namespace Suilder.Test.Builder.ArithOperators
 
         [Theory]
         [InlineData(200, 300, 400)]
+        public void Expression_Large_Checked(int value1, long value2, long value3)
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + 100L + value1 + value2 + value3 + 500));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + @p0 + @p1 + @p2 + @p3 + @p4", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100L,
+                ["@p1"] = value1,
+                ["@p2"] = value2,
+                ["@p3"] = value3,
+                ["@p4"] = 500L
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [InlineData(200, 300, 400)]
         public void Expression_Parentheses_Center(int value1, long value2, decimal value3)
         {
             Person person = null;
@@ -363,6 +431,26 @@ namespace Suilder.Test.Builder.ArithOperators
 
         [Theory]
         [InlineData(200, 300, 400)]
+        public void Expression_Parentheses_Center_Checked(int value1, long value2, long value3)
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + 100L + (value1 + value2) + value3 + 500));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + @p0 + (@p1 + @p2) + @p3 + @p4", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100L,
+                ["@p1"] = value1,
+                ["@p2"] = value2,
+                ["@p3"] = value3,
+                ["@p4"] = 500L
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [InlineData(200, 300, 400)]
         public void Expression_Parentheses_Right(decimal value1, long value2, int value3)
         {
             Person person = null;
@@ -374,6 +462,26 @@ namespace Suilder.Test.Builder.ArithOperators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 100m,
+                ["@p1"] = value1,
+                ["@p2"] = value2,
+                ["@p3"] = value3,
+                ["@p4"] = 500
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [InlineData(200, 300, 400)]
+        public void Expression_Parentheses_Right_Checked(long value1, long value2, int value3)
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + 100L + value1 + value2 + (value3 + 500)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + @p0 + @p1 + @p2 + (@p3 + @p4)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100L,
                 ["@p1"] = value1,
                 ["@p2"] = value2,
                 ["@p3"] = value3,
@@ -401,6 +509,60 @@ namespace Suilder.Test.Builder.ArithOperators
             }, result.Parameters);
         }
 
+        [Theory]
+        [InlineData(200, 300, 400)]
+        public void Expression_Parentheses_Both_Checked(int value1, long value2, short value3)
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + 100L + (value1 + value2) + (value3 + 500)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + @p0 + (@p1 + @p2) + (@p3 + @p4)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100L,
+                ["@p1"] = value1,
+                ["@p2"] = value2,
+                ["@p3"] = value3,
+                ["@p4"] = 500
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_Unchecked_Checked(long value)
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(unchecked(person.Id + 100L) + value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + @p0 + @p1", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100L,
+                ["@p1"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_Checked_Unchecked(long value)
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + 100L) + value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + @p0 + @p1", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = 100L,
+                ["@p1"] = value
+            }, result.Parameters);
+        }
+
         [Fact]
         public void Expression_Function()
         {
@@ -414,6 +576,18 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
+        public void Expression_Function_Checked()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + SqlExp.Min(person.Id)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + MIN(\"person\".\"Id\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Expression_Function_As()
         {
             Person person = null;
@@ -422,6 +596,18 @@ namespace Suilder.Test.Builder.ArithOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Salary\" + \"person\".\"Name\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_As_Checked()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + SqlExp.As<long>(person.Name)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + \"person\".\"Name\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -439,6 +625,19 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
+        public void Expression_Function_As_SubQuery_Checked()
+        {
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + SqlExp.As<long>(query)));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + (Subquery)", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Expression_Function_Cast()
         {
             Person person = null;
@@ -452,6 +651,19 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Fact]
+        public void Expression_Function_Cast_Checked()
+        {
+            Person person = null;
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + SqlExp.Cast<long>(person.Name,
+                sql.Type("DECIMAL", 10, 2))));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + CAST(\"person\".\"Name\" AS DECIMAL(10, 2))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Expression_Function_Cast_SubQuery()
         {
             Person person = null;
@@ -461,6 +673,20 @@ namespace Suilder.Test.Builder.ArithOperators
             QueryResult result = engine.Compile(op);
 
             Assert.Equal("\"person\".\"Salary\" + CAST((Subquery) AS DECIMAL(10, 2))", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Function_Cast_SubQuery_Checked()
+        {
+            Person person = null;
+            IRawQuery query = sql.RawQuery("Subquery");
+            IOperator op = (IOperator)sql.Val(() => checked(person.Id + SqlExp.Cast<long>(query,
+                sql.Type("DECIMAL", 10, 2))));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Id\" + CAST((Subquery) AS DECIMAL(10, 2))", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 

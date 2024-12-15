@@ -128,6 +128,18 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
         }
 
         [Fact]
+        public void Indexer_Expression_Column_Checked()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person[x => checked((long)x.Id)];
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Indexer_Expression_Column_ForeignKey()
         {
             IAlias<Person> person = sql.Alias<Person>();
@@ -270,6 +282,18 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
         {
             IAlias<Person> person = sql.Alias<Person>();
             IColumn column = person.Col(x => x.Id);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Col_Expression_Column_Checked()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+            IColumn column = person.Col(x => checked((long)x.Id));
 
             QueryResult result = engine.Compile(column);
 
@@ -443,6 +467,18 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
         }
 
         [Fact]
+        public void Indexer_Expression_Column_With_Alias_Name_Checked()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person[x => checked((long)x.Id)];
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Indexer_Expression_Column_ForeignKey_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
@@ -593,6 +629,18 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
         }
 
         [Fact]
+        public void Col_Expression_Column_With_Alias_Name_Checked()
+        {
+            IAlias<Person> person = sql.Alias<Person>("per");
+            IColumn column = person.Col(x => checked((long)x.Id));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Col_Expression_Column_ForeignKey_With_Alias_Name()
         {
             IAlias<Person> person = sql.Alias<Person>("per");
@@ -690,6 +738,69 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
             Exception ex = Assert.Throws<InvalidConfigurationException>(() => engine.Compile(column));
             Assert.Equal($"The property \"Department.Name\" for type \"{typeof(Person).FullName}\" is not registered.",
                 ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Operator()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => person[x => -x.Id]);
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Method()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => person[x => x.ToString()]);
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Property_Method()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => person[x => x.Id.ToString()]);
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Method_Property()
+        {
+            IAlias<Person> person = sql.Alias<Person>();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => person[x => x.ToString().Length]);
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Convert()
+        {
+            IAlias<object> person = sql.Alias<object>();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => person[x => ((Person)x).Id]);
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Convert_Nested()
+        {
+            IAlias<object> person = sql.Alias<object>();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => person[x => ((Person)x).Address.Street]);
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Convert_Nested_Deep()
+        {
+            IAlias<object> person = sql.Alias<object>();
+
+            Exception ex = Assert.Throws<ArgumentException>(() => person[x => ((Person2)x).Address.City.Country.Name]);
+            Assert.Equal("Invalid expression.", ex.Message);
         }
 
         [Fact]

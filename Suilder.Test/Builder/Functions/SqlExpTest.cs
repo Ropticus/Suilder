@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
@@ -22,6 +23,18 @@ namespace Suilder.Test.Builder.Functions
         }
 
         [Fact]
+        public void Function_Generic()
+        {
+            Person person = null;
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Function<string>("CONCAT", person.Name, person.Surname));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("CONCAT(\"person\".\"Name\", \"person\".\"Surname\")", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Function_Name_Only()
         {
             IFunction func = (IFunction)sql.Val(() => SqlExp.Function("NOW"));
@@ -33,7 +46,118 @@ namespace Suilder.Test.Builder.Functions
         }
 
         [Fact]
-        public void ColName()
+        public void Function_Name_Only_Generic()
+        {
+            IFunction func = (IFunction)sql.Val(() => SqlExp.Function<DateTime>("NOW"));
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("NOW()", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Col_All()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.Col(person, "*"));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\", \"person\".\"Active\", \"person\".\"Name\", \"person\".\"Surname\", "
+                + "\"person\".\"AddressStreet\", \"person\".\"AddressNumber\", \"person\".\"AddressCity\", "
+                + "\"person\".\"Salary\", \"person\".\"DateCreated\", \"person\".\"DepartmentId\", \"person\".\"Image\", "
+                + "\"person\".\"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Col_Column()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.Col(person, "Id"));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Col_Column_ForeignKey()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.Col(person, "Department.Id"));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Col_Column_Nested()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.Col(person, "Address.Street"));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Col_Column_Nested_Deep()
+        {
+            Person2 person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.Col(person, "Address.City.Country.Name"));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Col_Column_With_Translation()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.Col(person, "Created"));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Col_Column_Generic()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.Col<int>(person, "Id"));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_All()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(person));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"Id\", \"Active\", \"Name\", \"Surname\", \"AddressStreet\", \"AddressNumber\", "
+                + "\"AddressCity\", \"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\", \"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_Column()
         {
             Person person = null;
             IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(person.Id));
@@ -45,7 +169,43 @@ namespace Suilder.Test.Builder.Functions
         }
 
         [Fact]
-        public void ColName_With_Translation()
+        public void ColName_Column_ForeignKey()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(person.Department.Id));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_Column_Nested()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(person.Address.Street));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_Column_Nested_Deep()
+        {
+            Person2 person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(person.Address.City.Country.Name));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_Column_With_Translation()
         {
             Person person = null;
             IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(person.Created));
@@ -53,6 +213,91 @@ namespace Suilder.Test.Builder.Functions
             QueryResult result = engine.Compile(column);
 
             Assert.Equal("\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_Col_All()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(SqlExp.Col(person, "*")));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"Id\", \"Active\", \"Name\", \"Surname\", \"AddressStreet\", \"AddressNumber\", "
+                + "\"AddressCity\", \"Salary\", \"DateCreated\", \"DepartmentId\", \"Image\", \"Flags\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_Col_Column()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(SqlExp.Col(person, "Id")));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_Col_Column_ForeignKey()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(SqlExp.Col(person, "Department.Id")));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"DepartmentId\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_Col_Column_Nested()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(SqlExp.Col(person, "Address.Street")));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"AddressStreet\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_Col_Column_Nested_Deep()
+        {
+            Person2 person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(SqlExp.Col(person, "Address.City.Country.Name")));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"AddressCityCountryName\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_Col_Column_With_Translation()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(SqlExp.Col(person, "Created")));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"DateCreated\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void ColName_Col_Column_Generic()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => SqlExp.ColName(SqlExp.Col<int>(person, "Id")));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"Id\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
         }
 
@@ -273,6 +518,17 @@ namespace Suilder.Test.Builder.Functions
         public void LastInsertId()
         {
             IFunction func = (IFunction)sql.Val(() => SqlExp.LastInsertId());
+
+            QueryResult result = engine.Compile(func);
+
+            Assert.Equal("LASTINSERTID()", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void LastInsertId_Generic()
+        {
+            IFunction func = (IFunction)sql.Val(() => SqlExp.LastInsertId<int>());
 
             QueryResult result = engine.Compile(func);
 

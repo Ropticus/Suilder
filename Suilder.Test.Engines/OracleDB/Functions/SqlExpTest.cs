@@ -84,18 +84,6 @@ namespace Suilder.Test.Engines.OracleDB.Functions
         }
 
         [Fact]
-        public void Coalesce_Object_Overload()
-        {
-            Person person = null;
-            IFunction func = (IFunction)sql.Val(() => SqlExp.Coalesce(person.Name, person.Salary));
-
-            QueryResult result = engine.Compile(func);
-
-            Assert.Equal("COALESCE(\"PERSON\".\"NAME\", \"PERSON\".\"SALARY\")", result.Sql);
-            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
-        }
-
-        [Fact]
         public void Concat()
         {
             Person person = null;

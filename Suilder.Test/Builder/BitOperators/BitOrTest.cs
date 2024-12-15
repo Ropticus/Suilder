@@ -289,6 +289,38 @@ namespace Suilder.Test.Builder.BitOperators
             }, result.Parameters);
         }
 
+        [Theory]
+        [MemberData(nameof(DataEnum))]
+        public void Expression_Enum(PersonFlags value)
+        {
+            Person2 person = null;
+            IOperator op = (IOperator)sql.Val(() => person.Flags | value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Flags\" | @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_Checked(uint value)
+        {
+            Person2 person = null;
+            IOperator op = (IOperator)sql.Val(() => checked((ulong)person.Flags | value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Flags\" | @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
         [Fact]
         public void Expression_Inline_Value()
         {
@@ -301,6 +333,21 @@ namespace Suilder.Test.Builder.BitOperators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1ul
+            }, result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Inline_Value_Enum()
+        {
+            Person2 person = null;
+            IOperator op = (IOperator)sql.Val(() => person.Flags | PersonFlags.ValueA);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Flags\" | @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = (int)PersonFlags.ValueA
             }, result.Parameters);
         }
 
@@ -317,6 +364,23 @@ namespace Suilder.Test.Builder.BitOperators
             Assert.Equal(new Dictionary<string, object>
             {
                 ["@p0"] = 1ul,
+                ["@p1"] = value
+            }, result.Parameters);
+        }
+
+        [Theory]
+        [MemberData(nameof(DataEnum))]
+        public void Expression_Values_Enum(PersonFlags value)
+        {
+            Person2 person = null;
+            IOperator op = (IOperator)sql.Val(() => person.Flags | PersonFlags.ValueA | value);
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Flags\" | @p0 | @p1", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = (int)PersonFlags.ValueA,
                 ["@p1"] = value
             }, result.Parameters);
         }
@@ -398,54 +462,6 @@ namespace Suilder.Test.Builder.BitOperators
                 ["@p2"] = value2,
                 ["@p3"] = value3,
                 ["@p4"] = 5u
-            }, result.Parameters);
-        }
-
-        [Theory]
-        [MemberData(nameof(DataEnum))]
-        public void Expression_Enum(PersonFlags value)
-        {
-            Person2 person = null;
-            IOperator op = (IOperator)sql.Val(() => person.Flags | value);
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("\"person\".\"Flags\" | @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = value
-            }, result.Parameters);
-        }
-
-        [Fact]
-        public void Expression_Enum_Inline_Value()
-        {
-            Person2 person = null;
-            IOperator op = (IOperator)sql.Val(() => person.Flags | PersonFlags.ValueA);
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("\"person\".\"Flags\" | @p0", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = (int)PersonFlags.ValueA
-            }, result.Parameters);
-        }
-
-        [Theory]
-        [MemberData(nameof(DataEnum))]
-        public void Expression_Enum_Values(PersonFlags value)
-        {
-            Person2 person = null;
-            IOperator op = (IOperator)sql.Val(() => person.Flags | PersonFlags.ValueA | value);
-
-            QueryResult result = engine.Compile(op);
-
-            Assert.Equal("\"person\".\"Flags\" | @p0 | @p1", result.Sql);
-            Assert.Equal(new Dictionary<string, object>
-            {
-                ["@p0"] = (int)PersonFlags.ValueA,
-                ["@p1"] = value
             }, result.Parameters);
         }
 

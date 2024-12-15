@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Suilder.Builder;
 using Suilder.Core;
@@ -95,6 +96,17 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
         public void Col_Expression_Column_One_Param()
         {
             IColumn column = sql.Col<Person>(x => x.Id);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Col_Expression_Column_One_Param_Checked()
+        {
+            IColumn column = sql.Col<Person>(x => checked((long)x.Id));
 
             QueryResult result = engine.Compile(column);
 
@@ -241,6 +253,17 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
         }
 
         [Fact]
+        public void Col_Expression_Column_Two_Params_Checked()
+        {
+            IColumn column = sql.Col<Person>("per", x => checked((long)x.Id));
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"per\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
         public void Col_Expression_Column_ForeignKey_Two_Params()
         {
             IColumn column = sql.Col<Person>("per", x => x.Department.Id);
@@ -282,6 +305,56 @@ namespace Suilder.Test.Builder.Alias.TypedAlias
 
             Assert.Equal("\"per\".\"DateCreated\"", result.Sql);
             Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Invalid_Operator()
+        {
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col<Person>(x => -x.Id));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Method()
+        {
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col<Person>(x => x.ToString()));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Property_Method()
+        {
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col<Person>(x => x.Id.ToString()));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Method_Property()
+        {
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col<Person>(x => x.ToString().Length));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Convert()
+        {
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col<object>(x => ((Person)x).Id));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Convert_Nested()
+        {
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col<object>(x => ((Person)x).Address.Street));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Convert_Nested_Deep()
+        {
+            Exception ex = Assert.Throws<ArgumentException>(() =>
+                sql.Col<object>(x => ((Person2)x).Address.City.Country.Name));
+            Assert.Equal("Invalid expression.", ex.Message);
         }
     }
 }

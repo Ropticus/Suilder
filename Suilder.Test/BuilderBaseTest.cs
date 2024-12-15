@@ -352,5 +352,28 @@ namespace Suilder.Test
                 };
             }
         }
+
+        public static IEnumerable<object[]> DataDecimalOne
+        {
+            get
+            {
+                return new object[][]
+                {
+                    new object[] { 1m }
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> DataDecimalMinMax
+        {
+            get
+            {
+                return new object[][]
+                {
+                    new object[] { decimal.MinValue },
+                    new object[] { decimal.MaxValue }
+                };
+            }
+        }
     }
 }

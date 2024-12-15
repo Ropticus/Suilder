@@ -290,6 +290,22 @@ namespace Suilder.Test.Builder.BitOperators
             }, result.Parameters);
         }
 
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Expression_Checked(int value)
+        {
+            Person2 person = null;
+            IOperator op = (IOperator)sql.Val(() => checked((ulong)person.Flags << value));
+
+            QueryResult result = engine.Compile(op);
+
+            Assert.Equal("\"person\".\"Flags\" << @p0", result.Sql);
+            Assert.Equal(new Dictionary<string, object>
+            {
+                ["@p0"] = value
+            }, result.Parameters);
+        }
+
         [Fact]
         public void Expression_Inline_Value()
         {

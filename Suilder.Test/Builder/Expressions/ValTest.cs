@@ -32,7 +32,7 @@ namespace Suilder.Test.Builder.Expressions
         [Fact]
         public void Local_Value_Array()
         {
-            byte[] value = new byte[] { 1, 2, 3 };
+            int[] value = new int[] { 1, 2, 3 };
             Assert.Equal(value, sql.Val(() => value));
         }
 
@@ -41,6 +41,57 @@ namespace Suilder.Test.Builder.Expressions
         {
             int[] value = new int[] { 1, 2, 3 };
             Assert.Equal(value[1], sql.Val(() => value[1]));
+        }
+
+        [Fact]
+        public void Local_Value_Array_Length()
+        {
+            int[] value = new int[] { 1, 2, 3 };
+            Assert.Equal(value.Length, sql.Val(() => value.Length));
+        }
+
+        [Fact]
+        public void Local_Value_Array_Nested()
+        {
+            int[][] value = new int[][] { new int[] { 1, 2, 3 }, new int[] { 4, 5, 6 } };
+            Assert.Equal(value, sql.Val(() => value));
+        }
+
+        [Fact]
+        public void Local_Value_Array_Nested_Index()
+        {
+            int[][] value = new int[][] { new int[] { 1, 2, 3 }, new int[] { 4, 5, 6 } };
+            Assert.Equal(value[1][2], sql.Val(() => value[1][2]));
+        }
+
+        [Fact]
+        public void Local_Value_Array_Nested_Length()
+        {
+            int[][] value = new int[][] { new int[] { 1, 2, 3 }, new int[] { 4, 5, 6 } };
+            Assert.Equal(value.Length, sql.Val(() => value.Length));
+            Assert.Equal(value[1].Length, sql.Val(() => value[1].Length));
+        }
+
+        [Fact]
+        public void Local_Value_Array_Multi()
+        {
+            int[,] value = new int[,] { { 1, 2, 3 }, { 4, 5, 6 } };
+            Assert.Equal(value, sql.Val(() => value));
+        }
+
+        [Fact]
+        public void Local_Value_Array_Multi_Index()
+        {
+            int[,] value = new int[,] { { 1, 2, 3 }, { 4, 5, 6 } };
+            Assert.Equal(value[1, 2], sql.Val(() => value[1, 2]));
+        }
+
+        [Fact]
+        public void Local_Value_Array_Multi_Length()
+        {
+            int[,] value = new int[,] { { 1, 2, 3 }, { 4, 5, 6 } };
+            Assert.Equal(value.Length, sql.Val(() => value.Length));
+            Assert.Equal(value.GetLength(1), sql.Val(() => value.GetLength(1)));
         }
 
         [Fact]
@@ -58,17 +109,10 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Fact]
-        public void Local_Value_Array_Nested_Index()
+        public void Local_Value_List_Count()
         {
-            int[][] value = new int[][] { new int[] { 1, 2, 3 }, new int[] { 4, 5, 6 } };
-            Assert.Equal(value[1][2], sql.Val(() => value[1][2]));
-        }
-
-        [Fact]
-        public void Local_Value_Array_Multi_Index()
-        {
-            int[,] value = new int[,] { { 1, 2, 3 }, { 4, 5, 6 } };
-            Assert.Equal(value[1, 2], sql.Val(() => value[1, 2]));
+            List<int> value = new List<int> { 1, 2, 3 };
+            Assert.Equal(value.Count, sql.Val(() => value.Count));
         }
 
         [Fact]
@@ -83,6 +127,13 @@ namespace Suilder.Test.Builder.Expressions
         {
             Dictionary<string, int> value = new Dictionary<string, int> { { "a", 1 }, { "b", 2 }, { "c", 3 } };
             Assert.Equal(value["b"], sql.Val(() => value["b"]));
+        }
+
+        [Fact]
+        public void Local_Value_Dic_Count()
+        {
+            Dictionary<string, int> value = new Dictionary<string, int> { { "a", 1 }, { "b", 2 }, { "c", 3 } };
+            Assert.Equal(value.Count, sql.Val(() => value.Count));
         }
 
         [Fact]
@@ -229,102 +280,6 @@ namespace Suilder.Test.Builder.Expressions
         {
             TestValue value = new TestValue() { Nested = new TestNestedValue() };
             Assert.Equal(value.Nested.MethodArgs(1, 2), sql.Val(() => value.Nested.MethodArgs(1, 2)));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        public void Method_Value_Convert_Implicit(short a, int b)
-        {
-            Assert.Equal(TestValue.Convert(a, b), sql.Val(() => TestValue.Convert(a, b)));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        public void Method_Value_Convert_Implicit_Nullable(int a, int b)
-        {
-            Assert.Equal(TestValue.ConvertNullable(a, b), sql.Val(() => TestValue.ConvertNullable(a, b)));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        public void Method_Value_Convert_Implicit_Operator(short a, int b)
-        {
-            Assert.Equal(TestValue.ConvertOperator(a, b), sql.Val(() => TestValue.ConvertOperator(a, b)));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        public void Method_Value_Convert_Implicit_Operator_Nullable(decimal a, int b)
-        {
-            Assert.Equal(TestValue.ConvertOperatorNullable(a, b), sql.Val(() => TestValue.ConvertOperatorNullable(a, b)));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        public void Method_Value_Convert_Explicit(float a, double b)
-        {
-            Assert.Equal(TestValue.Convert((int)a, (long)b), sql.Val(() => TestValue.Convert((int)a, (long)b)));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        public void Method_Value_Convert_Explicit_Nullable(float a, double b)
-        {
-            Assert.Equal(TestValue.ConvertNullable((int)a, (long)b),
-                sql.Val(() => TestValue.ConvertNullable((int)a, (long)b)));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        public void Method_Value_Convert_Explicit_Operator(float a, double b)
-        {
-            Assert.Equal(TestValue.ConvertOperator((decimal)a, (decimal)b),
-                sql.Val(() => TestValue.ConvertOperator((decimal)a, (decimal)b)));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        public void Method_Value_Convert_Explicit_Operator_Nullable(float a, double b)
-        {
-            Assert.Equal(TestValue.ConvertOperatorNullable((decimal)a, (decimal)b),
-                sql.Val(() => TestValue.ConvertOperatorNullable((decimal)a, (decimal)b)));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        public void Method_Value_Convert_Explicit_ValueType(int? a, int? b)
-        {
-            Assert.Equal(TestValue.Convert((int)a, (long)b), sql.Val(() => TestValue.Convert((int)a, (long)b)));
-        }
-
-        [Theory]
-        [InlineData(PersonFlags.ValueA, PersonFlags.ValueB)]
-        public void Method_Value_Convert_Explicit_From_Enum(PersonFlags a, PersonFlags b)
-        {
-            Assert.Equal(TestValue.Convert((int)a, (long)b), sql.Val(() => TestValue.Convert((int)a, (long)b)));
-        }
-
-        [Theory]
-        [InlineData(PersonFlags.ValueA, PersonFlags.ValueB)]
-        public void Method_Value_Convert_Explicit_From_Enum_Nullable(PersonFlags? a, PersonFlags? b)
-        {
-            Assert.Equal(TestValue.Convert((int)a, (long)b), sql.Val(() => TestValue.Convert((int)a, (long)b)));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        public void Method_Value_Convert_Explicit_To_Enum(int a, long b)
-        {
-            Assert.Equal(TestValue.ConvertEnum((PersonFlags)a, (PersonFlags)b),
-                sql.Val(() => TestValue.ConvertEnum((PersonFlags)a, (PersonFlags)b)));
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        public void Method_Value_Convert_Explicit_To_Enum_Nullable(int a, long b)
-        {
-            Assert.Equal(TestValue.ConvertEnumNullable((PersonFlags?)a, (PersonFlags?)b),
-                sql.Val(() => TestValue.ConvertEnumNullable((PersonFlags?)a, (PersonFlags?)b)));
         }
 
         [Theory]
@@ -501,6 +456,14 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Add_Operator_Value_Checked(int value)
+        {
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(checked(person.Id + value), sql.Val(() => checked(SqlExp.Val(person.Id + value))));
+        }
+
+        [Theory]
         [MemberData(nameof(DataDecimal))]
         public void Add_Operator_Value_Overload(decimal value)
         {
@@ -533,6 +496,14 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Subtract_Operator_Value_Checked(int value)
+        {
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(checked(person.Id - value), sql.Val(() => checked(SqlExp.Val(person.Id - value))));
+        }
+
+        [Theory]
         [MemberData(nameof(DataDecimal))]
         public void Subtract_Operator_Value_Overload(decimal value)
         {
@@ -554,6 +525,14 @@ namespace Suilder.Test.Builder.Expressions
         {
             Person person = new Person() { Id = 1 };
             Assert.Equal(person.Id * value, sql.Val(() => SqlExp.Val(person.Id * value)));
+        }
+
+        [Theory]
+        [MemberData(nameof(DataInt))]
+        public void Multiply_Operator_Value_Checked(int value)
+        {
+            Person person = new Person() { Id = 1 };
+            Assert.Equal(checked(person.Id * value), sql.Val(() => checked(SqlExp.Val(person.Id * value))));
         }
 
         [Theory]
@@ -627,6 +606,15 @@ namespace Suilder.Test.Builder.Expressions
         {
             Person person = new Person() { Id = value };
             Assert.Equal(-person.Id, sql.Val(() => SqlExp.Val(-person.Id)));
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(-2)]
+        public void Negate_Operator_Value_Checked(int value)
+        {
+            Person person = new Person() { Id = value };
+            Assert.Equal(checked(-person.Id), sql.Val(() => checked(SqlExp.Val(-person.Id))));
         }
 
         [Theory]
@@ -724,18 +712,6 @@ namespace Suilder.Test.Builder.Expressions
             public static int MethodStatic() => fieldStatic * PropertyStatic;
 
             public static int MethodArgsStatic(int a, int b) => a * b;
-
-            public static long Convert(int a, long b) => a + b;
-
-            public static long? ConvertNullable(int? a, long? b) => a + b;
-
-            public static decimal ConvertOperator(decimal a, decimal b) => a + b;
-
-            public static decimal? ConvertOperatorNullable(decimal? a, decimal? b) => a + b;
-
-            public static PersonFlags ConvertEnum(PersonFlags a, PersonFlags b) => a & b;
-
-            public static PersonFlags? ConvertEnumNullable(PersonFlags? a, PersonFlags? b) => a & b;
         }
 
         public class TestNestedValue

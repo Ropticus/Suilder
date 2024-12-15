@@ -92,24 +92,6 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
             Assert.Equal("Invalid expression.", ex.Message);
         }
 
-        private Person GetPerson() => null;
-
-        [Fact]
-        public void Invalid_Expression_Method()
-        {
-            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(() => GetPerson()));
-            Assert.Equal("Invalid expression.", ex.Message);
-        }
-
-        [Fact]
-        public void Invalid_Expression_Method_Object_Overload()
-        {
-            Expression<Func<object>> expression = () => GetPerson();
-
-            Exception ex = Assert.Throws<ArgumentException>(() => sql.Alias(expression));
-            Assert.Equal("Invalid expression.", ex.Message);
-        }
-
         [Fact]
         public void To_String()
         {

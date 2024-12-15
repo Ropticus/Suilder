@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using Suilder.Builder;
 using Suilder.Core;
 using Suilder.Exceptions;
@@ -31,6 +32,18 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         {
             Person person = null;
             IColumn column = sql.Col(() => person.Id);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Column_Checked()
+        {
+            Person person = null;
+            IColumn column = sql.Col(() => checked((long)person.Id));
 
             QueryResult result = engine.Compile(column);
 
@@ -99,7 +112,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Expression_Lambda_Overload()
+        public void Expression_Column_Lambda_Overload()
         {
             Person person = null;
             Expression<Func<object>> expression = () => person.Id;
@@ -112,7 +125,7 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Expression_Body_Overload()
+        public void Expression_Column_Body_Overload()
         {
             Person person = null;
             Expression<Func<object>> expression = () => person.Id;
@@ -144,6 +157,18 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         {
             Person person = null;
             IColumn column = (IColumn)sql.Val(() => person.Id);
+
+            QueryResult result = engine.Compile(column);
+
+            Assert.Equal("\"person\".\"Id\"", result.Sql);
+            Assert.Equal(new Dictionary<string, object>(), result.Parameters);
+        }
+
+        [Fact]
+        public void Expression_Val_Method_Column_Checked()
+        {
+            Person person = null;
+            IColumn column = (IColumn)sql.Val(() => checked((long)person.Id));
 
             QueryResult result = engine.Compile(column);
 
@@ -261,6 +286,17 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         public void Invalid_Nested_Property()
         {
             Person person = null;
+            IColumn column = sql.Col(() => person.Address.Ignore);
+
+            Exception ex = Assert.Throws<InvalidConfigurationException>(() => engine.Compile(column));
+            Assert.Equal($"The property \"Address.Ignore\" for type \"{typeof(Person).FullName}\" is not registered.",
+                ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_ForeignKey_Property()
+        {
+            Person person = null;
             IColumn column = sql.Col(() => person.Department.Name);
 
             Exception ex = Assert.Throws<InvalidConfigurationException>(() => engine.Compile(column));
@@ -269,7 +305,16 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Invalid_Property()
+        public void Invalid_Operator()
+        {
+            Person person = null;
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col(() => -person.Id));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Method()
         {
             Person person = null;
 
@@ -278,13 +323,110 @@ namespace Suilder.Test.Builder.Alias.ClassAlias
         }
 
         [Fact]
-        public void Invalid_Property_Object_Overload()
+        public void Invalid_Property_Method()
         {
             Person person = null;
-            Expression<Func<object>> expression = () => person.ToString();
 
-            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col(() => person.ToString()));
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col(() => person.Id.ToString()));
             Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Method_Property()
+        {
+            Person person = null;
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col(() => person.ToString().Length));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Convert()
+        {
+            object person = null;
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col(() => ((Person)person).Id));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Convert_Nested()
+        {
+            object person = null;
+
+            Exception ex = Assert.Throws<ArgumentException>(() => sql.Col(() => ((Person)person).Address.Street));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Convert_Nested_Deep()
+        {
+            object person = null;
+
+            Exception ex = Assert.Throws<ArgumentException>(() =>
+                sql.Col(() => ((Person2)person).Address.City.Country.Name));
+            Assert.Equal("Invalid expression.", ex.Message);
+        }
+
+        [Fact]
+        public void Invalid_Val_Method()
+        {
+            Person person = null;
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => sql.Val(() => person.ToString()));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NullReferenceException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Val_Property_Method()
+        {
+            Person person = null;
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => sql.Val(() => person.Id.ToString()));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NullReferenceException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Val_Method_Property()
+        {
+            Person person = null;
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => sql.Val(() => person.ToString().Length));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NullReferenceException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Val_Method_Convert()
+        {
+            object person = null;
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => sql.Val(() => ((Person)person).Id));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NullReferenceException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Val_Method_Convert_Nested()
+        {
+            object person = null;
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() => sql.Val(() => ((Person)person).Address.Street));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NullReferenceException>(ex.InnerException);
+        }
+
+        [Fact]
+        public void Invalid_Val_Method_Convert_Nested_Deep()
+        {
+            object person = null;
+
+            Exception ex = Assert.Throws<TargetInvocationException>(() =>
+                sql.Val(() => ((Person2)person).Address.City.Country.Name));
+            Assert.Equal("Exception has been thrown by the target of an invocation.", ex.Message);
+            Assert.IsType<NullReferenceException>(ex.InnerException);
         }
 
         [Fact]
