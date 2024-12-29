@@ -2,11 +2,9 @@ using Suilder.Builder;
 using Suilder.Engines;
 using Suilder.Reflection.Builder;
 using Suilder.Test.Engines.Tables;
-using Xunit;
 
 namespace Suilder.Test.Engines
 {
-    [Collection("SqlBuilder")]
     public abstract class BuilderBaseTest
     {
         protected IEngine engine;

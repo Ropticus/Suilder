@@ -1,11 +1,13 @@
 using System;
 using Suilder.Builder;
 using Suilder.Functions;
+using Suilder.Test;
 using Xunit;
 
+[assembly: AssemblyFixture(typeof(SqlBuilderFixture))]
 namespace Suilder.Test
 {
-    public class SqlBuilderFixture : IDisposable
+    public sealed class SqlBuilderFixture : IDisposable
     {
         public SqlBuilderFixture()
         {
@@ -19,10 +21,5 @@ namespace Suilder.Test
             ExpressionProcessor.ClearFunctions();
             ExpressionProcessor.ClearTables();
         }
-    }
-
-    [CollectionDefinition("SqlBuilder")]
-    public class DatabaseCollection : ICollectionFixture<SqlBuilderFixture>
-    {
     }
 }

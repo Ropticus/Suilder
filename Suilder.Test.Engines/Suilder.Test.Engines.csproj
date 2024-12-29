@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
   </PropertyGroup>
@@ -16,8 +17,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="xunit" Version="2.9.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="xunit.v3" Version="1.0.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>

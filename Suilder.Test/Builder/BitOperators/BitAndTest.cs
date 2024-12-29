@@ -274,7 +274,7 @@ namespace Suilder.Test.Builder.BitOperators
         }
 
         [Theory]
-        [MemberData(nameof(DataInt))]
+        [MemberData(nameof(DataUInt))]
         public void Expression(uint value)
         {
             Person person = null;
@@ -306,7 +306,7 @@ namespace Suilder.Test.Builder.BitOperators
         }
 
         [Theory]
-        [MemberData(nameof(DataInt))]
+        [MemberData(nameof(DataUInt))]
         public void Expression_Checked(uint value)
         {
             Person2 person = null;
@@ -352,7 +352,7 @@ namespace Suilder.Test.Builder.BitOperators
         }
 
         [Theory]
-        [MemberData(nameof(DataInt))]
+        [MemberData(nameof(DataUInt))]
         public void Expression_Values(uint value)
         {
             Person person = null;

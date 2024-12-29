@@ -16,7 +16,7 @@ Look for issues with the label ["help wanted"](https://github.com/Ropticus/Suild
 ### Requirements
 You will need the following tools:
 
-- [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)
 
 ### Install dependencies
 To download and install the dependencies:

@@ -290,7 +290,7 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Theory]
-        [MemberData(nameof(DataInt))]
+        [MemberData(nameof(DataLong))]
         public void Expression_Checked(long value)
         {
             Person person = null;
@@ -353,7 +353,7 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Theory]
-        [MemberData(nameof(DataInt))]
+        [MemberData(nameof(DataLong))]
         public void Expression_Values_Checked(long value)
         {
             Person person = null;
@@ -530,7 +530,7 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Theory]
-        [MemberData(nameof(DataInt))]
+        [MemberData(nameof(DataLong))]
         public void Expression_Unchecked_Checked(long value)
         {
             Person person = null;
@@ -547,7 +547,7 @@ namespace Suilder.Test.Builder.ArithOperators
         }
 
         [Theory]
-        [MemberData(nameof(DataInt))]
+        [MemberData(nameof(DataLong))]
         public void Expression_Checked_Unchecked(long value)
         {
             Person person = null;

@@ -627,7 +627,7 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Theory]
-        [MemberData(nameof(DataInt))]
+        [MemberData(nameof(DataUInt))]
         public void BitAnd_Operator_Value(uint value)
         {
             Person person = new Person() { Flags = 1 };
@@ -635,7 +635,7 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Theory]
-        [MemberData(nameof(DataInt))]
+        [MemberData(nameof(DataUInt))]
         public void BitOr_Operator_Value(uint value)
         {
             Person person = new Person() { Flags = 1 };
@@ -643,7 +643,7 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Theory]
-        [MemberData(nameof(DataInt))]
+        [MemberData(nameof(DataUInt))]
         public void BitXor_Operator_Value(uint value)
         {
             Person person = new Person() { Flags = 1 };
@@ -651,7 +651,7 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Theory]
-        [MemberData(nameof(DataInt))]
+        [MemberData(nameof(DataUInt))]
         public void BitNot_Operator_Value(uint value)
         {
             Person person = new Person() { Flags = value };

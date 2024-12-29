@@ -1838,7 +1838,7 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Theory]
-        [MemberData(nameof(DataDecimalOne))]
+        [MemberData(nameof(DataDecimalOneNullable))]
         public void Convert_Value_From_Operator_ValueType(decimal? value)
         {
             Assert.Equal(TestValue.ConvertChar((char)value), sql.Val(() => TestValue.ConvertChar((char)value)));
@@ -1855,7 +1855,7 @@ namespace Suilder.Test.Builder.Expressions
         }
 
         [Theory]
-        [MemberData(nameof(DataDecimalMinMax))]
+        [MemberData(nameof(DataDecimalMinMaxNullable))]
         public void Convert_Value_From_Operator_ValueType_Overflow(decimal? value)
         {
             Exception ex;

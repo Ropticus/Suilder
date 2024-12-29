@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Suilder.Engines;
 using Suilder.Exceptions;
 using Suilder.Functions;
@@ -72,43 +71,31 @@ namespace Suilder.Test.Engines
             Assert.Equal("\"Id = 1; DELETE FROM person; -- \"", engine.EscapeName("Id\" = 1; DELETE FROM person; -- "));
         }
 
-        public static IEnumerable<object[]> DataRegister
+        public static TheoryData<string, string> DataRegister => new TheoryData<string, string>
         {
-            get
-            {
-                return new List<object[]>
-                {
-                    new object[] { "Name", "Name" },
-                    new object[] { "Name", "NAME" },
-                    new object[] { "Name", "name" },
-                    new object[] { "UPPER_NAME", "Upper_Name" },
-                    new object[] { "UPPER_NAME", "UPPER_NAME" },
-                    new object[] { "UPPER_NAME", "upper_name" },
-                    new object[] { "lower_name", "Lower_Name" },
-                    new object[] { "lower_name", "LOWER_NAME" },
-                    new object[] { "lower_name", "lower_name" }
-                };
-            }
-        }
+            { "Name", "Name" },
+            { "Name", "NAME" },
+            { "Name", "name" },
+            { "UPPER_NAME", "Upper_Name" },
+            { "UPPER_NAME", "UPPER_NAME" },
+            { "UPPER_NAME", "upper_name" },
+            { "lower_name", "Lower_Name" },
+            { "lower_name", "LOWER_NAME" },
+            { "lower_name", "lower_name" }
+        };
 
-        public static IEnumerable<object[]> DataRegisterTranslation
+        public static TheoryData<string, string, string> DataRegisterTranslation => new TheoryData<string, string, string>
         {
-            get
-            {
-                return new List<object[]>
-                {
-                    new object[] { "Name", "Name", "Name_Sql" },
-                    new object[] { "Name", "NAME", "UPPER_NAME_SQL" },
-                    new object[] { "Name", "name", "lower_name_sql" },
-                    new object[] { "UPPER_NAME", "Upper_Name", "Name_Sql" },
-                    new object[] { "UPPER_NAME", "UPPER_NAME", "UPPER_NAME_SQL" },
-                    new object[] { "UPPER_NAME", "upper_name","lower_name_sql" },
-                    new object[] { "lower_name", "Lower_Name", "Name_Sql" },
-                    new object[] { "lower_name", "LOWER_NAME", "UPPER_NAME_SQL" },
-                    new object[] { "lower_name", "lower_name", "lower_name_sql" }
-                };
-            }
-        }
+            { "Name", "Name", "Name_Sql" },
+            { "Name", "NAME", "UPPER_NAME_SQL" },
+            { "Name", "name", "lower_name_sql" },
+            { "UPPER_NAME", "Upper_Name", "Name_Sql" },
+            { "UPPER_NAME", "UPPER_NAME", "UPPER_NAME_SQL" },
+            { "UPPER_NAME", "upper_name","lower_name_sql" },
+            { "lower_name", "Lower_Name", "Name_Sql" },
+            { "lower_name", "LOWER_NAME", "UPPER_NAME_SQL" },
+            { "lower_name", "lower_name", "lower_name_sql" }
+        };
 
         [Theory]
         [MemberData(nameof(DataRegisterTranslation))]
